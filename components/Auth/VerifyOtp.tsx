@@ -21,8 +21,8 @@ import Image from "next/image";
 const otpSchema = z.object({
   otp: z
     .string()
-    .min(4, "OTP must be 6 digits")
-    .max(4, "OTP must be 6 digits")
+    .min(4, "OTP must be 4 digits")
+    .max(4, "OTP must be 4 digits")
     .regex(/^\d{4}$/, "OTP must contain only numbers"),
 });
 
@@ -195,36 +195,39 @@ export default function VerifyOtp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col-reverse lg:flex-row bg-background">
-      {/*  OTP Verification Form */}
-      <div className="flex-1 bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
+    <div className="bg-white w-full min-h-screen flex flex-col lg:flex-row">
+      <aside className="hidden lg:flex w-full lg:w-[45%] xl:w-1/2 h-full lg:min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-16 bg-[#DDEFFC] lg:rounded-[0px_16px_16px_0px] overflow-hidden px-6 py-12">
+        <div className="relative w-16 h-16 lg:w-195 lg:h-150">
+          <img
+            className="absolute top-0 left-0 w-16 h-16 lg:w-195 lg:h-150"
+            alt="Logo icon"
+            src="/icons/otp-verify.svg"
+          />
+        </div>
+        <div className="top-[-200px] lg:top-[-373px] left-[-150px] lg:left-[-257px] absolute w-[600px] lg:w-[850px] h-[350px] lg:h-[496px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
+        <div className="bottom-[-200px] lg:bottom-[-92px] right-[-150px] lg:right-[-267px] absolute w-[200px] lg:w-[850px] h-[100px] lg:h-[150px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
+      </aside>
+
+      {/* ------------- Right side ------------- */}
+      <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 py-6 rounded-sm sm:rounded-xl border-none shadow-none bg-white">
-          <div className="text-center relative mb-4">
-            <div className="flex items-center justify-center mb-2 sm:mb-4">
-              <Link
-                href="/forgot-password"
-                className="absolute left-0 top-0 sm:left-2 sm:top-2 lg:left-4 lg:top-4 p-1 sm:p-2 hover:bg-gray-100   rounded-full transition-colors border"
-              >
-                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-secondary  " />
-              </Link>
+          <div className="text-center relative mb-2">
+            <div className="flex items-center justify-center mb-2 sm:mb-10">
               <div className="w-full flex justify-center items-center">
                 <Image
-                  src="/icons/logo.png"
+                  src="/icons/logo.svg"
                   alt="logo"
-                  width={165}
-                  height={120}
+                  width={200}
+                  height={150}
                 />
               </div>
             </div>
-            <h2 className="text-lg sm:text-xl md:text-3xl text-foreground font-bold dark:text-white my-3">
-              Check your email
+            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+              Enter OTP
+            </h1>
+            <h2 className="text-base text-secondary mb-10 px-5 mx-auto">
+              {`We sent a 4 code to your email ${email}`}
             </h2>
-            <p className="text-muted-foreground text-xs sm:text-sm px-2 sm:px-0">
-              Please enter the 4-digit verification code we sent to
-            </p>
-            <p className="text-indigo-600 dark:text-indigo-400 break-all">
-              {email}
-            </p>
           </div>
 
           <CardContent className="px-2 sm:px-4 lg:px-6">
@@ -285,29 +288,31 @@ export default function VerifyOtp() {
               </div>
 
               {/* Verify Button */}
-              <Button
-                type="submit"
-                className="w-full h-10 sm:h-12 bg-gradient-green hover:bg-gradient-green-hover text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 text-sm sm:text-base"
-                disabled={
-                  isLoading ||
-                  isSubmitting ||
-                  otp.length !== 4 ||
-                  timeLeft === 0
-                }
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span className="hidden sm:inline">Verifying...</span>
-                    <span className="sm:hidden">Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="hidden sm:inline">Verify Code</span>
-                    <span className="sm:hidden">Verify</span>
-                  </>
-                )}
-              </Button>
+              <div className="w-full flex justify-center items-center">
+                <Button
+                  type="submit"
+                  className="w-1/2 h-10 bg-primary hover:bg-primary-hover text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20"
+                  disabled={
+                    isLoading ||
+                    isSubmitting ||
+                    otp.length !== 4 ||
+                    timeLeft === 0
+                  }
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <span className="hidden sm:inline">Verifying...</span>
+                      <span className="sm:hidden">Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="hidden sm:inline">Verify Code</span>
+                      <span className="sm:hidden">Verify</span>
+                    </>
+                  )}
+                </Button>
+              </div>
 
               {/* Resend Button */}
               <div className="flex items-center justify-center gap-2">
@@ -320,14 +325,14 @@ export default function VerifyOtp() {
                 >
                   {isResending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      <span className="hidden sm:inline">Resending...</span>
-                      <span className="sm:hidden">Resending...</span>
+                      <p className="flex items-center"><Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <span className="hidden sm:inline text-primary">Resending...</span>
+                        <span className="sm:hidden text-primary">Resending...</span></p>
                     </>
                   ) : (
                     <>
-                      <span className="hidden sm:inline">Resend Code</span>
-                      <span className="sm:hidden">Resend</span>
+                      <span className="hidden sm:inline text-primary">Resend Code</span>
+                      <span className="sm:hidden text-primary">Resend</span>
                     </>
                   )}
                 </button>

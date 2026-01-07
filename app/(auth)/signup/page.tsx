@@ -1,6 +1,6 @@
 import RegisterForm from "@/components/Auth/RegisterForm";
 
-export default function Register() {
+export default function SignUp() {
   return (
     <RegisterForm />
   )

@@ -215,6 +215,12 @@
     background: rgba(21, 26, 33, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+ /* OTP Input Styles */
+  [data-slot="input-otp-slot"] {
+    border: 2px solid var(--border);
+    transition: all 0.2s ease;
+  }
 }
 
 /* ===== Animation Keyframes ===== */

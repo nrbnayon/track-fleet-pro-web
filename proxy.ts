@@ -10,7 +10,7 @@ import { JWTPayload, jwtVerify } from "jose";
 const PUBLIC_ROUTES = [
   "/",
   "/login",
-  "/register",
+  "/signup",
   "/forgot-password",
   "/reset-password",
   "/verify-email",

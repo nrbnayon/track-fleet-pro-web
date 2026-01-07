@@ -8,8 +8,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardContent } from "@/components/ui/card";
-import { Mail, Loader2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Mail, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { emailValidationSchema } from "@/lib/formDataValidation";
@@ -70,33 +69,39 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col-reverse lg:flex-row bg-background">
-      <div className="flex-1 bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
+    <div className="bg-white w-full min-h-screen flex flex-col lg:flex-row">
+      <aside className="hidden lg:flex w-full lg:w-[45%] xl:w-1/2 h-full lg:min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-16 bg-[#DDEFFC] lg:rounded-[0px_16px_16px_0px] overflow-hidden px-6 py-12">
+        <div className="relative w-16 h-16 lg:w-150 lg:h-150">
+          <img
+            className="absolute top-0 left-0 w-16 h-16 lg:w-150 lg:h-150"
+            alt="Logo icon"
+            src="/icons/forgot-pass.svg"
+          />
+        </div>
+        <div className="top-[-200px] lg:top-[-373px] left-[-150px] lg:left-[-257px] absolute w-[600px] lg:w-[850px] h-[350px] lg:h-[496px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
+        <div className="bottom-[-200px] lg:bottom-[-92px] right-[-150px] lg:right-[-267px] absolute w-[200px] lg:w-[850px] h-[100px] lg:h-[150px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
+      </aside>
+
+      {/* ------------- Right side ------------- */}
+      <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 py-6 rounded-sm sm:rounded-xl border-none shadow-none bg-white">
           <div className="text-center relative mb-2">
-            <div className="flex items-center justify-center mb-2 sm:mb-4">
-              <Link
-                href="/login"
-                className="absolute left-0 top-0 sm:left-2 sm:top-2 lg:left-4 lg:top-4 p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors border"
-              >
-                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
-              </Link>
+            <div className="flex items-center justify-center mb-2 sm:mb-10">
               <div className="w-full flex justify-center items-center">
                 <Image
-                  src="/icons/logo.png"
+                  src="/icons/logo.svg"
                   alt="logo"
-                  width={165}
-                  height={120}
+                  width={200}
+                  height={150}
                 />
               </div>
             </div>
-            <h2 className="text-lg sm:text-xl md:text-3xl text-foreground font-bold dark:text-white my-3">
-              Reset Password
+            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+              Forget Password?
+            </h1>
+            <h2 className="text-base text-secondary mb-10 px-5 mx-auto">
+              Enter the email used for your account and we’ll send  you a code for the confirmation.
             </h2>
-            <p className="text-secondary text-base px-2 sm:px-0 mb-4">
-              Enter your email address and we&lsquo;ll send you a verification
-              code
-            </p>
           </div>
 
           <CardContent className="px-2 sm:px-4 lg:px-6">
@@ -117,11 +122,10 @@ export default function ForgetPassword() {
                     id="email"
                     type="email"
                     placeholder="Enter your email address"
-                    className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${
-                      errors.email
-                        ? "border-error focus:border-error"
-                        : "input-focus"
-                    }`}
+                    className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.email
+                      ? "border-error focus:border-error"
+                      : "input-focus"
+                      }`}
                     {...register("email")}
                     disabled={isLoading}
                   />
@@ -135,26 +139,28 @@ export default function ForgetPassword() {
               </div>
 
               {/* Send OTP Button */}
-              <Button
-                type="submit"
-                className="w-full h-10 sm:h-12 bg-gradient-green hover:bg-gradient-green-hover text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 text-sm sm:text-base"
-                disabled={isLoading || isSubmitting}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span className="hidden sm:inline">Sending OTP...</span>
-                    <span className="sm:hidden">Sending...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="hidden sm:inline">
-                      Send Verification Code
-                    </span>
-                    <span className="sm:hidden">Send Code</span>
-                  </>
-                )}
-              </Button>
+              <div className="w-full flex justify-center items-center my-5">
+                <Button
+                  type="submit"
+                  className="w-1/2 h-10 bg-primary hover:bg-primary-hover text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 mt-5"
+                  disabled={isLoading || isSubmitting}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <span className="hidden sm:inline">Sending OTP...</span>
+                      <span className="sm:hidden">Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="hidden sm:inline">
+                        Reset Password
+                      </span>
+                      <span className="sm:hidden">Send Code</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </div>
