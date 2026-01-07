@@ -12,8 +12,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Loader2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
