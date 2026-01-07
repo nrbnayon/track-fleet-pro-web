@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { CardHeader } from "@/components/ui/card";
 import { Eye, EyeOff, EyeOffIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { loginValidationSchema } from "@/lib/formDataValidation";
 import Link from "next/link";
 import { Mail } from "lucide-react";
@@ -157,19 +156,17 @@ export default function LoginForm() {
 
         <div className="top-[-200px] lg:top-[-373px] left-[-150px] lg:left-[-257px] absolute w-[600px] lg:w-[850px] h-[350px] lg:h-[496px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
         <div className="bottom-[-200px] lg:bottom-[-92px] right-[-150px] lg:right-[-267px] absolute w-[200px] lg:w-[850px] h-[100px] lg:h-[150px] bg-[#1d92ed99] rounded-[300px/175px] lg:rounded-[425px/248px] blur-[100px]" />
-        {/* <div className="top-[-373px] left-[-257px] absolute w-[850px] h-[496px] bg-[#1d92ed99] rounded-[425px/248px] blur-[100px]" />
-        <div className="top-[988px] left-[359px] absolute w-[850px] h-[496px] bg-[#1d92ed99] rounded-[425px/248px] blur-[100px]" /> */}
       </aside>
 
       {/* ------------- Right side ------------- */}
-      <div className="flex w-full lg:w-1/2 xl:w-[934px] min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
+      <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 sm:p-8  rounded-md sm:rounded-lg lg:rounded-2xl border-none shadow-none bg-white">
           <CardHeader className="text-center">
             <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
               Log In
             </h1>
           </CardHeader>
-          <CardHeader className="text-center mb-5">
+          <CardHeader className="text-center mb-10">
             <h2 className="text-base text-foreground">
               Log in with Email & Password
             </h2>
@@ -250,8 +247,13 @@ export default function LoginForm() {
               </div>
 
               {/* Remember Me and Forgot Password */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <div className="flex items-center space-x-2"></div>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-10">
+                <div className="inline-flex items-center gap-2 relative">
+                  <Switch className="relative w-8 h-5" />
+                  <Label className="relative w-fit text-sm lg:text-base cursor-pointer">
+                    Remember me
+                  </Label>
+                </div>
                 <Link
                   href="/forgot-password"
                   className="text-primary/80 font-semibold text-xs sm:text-sm hover:text-primary hover:underline transition-colors text-center sm:text-right"
@@ -261,107 +263,27 @@ export default function LoginForm() {
               </div>
 
               {/* Login Button */}
-              <Button
-                type="submit"
-                className="w-full h-10 sm:h-12 bg-gradient-green hover:bg-gradient-green-hover text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 text-sm sm:text-base"
-                disabled={isLoading || isSubmitting}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
+              <div className="w-full flex justify-center items-center my-5">
+                <Button
+                  type="submit"
+                  size='lg'
+                  className="w-1/2 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 bg-primary rounded-full"
+                  disabled={isLoading || isSubmitting}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Log In...
+                    </>
+                  ) : (
+                    "Log In"
+                  )}
+                </Button>
+              </div>
             </form>
-          </div>
-          <div className="w-full flex justify-center items-center mt-4">
-            <p className="text-muted-foreground text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/register"
-                className="text-primary font-semibold hover:underline transition-colors"
-              >
-                Register Now
-              </Link>
-            </p>
           </div>
         </div>
       </div>
-
-      {/* <main className="flex w-full lg:w-[55%] xl:w-[934px] min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
-        <header className="inline-flex flex-col items-center gap-4 lg:gap-6 relative">
-          <h1 className="font-bold text-bluenormal text-4xl lg:text-6xl leading-[48px] lg:leading-[72px] relative w-fit [font-family:'Inter',Helvetica] tracking-[0] whitespace-nowrap">
-            Log In
-          </h1>
-          <p className="relative w-fit [font-family:'Inter',Helvetica] font-medium text-blackblack-400 text-lg lg:text-2xl tracking-[0] leading-[21.6px] lg:leading-[28.8px] text-center px-4">
-            Log in with Email &amp; Password
-          </p>
-        </header>
-
-        <form className="flex flex-col w-full max-w-[600px] items-start gap-6 relative">
-          <div className="flex flex-col items-start gap-6 lg:gap-[31.34px] relative self-stretch w-full">
-            <div className="flex flex-col items-center gap-4 lg:gap-[18.81px] relative self-stretch w-full">
-              <Label className="relative  font-medium text-blackblack-400 text-sm lg:text-base tracking-[0] leading-4">
-                Email
-              </Label>
-              <Input
-                type="email"
-                placeholder="eg. mail@gmail.com"
-                className="flex h-11 lg:h-12 items-center gap-2 px-4 py-4 lg:py-5 relative self-stretch w-full rounded-[10px] border border-solid border-[#e7e7e7] [font-family:'Inter',Helvetica] font-normal text-blackblack-200 text-sm tracking-[0] leading-[14px]"
-              />
-            </div>
-
-            <div className="flex flex-col items-center gap-3 lg:gap-[12.54px] relative self-stretch w-full">
-              <Label className="relative  font-medium text-blackblack-400 text-sm lg:text-base tracking-[0] leading-4">
-                Password
-              </Label>
-              <div className="flex h-11 lg:h-12 items-center justify-between px-4 py-4 lg:py-5 relative self-stretch w-full rounded-[10px] border border-solid border-[#e7e7e7]">
-                <Input
-                  type="password"
-                  placeholder="••••••••••••••••••••"
-                  className="border-0 p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 [font-family:'Inter',Helvetica] font-normal text-blackblack-200 text-sm tracking-[0] leading-[14px]"
-                />
-                <EyeOffIcon className="relative w-5 h-5 text-blackblack-200 flex-shrink-0" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 relative self-stretch w-full">
-                <div className="inline-flex items-center gap-2 relative">
-                  <Switch className="relative w-10 h-5" />
-                  <Label className="relative w-fit [font-family:'Inter',Helvetica] font-medium text-[#111111] text-sm lg:text-base tracking-[0] leading-[18.2px] lg:leading-[20.8px] cursor-pointer">
-                    Remember me
-                  </Label>
-                </div>
-                <button
-                  type="button"
-                  className="relative w-fit [font-family:'Inter',Helvetica] font-normal text-bluenormal text-sm text-left sm:text-right tracking-[0] leading-[18.2px] hover:underline"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <Button className="flex w-full sm:w-[280px] lg:w-[300px] h-11 lg:h-12 items-center justify-center gap-2.5 p-2.5 relative bg-bluenormal rounded-[50px] hover:bg-bluenormal/90">
-          <span className="font-semibold text-white text-base lg:text-lg leading-[19.2px] lg:leading-[21.6px] relative w-fit [font-family:'Inter',Helvetica] tracking-[0] whitespace-nowrap">
-            Log In
-          </span>
-        </Button>
-
-        <div className="flex lg:hidden flex-col items-center gap-4 mt-8">
-          <p className="text-blackblack-400 text-sm [font-family:'Inter',Helvetica] font-medium">
-            Don&apos;t have an account?
-          </p>
-          <Button className="flex w-full sm:w-[280px] h-11 items-center justify-center gap-2.5 p-2.5 relative border-2 border-bluenormal bg-transparent rounded-[50px] hover:bg-bluelight-hover">
-            <span className="relative w-fit [font-family:'Inter',Helvetica] font-semibold text-bluenormal text-base tracking-[0] leading-[19.2px] whitespace-nowrap">
-              Sign Up
-            </span>
-          </Button>
-        </div>
-      </main> */}
     </div>
   );
 }
