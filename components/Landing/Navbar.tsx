@@ -13,16 +13,13 @@ export default function LandingNavbar() {
 
     return (
         <nav className="bg-white shadow-[6px_6px_54px_#0000000d] sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2">
                         <div className="w-28 h-12  rounded-lg flex items-center justify-center">
                             <img src="/icons/logo.png" alt="TFP" />
                         </div>
-                        {/* <span className="font-bold text-xl text-foreground">
-                            TrackFleet Pro
-                        </span> */}
                     </Link>
 
                     {/* Desktop Navigation */}

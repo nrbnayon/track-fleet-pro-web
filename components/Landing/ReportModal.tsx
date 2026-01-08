@@ -77,7 +77,7 @@ export default function ReportModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-xl border-none">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
                         Spam & Report

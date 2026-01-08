@@ -2,10 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import { Package, MapPin, Clock, User, Phone, MessageCircle } from "lucide-react";
+import { Package, Phone, MessageCircle, MessageCircleWarning, Home, Truck, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import FeedbackModal from "./FeedbackModal";
 import ReportModal from "./ReportModal";
+import Image from "next/image";
 
 interface TrackingResultsProps {
     trackingNumber: string;
@@ -28,65 +29,92 @@ export default function TrackingResults({
         status: "Delivered",
         customer: {
             name: "Jahid Khan",
-            address: "****Shyamoli, Dhaka",
+            address: "Shyamoli, Dhaka",
             phone: "000-0000-000",
         },
         sender: {
             name: "Asif",
-            address: "****Savar, Dhaka",
+            address: "Savar, Dhaka",
             phone: "000-0000-000",
         },
         assignedTo: {
-            name: "Rahul",
+            name: "Rider Name",
             phone: "09234345345",
-            avatar: "/avatars/rider.png",
+            avatar: "/images/avatar.png",
         },
         updates: [
             {
                 date: "Dec 30, 2025",
                 time: "05:30 pm",
                 status: "Consignment has been marked as delivered by rider.",
+                icon: "delivered",
             },
             {
                 date: "Dec 30, 2025",
                 time: "03:30 pm",
                 status: "Assigned to rider",
+                icon: "rider",
             },
             {
                 date: "Dec 30, 2025",
                 time: "02:30 pm",
                 status: "Consignment has been received at DHANMONDI",
+                icon: "warehouse",
             },
             {
                 date: "Dec 29, 2025",
                 time: "05:30 pm",
                 status: "Consignment sent to DHANMONDI Dispatch ID : 382526",
+                icon: "transit",
             },
             {
-                date: "Dec 29, 2025",
+                date: "Dec 28, 2025",
                 time: "05:30 pm",
                 status: "Consignment sent to SAVAR WAREHOUSE Dispatch ID : 242526",
+                icon: "transit",
             },
             {
                 date: "Dec 27, 2025",
                 time: "03:30 pm",
                 status: "Consignment status has been updated as pending",
+                icon: "pending",
             },
         ],
+    };
+
+    const getStatusIcon = (iconType: string, isActive: boolean) => {
+        const iconClass = `${isActive ? 'text-white' : 'text-blue-500'}`;
+        const size = 20;
+
+        switch (iconType) {
+            case "delivered":
+                return <Home className={iconClass} size={size} />;
+            case "rider":
+                return <Truck className={iconClass} size={size} />;
+            case "warehouse":
+                return <MapPin className={iconClass} size={size} />;
+            case "transit":
+                return <Package className={iconClass} size={size} />;
+            case "pending":
+                return <Clock className={iconClass} size={size} />;
+            default:
+                return <Package className={iconClass} size={size} />;
+        }
     };
 
     return (
         <div className="space-y-6 mt-16">
             {/* Header Info */}
-            <div className="bg-white rounded-xl p-6 border border-[#E7E7E7]">
+            <div className="bg-white rounded-xl p-6 border border-[#E7E7E7] shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                    <div className="text-sm text-secondary">
+                    <div className="text-sm text-secondary space-y-4">
                         <p>{trackingData.date}</p>
                         <p>Parcel Id : {trackingData.parcelId}</p>
                         <p>Invoice : {trackingData.invoice}</p>
                         <p>Tracking Code : {trackingData.trackingCode}</p>
                     </div>
-                    <div className="text-sm text-right">
+                    <div className="text-sm text-right space-y-4">
+                        <p></p>
                         <p className="text-secondary">Weight (KG) : {trackingData.weight}</p>
                         <p className="text-xl font-bold text-foreground mt-1">
                             COD : {trackingData.cod}
@@ -98,11 +126,12 @@ export default function TrackingResults({
                 </div>
 
                 {/* Customer Info */}
-                <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                    <h3 className="text-center font-semibold text-foreground mb-3">
-                        Customer Info
-                    </h3>
-                    <div className="space-y-1 text-sm">
+                <div className="rounded-lg my-8 gap-8">
+                    <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
+                        <h3 className="text-center font-semibold text-foreground">
+                            Customer Info
+                        </h3></div>
+                    <div className="space-y-4 text-sm">
                         <p>
                             <span className="font-medium">Name :</span>{" "}
                             {trackingData.customer.name}
@@ -119,11 +148,12 @@ export default function TrackingResults({
                 </div>
 
                 {/* Sender Info */}
-                <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                    <h3 className="text-center font-semibold text-foreground mb-3">
-                        Sender Info
-                    </h3>
-                    <div className="space-y-1 text-sm">
+                <div className="rounded-lg my-8 gap-8">
+                    <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
+                        <h3 className="text-center font-semibold text-foreground">
+                            Sender Info
+                        </h3></div>
+                    <div className="space-y-4 text-sm">
                         <p>
                             <span className="font-medium">Name :</span>{" "}
                             {trackingData.sender.name}
@@ -140,34 +170,36 @@ export default function TrackingResults({
                 </div>
 
                 {/* Assigned To */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="text-center font-semibold text-foreground mb-3">
-                        Assigned to
-                    </h3>
+                <div className="rounded-lg mt-8 gap-8">
+                    <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
+                        <h3 className="text-center font-semibold text-foreground">
+                            Assigned to
+                        </h3></div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                                <User className="h-6 w-6 text-secondary" />
+                            <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center">
+                                <Image src={trackingData.assignedTo.avatar} alt="driver" width={500} height={500} className="rounded-full" />
                             </div>
-                            <div>
+                            <div className="flex flex-col gap-1">
                                 <p className="font-medium">{trackingData.assignedTo.name}</p>
-                                <p className="text-sm text-secondary flex items-center gap-1">
-                                    <Phone className="h-4 w-4" />
-                                    {trackingData.assignedTo.phone}
-                                </p>
+                                <div className="flex items-center gap-1">
+                                    <div className="flex items-center bg-primary/20 rounded-lg p-2"><Phone className="h-4 w-4 text-secondary fill-white" /></div>
+                                    <p className="text-sm text-secondary flex items-center gap-1">
+                                        {trackingData.assignedTo.phone}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => setIsFeedbackOpen(true)}
-                                className="px-4 py-2 bg-blue-100 text-primary rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-1"
+                                onClick={() => setIsReportOpen(true)}
+                                className="p-3 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-1 border border-red-300 cursor-pointer"
                             >
-                                <MessageCircle className="h-4 w-4" />
-                                Feedback
+                                <MessageCircleWarning className="h-4 w-4" />
                             </button>
                             <button
-                                onClick={() => setIsReportOpen(true)}
-                                className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors"
+                                onClick={() => setIsFeedbackOpen(true)}
+                                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-400 transition-colors cursor-pointer"
                             >
                                 Review
                             </button>
@@ -177,33 +209,36 @@ export default function TrackingResults({
             </div>
 
             {/* Tracking Updates */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-center mb-8">
+            <div className="mt-8 md:mt-16">
+                <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
                     Tracking Updates
                 </h2>
-                <div className="relative">
-                    {trackingData.updates.map((update, index) => (
-                        <div key={index} className="flex gap-6 pb-8 last:pb-0">
-                            {/* Timeline */}
-                            <div className="flex flex-col items-center">
-                                <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
-                                    <Package className="h-6 w-6 text-white" />
-                                </div>
-                                {index !== trackingData.updates.length - 1 && (
-                                    <div className="w-0.5 h-full bg-gray-300 mt-2" />
-                                )}
-                            </div>
+                <div className="bg-white rounded-xl shadow-lg p-6">
 
-                            {/* Content */}
-                            <div className="flex-1 pt-2">
-                                <p className="text-sm font-medium text-primary mb-1">
-                                    {update.date}
-                                </p>
-                                <p className="text-sm text-secondary mb-2">{update.time}</p>
-                                <p className="text-foreground">{update.status}</p>
+                    <div className="relative">
+                        {trackingData.updates.map((update, index) => (
+                            <div key={index} className="flex gap-6 pb-8 last:pb-0">
+                                {/* Timeline */}
+                                <div className="flex flex-col items-center">
+                                    <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+                                        <Package className="h-6 w-6 text-white" />
+                                    </div>
+                                    {index !== trackingData.updates.length - 1 && (
+                                        <div className="w-0.5 h-full bg-gray-300 mt-2" />
+                                    )}
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex-1 pt-2">
+                                    <p className="text-sm font-medium text-primary mb-1">
+                                        {update.date}
+                                    </p>
+                                    <p className="text-sm text-secondary mb-2">{update.time}</p>
+                                    <p className="text-foreground">{update.status}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
 
