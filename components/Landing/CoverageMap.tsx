@@ -40,7 +40,7 @@ export default function CoverageMap() {
     ];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Location List */}
             <div className="space-y-4 lg:order-1 order-2">
                 {locations.map((location) => (
@@ -70,7 +70,7 @@ export default function CoverageMap() {
             </div>
 
             {/* Map Placeholder */}
-            <div className="lg:order-2 order-1">
+            <div className="lg:order-2 order-1 col-span-2">
                 <div className="bg-gray-200 rounded-lg overflow-hidden h-[400px] lg:h-full min-h-[400px] relative">
                     {/* Map placeholder - Replace with actual map implementation */}
                     <div className="absolute inset-0 flex items-center justify-center">

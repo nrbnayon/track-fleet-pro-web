@@ -31,15 +31,22 @@ export const metadata: Metadata = {
 
 export default function CoveragePage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="bg-blue-100 py-16 px-4 sm:px-6 lg:px-8">
+            <section
+                style={{
+                    background:
+                        "linear-gradient(90deg, rgba(29,146,237,0.25) 0%, rgba(127,195,249,0.25) 20%, rgba(194,228,255,0.25) 40%, rgba(194,228,255,0.25) 60%, rgba(127,195,249,0.25) 80%, rgba(29,146,237,0.25) 100%)",
+                }}
+                className="py-6 md:py-10 px-4 sm:px-6 lg:px-8"
+            >
                 <div className="max-w-7xl mx-auto text-center">
-                    <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
+                    <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                         We are available in all over USA
                     </h1>
                 </div>
             </section>
+
 
             {/* Search Section */}
             <section className="py-12 px-4 sm:px-6 lg:px-8">
