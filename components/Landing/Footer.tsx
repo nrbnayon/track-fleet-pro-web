@@ -6,7 +6,7 @@ export default function LandingFooter() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-gray-900 text-gray-300">
+        <footer className="bg-[#E8F4FD] text-foreground">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Company Info */}
@@ -15,7 +15,7 @@ export default function LandingFooter() {
                             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-xl">TF</span>
                             </div>
-                            <span className="font-bold text-xl text-white">
+                            <span className="font-bold text-xl text-foreground">
                                 TrackFleet Pro
                             </span>
                         </div>
@@ -28,12 +28,12 @@ export default function LandingFooter() {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="text-white font-semibold mb-4">Links</h3>
+                        <h3 className="text-foreground font-semibold mb-4">Links</h3>
                         <ul className="space-y-2">
                             <li>
                                 <Link
                                     href="/track-parcel"
-                                    className="text-sm hover:text-white transition-colors"
+                                    className="text-sm hover:text-primary transition-colors"
                                 >
                                     Track Parcel
                                 </Link>
@@ -41,7 +41,7 @@ export default function LandingFooter() {
                             <li>
                                 <Link
                                     href="/coverage"
-                                    className="text-sm hover:text-white transition-colors"
+                                    className="text-sm hover:text-primary transition-colors"
                                 >
                                     Coverage
                                 </Link>
@@ -49,7 +49,7 @@ export default function LandingFooter() {
                             <li>
                                 <Link
                                     href="/about-us"
-                                    className="text-sm hover:text-white transition-colors"
+                                    className="text-sm hover:text-primary transition-colors"
                                 >
                                     About Us
                                 </Link>
@@ -59,13 +59,13 @@ export default function LandingFooter() {
 
                     {/* Social Media */}
                     <div>
-                        <h3 className="text-white font-semibold mb-4">Follow Us</h3>
+                        <h3 className="text-foreground font-semibold mb-4">Follow Us</h3>
                         <div className="flex space-x-4">
                             <a
                                 href="https://facebook.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-white transition-colors"
+                                className="hover:text-primary transition-colors"
                                 aria-label="Facebook"
                             >
                                 <Facebook className="h-5 w-5" />
@@ -74,7 +74,7 @@ export default function LandingFooter() {
                                 href="https://twitter.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-white transition-colors"
+                                className="hover:text-primary transition-colors"
                                 aria-label="Twitter"
                             >
                                 <Twitter className="h-5 w-5" />
@@ -83,7 +83,7 @@ export default function LandingFooter() {
                                 href="https://youtube.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-white transition-colors"
+                                className="hover:text-primary transition-colors"
                                 aria-label="YouTube"
                             >
                                 <Youtube className="h-5 w-5" />
@@ -92,7 +92,7 @@ export default function LandingFooter() {
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-white transition-colors"
+                                className="hover:text-primary transition-colors"
                                 aria-label="Instagram"
                             >
                                 <Instagram className="h-5 w-5" />
@@ -103,7 +103,7 @@ export default function LandingFooter() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-                    <p>
+                    <p className="text-secondary">
                         {currentYear}, Track Fleet. All rights reserved.
                     </p>
                 </div>

@@ -149,7 +149,7 @@ export default function TrackingResults({
 
                 {/* Sender Info */}
                 <div className="rounded-lg my-8 gap-8">
-                    <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
+                    <div className="w-full bg-purple-200 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Sender Info
                         </h3></div>
@@ -171,7 +171,7 @@ export default function TrackingResults({
 
                 {/* Assigned To */}
                 <div className="rounded-lg mt-8 gap-8">
-                    <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
+                    <div className="w-full bg-primary/30 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Assigned to
                         </h3></div>
@@ -213,31 +213,59 @@ export default function TrackingResults({
                 <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
                     Tracking Updates
                 </h2>
-                <div className="bg-white rounded-xl shadow-lg p-6">
-
-                    <div className="relative">
-                        {trackingData.updates.map((update, index) => (
-                            <div key={index} className="flex gap-6 pb-8 last:pb-0">
-                                {/* Timeline */}
-                                <div className="flex flex-col items-center">
-                                    <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
-                                        <Package className="h-6 w-6 text-white" />
+                <div className="bg-white rounded-2xl shadow-xs p-6 md:p-10 border border-gray-200">
+                    <div className="w-full mx-auto">
+                        {trackingData.updates.map((update, index) => {
+                            const isFirst = index === 0;
+                            const isLast = index === trackingData.updates.length - 1;
+                            return (
+                                <div key={index} className="relative flex gap-6 pb-12 last:pb-0">
+                                    {/* Timeline with Icon */}
+                                    <div className="flex flex-col items-center relative">
+                                        <div
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${isFirst
+                                                ? 'bg-blue-500 shadow-lg shadow-blue-500/50 scale-110'
+                                                : 'bg-white border-2 border-blue-500'
+                                                }`}
+                                        >
+                                            {getStatusIcon(update.icon, isFirst)}
+                                        </div>
+                                        {!isLast && (
+                                            <div className="absolute top-12 bottom-0 w-0.5 bg-linear-to-b from-blue-500 to-blue-300" />
+                                        )}
                                     </div>
-                                    {index !== trackingData.updates.length - 1 && (
-                                        <div className="w-0.5 h-full bg-gray-300 mt-2" />
-                                    )}
-                                </div>
 
-                                {/* Content */}
-                                <div className="flex-1 pt-2">
-                                    <p className="text-sm font-medium text-primary mb-1">
-                                        {update.date}
-                                    </p>
-                                    <p className="text-sm text-secondary mb-2">{update.time}</p>
-                                    <p className="text-foreground">{update.status}</p>
+                                    {/* Content Card */}
+                                    <div className={`flex-1 transition-all duration-300 ${isFirst ? 'transform scale-[1.02]' : ''
+                                        }`}>
+                                        <div className={`rounded-xl p-5 border-2 transition-all duration-300 ${isFirst
+                                            ? 'bg-blue-50 border-blue-300 shadow-md'
+                                            : 'bg-gray-50 border-gray-200 hover:border-blue-200 hover:shadow-sm'
+                                            }`}>
+                                            <div className="flex items-start justify-between gap-4 mb-2">
+                                                <p className={`font-semibold ${isFirst ? 'text-blue-600 text-lg' : 'text-blue-500'
+                                                    }`}>
+                                                    {update.date}
+                                                </p>
+                                                {isFirst && (
+                                                    <Badge className="bg-green-500 text-white px-3 py-1 text-xs">
+                                                        Latest
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-gray-600 mb-3 flex items-center gap-2">
+                                                <Clock className="w-4 h-4" />
+                                                {update.time}
+                                            </p>
+                                            <p className={`${isFirst ? 'text-gray-900 font-medium' : 'text-gray-700'
+                                                }`}>
+                                                {update.status}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -255,3 +283,47 @@ export default function TrackingResults({
         </div>
     );
 }
+
+// ----- original design
+{/* <div className="flex flex-col items-center gap-12 w-full max-w-[1200px]">
+    <h2 className="[font-family:'Inter',Helvetica] font-semibold text-blackblack-500 text-[26px] text-center tracking-[0] leading-[normal]">
+        Tracking Updates
+    </h2>
+
+    <Card className="w-full rounded-2xl border border-solid border-[#e7e7e7]">
+        <CardContent className="flex items-center justify-center gap-[140px] px-0 py-[60px]">
+            <div className="flex flex-col items-start gap-12">
+                {trackingUpdates.map((update, index) => (
+                    <div
+                        key={index}
+                        className="flex flex-col items-start justify-center gap-2"
+                    >
+                        <p className="[font-family:'Inter',Helvetica] font-medium text-bluenormal text-base tracking-[0] leading-[normal] whitespace-nowrap">
+                            {update.date}
+                        </p>
+                        <p className="[font-family:'Inter',Helvetica] font-medium text-bluenormal text-base tracking-[0] leading-[normal] whitespace-nowrap">
+                            {update.time}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            <img
+                className="flex-shrink-0"
+                alt="Timeline"
+                src="/frame-2147229846.svg"
+            />
+
+            <div className="flex flex-col items-start gap-[75px] w-[482px]">
+                {trackingUpdates.map((update, index) => (
+                    <p
+                        key={index}
+                        className="[font-family:'Inter',Helvetica] font-normal text-blackblack-400 text-base tracking-[0] leading-[19.2px]"
+                    >
+                        {update.description}
+                    </p>
+                ))}
+            </div>
+        </CardContent>
+    </Card>
+</div> */}

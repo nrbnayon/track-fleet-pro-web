@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function TrackParcelPage() {
     return (
-        <div className="min-h-screen bg-linear-to-t from-blue-50 to-white">
+        <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
             {/* Hero Section */}
             <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">

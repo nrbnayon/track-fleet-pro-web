@@ -32,7 +32,7 @@ export default function TrackParcelForm() {
         <div className="w-full mx-auto">
             {/* Search Form */}
             <div className="bg-white max-w-4xl mx-auto shadow-none mb-8">
-                <form onSubmit={handleSearch} className="flex items-center justify-center w-full">
+                <form onSubmit={handleSearch} className="flex items-center justify-center w-full rounded-md">
                     <div className="relative flex items-center flex-1">
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                         <Input
@@ -40,7 +40,7 @@ export default function TrackParcelForm() {
                             placeholder="S4768324HJFNHFIR5654"
                             value={trackingNumber}
                             onChange={(e) => setTrackingNumber(e.target.value)}
-                            className="pl-12 pr-4 h-14 text-lg rounded-l-md rounded-r-none"
+                            className="pl-12 pr-4 h-14 text-lg rounded-r-none"
                             disabled={isSearching}
                         />
                         <Button
