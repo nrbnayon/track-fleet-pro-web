@@ -157,7 +157,7 @@ export default function RegisterForm() {
                   onClick={() => handleAccountTypeChange("business")}
                   className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${accountType === "business"
                     ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 text-secondary hover:bg-gray-200"
                     }`}
                 >
                   Business
@@ -167,7 +167,7 @@ export default function RegisterForm() {
                   onClick={() => handleAccountTypeChange("personal")}
                   className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${accountType === "personal"
                     ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 text-secondary hover:bg-gray-200"
                     }`}
                 >
                   Personal

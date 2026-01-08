@@ -116,7 +116,7 @@ export default function PropertyModal({
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-secondary transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -171,9 +171,8 @@ export default function PropertyModal({
                 name="ownership"
                 value={formData.ownership}
                 onChange={handleChange}
-                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${
-                  errors.ownership ? "border-red-500" : "border-input"
-                }`}
+                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${errors.ownership ? "border-red-500" : "border-input"
+                  }`}
               >
                 <option value="">Select ownership</option>
                 <option value="Residential">Residential</option>
@@ -192,9 +191,8 @@ export default function PropertyModal({
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${
-                  errors.type ? "border-red-500" : "border-input"
-                }`}
+                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${errors.type ? "border-red-500" : "border-input"
+                  }`}
               >
                 <option value="">Select type</option>
                 <option value="Commercial">Commercial</option>
@@ -215,9 +213,8 @@ export default function PropertyModal({
                 name="zone"
                 value={formData.zone}
                 onChange={handleChange}
-                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${
-                  errors.zone ? "border-red-500" : "border-input"
-                }`}
+                className={`w-full h-11 px-3 py-1 rounded-md border bg-transparent text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer ${errors.zone ? "border-red-500" : "border-input"
+                  }`}
               >
                 <option value="">Select zone</option>
                 <option value="Zone A">Zone A</option>

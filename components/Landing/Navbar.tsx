@@ -20,7 +20,7 @@ export default function LandingNavbar() {
                         <div className="w-28 h-12  rounded-lg flex items-center justify-center">
                             <img src="/icons/logo.png" alt="TFP" />
                         </div>
-                        {/* <span className="font-bold text-xl text-gray-900">
+                        {/* <span className="font-bold text-xl text-foreground">
                             TrackFleet Pro
                         </span> */}
                     </Link>

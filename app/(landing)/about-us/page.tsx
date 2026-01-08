@@ -1,6 +1,6 @@
 // app/(landing)/about-us/page.tsx
 import type { Metadata } from "next";
-import {  Users, Globe, Award, Target, Heart } from "lucide-react";
+import { Users, Globe, Award, Target, Heart } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "About Us - TrackFleet Pro Fleet Management",
@@ -85,10 +85,10 @@ export default function AboutUsPage() {
             {/* Hero Section */}
             <section className="bg-gradient-to-b from-blue-50 to-white py-20 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto text-center">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                         About TrackFleet Pro
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-xl text-secondary max-w-3xl mx-auto">
                         Revolutionizing fleet management and delivery services with
                         cutting-edge technology and unwavering commitment to excellence.
                     </p>
@@ -104,7 +104,7 @@ export default function AboutUsPage() {
                                 <div className="text-4xl font-bold text-primary mb-2">
                                     {stat.value}
                                 </div>
-                                <p className="text-gray-600">{stat.label}</p>
+                                <p className="text-secondary">{stat.label}</p>
                             </div>
                         ))}
                     </div>
@@ -114,10 +114,10 @@ export default function AboutUsPage() {
             {/* Story Section */}
             <section className="py-16 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+                    <h2 className="text-3xl font-bold text-foreground mb-6 text-center">
                         Our Story
                     </h2>
-                    <div className="prose prose-lg max-w-none text-gray-600 space-y-4">
+                    <div className="prose prose-lg max-w-none text-secondary space-y-4">
                         <p>
                             Founded in 2015, TrackFleet Pro began with a simple mission: to
                             make delivery services more reliable and transparent. What started
@@ -143,7 +143,7 @@ export default function AboutUsPage() {
             {/* Values Section */}
             <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+                    <h2 className="text-3xl font-bold text-foreground mb-12 text-center">
                         Our Values
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -154,10 +154,10 @@ export default function AboutUsPage() {
                                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Icon className="h-8 w-8 text-primary" />
                                     </div>
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                    <h3 className="text-xl font-semibold text-foreground mb-2">
                                         {value.title}
                                     </h3>
-                                    <p className="text-gray-600">{value.description}</p>
+                                    <p className="text-secondary">{value.description}</p>
                                 </div>
                             );
                         })}
@@ -168,7 +168,7 @@ export default function AboutUsPage() {
             {/* Team Section */}
             <section className="py-16 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+                    <h2 className="text-3xl font-bold text-foreground mb-12 text-center">
                         Meet Our Team
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -180,11 +180,11 @@ export default function AboutUsPage() {
                                 <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
                                     <Users className="h-12 w-12 text-gray-500" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                                <h3 className="text-xl font-semibold text-foreground mb-1">
                                     {member.name}
                                 </h3>
                                 <p className="text-primary font-medium mb-3">{member.role}</p>
-                                <p className="text-gray-600 text-sm">{member.description}</p>
+                                <p className="text-secondary text-sm">{member.description}</p>
                             </div>
                         ))}
                     </div>

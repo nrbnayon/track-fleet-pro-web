@@ -42,7 +42,7 @@ export default function LandParcelsTable({
       case "Residential":
         return "bg-[#DFFFEB] text-[#11B751]";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-gray-100 text-secondary";
     }
   };
 

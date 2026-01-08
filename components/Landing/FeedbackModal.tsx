@@ -64,7 +64,7 @@ export default function FeedbackModal({
                 </DialogHeader>
 
                 <div className="py-4">
-                    <p className="text-center text-gray-600 mb-6">
+                    <p className="text-center text-secondary mb-6">
                         We are always looking for ways to improve your experience. Please
                         take a moment to evaluate and tell us what you think.
                     </p>
@@ -83,8 +83,8 @@ export default function FeedbackModal({
                                 >
                                     <Star
                                         className={`h-8 w-8 ${star <= (hoveredRating || rating)
-                                                ? "fill-yellow-400 text-yellow-400"
-                                                : "text-gray-300"
+                                            ? "fill-yellow-400 text-yellow-400"
+                                            : "text-gray-300"
                                             }`}
                                     />
                                 </button>

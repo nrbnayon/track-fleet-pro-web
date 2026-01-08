@@ -91,7 +91,7 @@ export default function PrivacyPolicyClient() {
     const hasEmptyFields = policies.some(
       (p) => !p.title.trim() || !p.description.trim()
     );
-    
+
     if (hasEmptyFields) {
       toast.error("Validation error", {
         description: "Please fill in all policy titles and descriptions.",
@@ -103,7 +103,7 @@ export default function PrivacyPolicyClient() {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       toast.success("Policies saved", {
         description: "All privacy policies have been updated successfully.",
       });
@@ -154,7 +154,7 @@ export default function PrivacyPolicyClient() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">
+          <h1 className="text-2xl font-bold text-foreground dark:text-gray-50">
             Privacy and policy
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -206,7 +206,7 @@ export default function PrivacyPolicyClient() {
                 <Input
                   value={policy.title}
                   onChange={(e) => handleTitleChange(policy.id, e.target.value)}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 h-11"
+                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-foreground dark:text-gray-100 h-11"
                   placeholder="Enter policy title"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function PrivacyPolicyClient() {
                   onChange={(e) =>
                     handleDescriptionChange(policy.id, e.target.value)
                   }
-                  className="min-h-35 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 resize-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-35 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-foreground dark:text-gray-100 resize-none focus:ring-2 focus:ring-primary/20"
                   placeholder="Enter policy description"
                 />
                 <div className="text-right text-xs text-gray-500   font-medium">

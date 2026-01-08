@@ -113,7 +113,7 @@ function hasRoleAccess(pathname: string, userRole: string): boolean {
 function getRoleDefaultPath(userRole: string): string {
   return (
     ROLE_DEFAULT_PATHS[userRole as keyof typeof ROLE_DEFAULT_PATHS] ||
-    "/dashboard"
+    "/"
   );
 }
 

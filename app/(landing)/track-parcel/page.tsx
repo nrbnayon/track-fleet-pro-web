@@ -36,10 +36,10 @@ export default function TrackParcelPage() {
             <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
                             Tracking Your Consignment
                         </h1>
-                        <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+                        <p className="text-lg sm:text-xl text-secondary max-w-2xl mx-auto">
                             Now you can easily track your consignment
                         </p>
                     </div>
@@ -58,15 +58,15 @@ export default function TrackParcelPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                         <div>
                             <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-                            <p className="text-gray-600">Daily Deliveries</p>
+                            <p className="text-secondary">Daily Deliveries</p>
                         </div>
                         <div>
                             <div className="text-4xl font-bold text-primary mb-2">99.8%</div>
-                            <p className="text-gray-600">On-Time Delivery</p>
+                            <p className="text-secondary">On-Time Delivery</p>
                         </div>
                         <div>
                             <div className="text-4xl font-bold text-primary mb-2">24/7</div>
-                            <p className="text-gray-600">Customer Support</p>
+                            <p className="text-secondary">Customer Support</p>
                         </div>
                     </div>
                 </div>
@@ -104,10 +104,10 @@ export default function TrackParcelPage() {
 //             <div className="max-w-4xl mx-auto">
 //                 {/* Header */}
 //                 <div className="text-center mb-8">
-//                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
+//                     <h1 className="text-4xl font-bold text-foreground mb-2">
 //                         Tracking Your Consignment
 //                     </h1>
-//                     <p className="text-gray-600">
+//                     <p className="text-secondary">
 //                         Now you can easily track your consignment
 //                     </p>
 //                 </div>
@@ -152,19 +152,19 @@ export default function TrackParcelPage() {
 //                         {/* Parcel Info */}
 //                         <div className="grid grid-cols-2 gap-4 pb-4 border-b">
 //                             <div>
-//                                 <p className="text-sm text-gray-600">Date</p>
+//                                 <p className="text-sm text-secondary">Date</p>
 //                                 <p className="font-semibold">{data.date}</p>
 //                             </div>
 //                             <div>
-//                                 <p className="text-sm text-gray-600">Parcel ID</p>
+//                                 <p className="text-sm text-secondary">Parcel ID</p>
 //                                 <p className="font-semibold">{data.parcelId}</p>
 //                             </div>
 //                             <div>
-//                                 <p className="text-sm text-gray-600">Weight</p>
+//                                 <p className="text-sm text-secondary">Weight</p>
 //                                 <p className="font-semibold">{data.weight}</p>
 //                             </div>
 //                             <div>
-//                                 <p className="text-sm text-gray-600">COD</p>
+//                                 <p className="text-sm text-secondary">COD</p>
 //                                 <p className="font-semibold">{data.cod}</p>
 //                             </div>
 //                         </div>
@@ -198,7 +198,7 @@ export default function TrackParcelPage() {
 //                                 </div>
 //                                 <div>
 //                                     <p className="font-semibold">{data.assignedTo.name}</p>
-//                                     <p className="text-sm text-gray-600">{data.assignedTo.phone}</p>
+//                                     <p className="text-sm text-secondary">{data.assignedTo.phone}</p>
 //                                 </div>
 //                             </div>
 //                         </div>
@@ -216,7 +216,7 @@ export default function TrackParcelPage() {
 //                                         </div>
 //                                         <div className="flex-1">
 //                                             <p className="text-sm text-primary font-semibold">{update.timestamp}</p>
-//                                             <p className="text-sm text-gray-900">{update.description}</p>
+//                                             <p className="text-sm text-foreground">{update.description}</p>
 //                                         </div>
 //                                     </div>
 //                                 ))}

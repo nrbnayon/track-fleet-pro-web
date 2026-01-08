@@ -50,11 +50,11 @@ export default function CoverageMap() {
                     >
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
-                                <h4 className="font-semibold text-gray-900 mb-2">
+                                <h4 className="font-semibold text-foreground mb-2">
                                     {location.name}
                                 </h4>
-                                <p className="text-sm text-gray-600 mb-1">{location.address}</p>
-                                <p className="text-sm text-gray-600">{location.phone}</p>
+                                <p className="text-sm text-secondary mb-1">{location.address}</p>
+                                <p className="text-sm text-secondary">{location.phone}</p>
                             </div>
                             <Button
                                 variant="ghost"
@@ -78,7 +78,7 @@ export default function CoverageMap() {
                             <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Navigation className="h-8 w-8 text-primary" />
                             </div>
-                            <p className="text-gray-600 font-medium">Map View</p>
+                            <p className="text-secondary font-medium">Map View</p>
                             <p className="text-sm text-gray-500 mt-1">
                                 Integrate Google Maps or Mapbox here
                             </p>

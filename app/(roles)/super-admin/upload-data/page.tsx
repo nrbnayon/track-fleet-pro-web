@@ -27,21 +27,19 @@ export default function UploadDataPage() {
           <div className="flex gap-2 bg-white rounded-lg p-1 border border-border">
             <button
               onClick={() => setActiveTab("management")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === "management"
-                  ? "bg-primary-green text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
+              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === "management"
+                ? "bg-primary-green text-white"
+                : "text-secondary hover:text-foreground"
+                }`}
             >
               <TranslatedText text="Data Management" />
             </button>
             <button
               onClick={() => setActiveTab("upload")}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === "upload"
-                  ? "bg-primary-green text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
+              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === "upload"
+                ? "bg-primary-green text-white"
+                : "text-secondary hover:text-foreground"
+                }`}
             >
               <TranslatedText text="Data Upload" />
             </button>

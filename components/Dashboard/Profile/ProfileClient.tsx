@@ -209,7 +209,7 @@ export default function ProfileClient() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             <TranslatedText text={user.role} />
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -256,7 +256,7 @@ export default function ProfileClient() {
             />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
+            <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
             <p className="text-sm text-gray-500">
               <TranslatedText text="Update your username and manage your account" />
             </p>
@@ -268,31 +268,28 @@ export default function ProfileClient() {
           <div className="w-full md:w-48 shrink-0 space-y-3">
             <button
               onClick={() => setActiveSection("account")}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${
-                activeSection === "account"
-                  ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                  : "text-secondary hover:bg-gray-50"
-              }`}
+              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "account"
+                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
+                : "text-secondary hover:bg-gray-50"
+                }`}
             >
               <TranslatedText text="Account Settings" />
             </button>
             <button
               onClick={() => setActiveSection("notifications")}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${
-                activeSection === "notifications"
-                  ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                  : "text-secondary hover:bg-gray-50"
-              }`}
+              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "notifications"
+                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
+                : "text-secondary hover:bg-gray-50"
+                }`}
             >
               <TranslatedText text="Notifications" />
             </button>
             <button
               onClick={() => setActiveSection("language")}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${
-                activeSection === "language"
-                  ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                  : "text-secondary hover:bg-gray-50"
-              }`}
+              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "language"
+                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
+                : "text-secondary hover:bg-gray-50"
+                }`}
             >
               <TranslatedText text="Language" />
             </button>
@@ -318,13 +315,13 @@ export default function ProfileClient() {
                           </p>
 
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-gray-600">
+                            <label className="text-xs font-medium text-secondary">
                               <TranslatedText text="Full name" />
                             </label>
                             <Input
                               value={editNameValue}
                               onChange={(e) => setEditNameValue(e.target.value)}
-                              className="w-full bg-white border-gray-300 text-gray-900 dark:text-gray-100"
+                              className="w-full bg-white border-gray-300 text-foreground dark:text-gray-100"
                               placeholder="Enter your full name"
                               maxLength={32}
                             />
@@ -362,7 +359,7 @@ export default function ProfileClient() {
                     {!isEditingName && (
                       <button
                         onClick={() => setIsEditingName(true)}
-                        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors mt-1"
+                        className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors mt-1"
                       >
                         <Pencil className="w-4 h-4" /> Edit
                       </button>
@@ -385,7 +382,7 @@ export default function ProfileClient() {
                     </div>
                     <button
                       onClick={() => setShowEmail(!showEmail)}
-                      className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors"
+                      className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors"
                     >
                       {showEmail ? (
                         <EyeOff className="w-4 h-4" />
@@ -408,7 +405,7 @@ export default function ProfileClient() {
                       {isEditingPassword ? (
                         <div className="mt-3 max-w-lg bg-gray-50 text-foreground p-6 rounded-lg space-y-4">
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-gray-600">
+                            <label className="text-xs font-medium text-secondary">
                               Current password
                             </label>
                             <Input
@@ -426,7 +423,7 @@ export default function ProfileClient() {
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-gray-600">
+                            <label className="text-xs font-medium text-secondary">
                               New password
                             </label>
                             <Input
@@ -444,7 +441,7 @@ export default function ProfileClient() {
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-gray-600">
+                            <label className="text-xs font-medium text-secondary">
                               Confirm new password
                             </label>
                             <Input
@@ -473,7 +470,7 @@ export default function ProfileClient() {
                             />
                             <label
                               htmlFor="showPassword"
-                              className="text-xs text-gray-600"
+                              className="text-xs text-secondary"
                             >
                               Show passwords
                             </label>
@@ -507,7 +504,7 @@ export default function ProfileClient() {
                     {!isEditingPassword && (
                       <button
                         onClick={() => setIsEditingPassword(true)}
-                        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors mt-1"
+                        className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors mt-1"
                       >
                         <Pencil className="w-4 h-4" /> Change
                       </button>
@@ -536,16 +533,14 @@ export default function ProfileClient() {
                           setPopUpNotification(!popUpNotification);
                           setHasChanges(true);
                         }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          popUpNotification ? "bg-green-500" : "bg-gray-300"
-                        }`}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${popUpNotification ? "bg-green-500" : "bg-gray-300"
+                          }`}
                       >
                         <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            popUpNotification
-                              ? "translate-x-6"
-                              : "translate-x-1"
-                          }`}
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${popUpNotification
+                            ? "translate-x-6"
+                            : "translate-x-1"
+                            }`}
                         />
                       </button>
                     </div>
@@ -560,14 +555,12 @@ export default function ProfileClient() {
                           setChatNotification(!chatNotification);
                           setHasChanges(true);
                         }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          chatNotification ? "bg-green-500" : "bg-gray-300"
-                        }`}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${chatNotification ? "bg-green-500" : "bg-gray-300"
+                          }`}
                       >
                         <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            chatNotification ? "translate-x-6" : "translate-x-1"
-                          }`}
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${chatNotification ? "translate-x-6" : "translate-x-1"
+                            }`}
                         />
                       </button>
                     </div>
@@ -582,16 +575,14 @@ export default function ProfileClient() {
                           setNewUpdateNotification(!newUpdateNotification);
                           setHasChanges(true);
                         }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          newUpdateNotification ? "bg-green-500" : "bg-gray-300"
-                        }`}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${newUpdateNotification ? "bg-green-500" : "bg-gray-300"
+                          }`}
                       >
                         <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            newUpdateNotification
-                              ? "translate-x-6"
-                              : "translate-x-1"
-                          }`}
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${newUpdateNotification
+                            ? "translate-x-6"
+                            : "translate-x-1"
+                            }`}
                         />
                       </button>
                     </div>

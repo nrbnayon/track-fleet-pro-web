@@ -88,7 +88,7 @@ export default function ReportModal({
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Report Reasons */}
                         <div>
-                            <h3 className="font-semibold text-gray-900 mb-3">
+                            <h3 className="font-semibold text-foreground mb-3">
                                 Report an issue
                             </h3>
                             <div className="flex flex-wrap gap-2">
@@ -98,8 +98,8 @@ export default function ReportModal({
                                         type="button"
                                         onClick={() => toggleReason(reason.id)}
                                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedReasons.includes(reason.id)
-                                                ? "bg-primary text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                            ? "bg-primary text-white"
+                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                             }`}
                                         disabled={isSubmitting}
                                     >
@@ -111,7 +111,7 @@ export default function ReportModal({
 
                         {/* Additional Information */}
                         <div>
-                            <h3 className="font-semibold text-gray-900 mb-3">
+                            <h3 className="font-semibold text-foreground mb-3">
                                 Tell us more
                             </h3>
                             <Textarea

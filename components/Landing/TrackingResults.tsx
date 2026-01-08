@@ -80,15 +80,15 @@ export default function TrackingResults({
             {/* Header Info */}
             <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-secondary">
                         <p>{trackingData.date}</p>
                         <p>Parcel Id : {trackingData.parcelId}</p>
                         <p>Invoice : {trackingData.invoice}</p>
                         <p>Tracking Code : {trackingData.trackingCode}</p>
                     </div>
                     <div className="text-sm text-right">
-                        <p className="text-gray-600">Weight (KG) : {trackingData.weight}</p>
-                        <p className="text-xl font-bold text-gray-900 mt-1">
+                        <p className="text-secondary">Weight (KG) : {trackingData.weight}</p>
+                        <p className="text-xl font-bold text-foreground mt-1">
                             COD : {trackingData.cod}
                         </p>
                         <Badge className="mt-2 bg-green-100 text-green-800 hover:bg-green-100">
@@ -99,7 +99,7 @@ export default function TrackingResults({
 
                 {/* Customer Info */}
                 <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                    <h3 className="text-center font-semibold text-gray-900 mb-3">
+                    <h3 className="text-center font-semibold text-foreground mb-3">
                         Customer Info
                     </h3>
                     <div className="space-y-1 text-sm">
@@ -120,7 +120,7 @@ export default function TrackingResults({
 
                 {/* Sender Info */}
                 <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                    <h3 className="text-center font-semibold text-gray-900 mb-3">
+                    <h3 className="text-center font-semibold text-foreground mb-3">
                         Sender Info
                     </h3>
                     <div className="space-y-1 text-sm">
@@ -141,17 +141,17 @@ export default function TrackingResults({
 
                 {/* Assigned To */}
                 <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="text-center font-semibold text-gray-900 mb-3">
+                    <h3 className="text-center font-semibold text-foreground mb-3">
                         Assigned to
                     </h3>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                                <User className="h-6 w-6 text-gray-600" />
+                                <User className="h-6 w-6 text-secondary" />
                             </div>
                             <div>
                                 <p className="font-medium">{trackingData.assignedTo.name}</p>
-                                <p className="text-sm text-gray-600 flex items-center gap-1">
+                                <p className="text-sm text-secondary flex items-center gap-1">
                                     <Phone className="h-4 w-4" />
                                     {trackingData.assignedTo.phone}
                                 </p>
@@ -199,8 +199,8 @@ export default function TrackingResults({
                                 <p className="text-sm font-medium text-primary mb-1">
                                     {update.date}
                                 </p>
-                                <p className="text-sm text-gray-600 mb-2">{update.time}</p>
-                                <p className="text-gray-900">{update.status}</p>
+                                <p className="text-sm text-secondary mb-2">{update.time}</p>
+                                <p className="text-foreground">{update.status}</p>
                             </div>
                         </div>
                     ))}
