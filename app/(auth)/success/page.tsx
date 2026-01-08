@@ -36,7 +36,7 @@ export default function CongratulationsPage() {
               Congratulations !
             </h1>
             <h2 className="text-base text-secondary mb-10 px-5 mx-auto">
-              Password Reset successful! You’ll be redirected to the login screen now.
+              Your account has been created successfully. Log in to explore more.
             </h2>
           </div>
           <div className="w-full flex justify-center items-center">

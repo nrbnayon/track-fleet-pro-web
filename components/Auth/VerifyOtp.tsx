@@ -47,16 +47,16 @@ export default function VerifyOtp() {
 
   // Initialize timer and email on component mount
   useEffect(() => {
-    const storedEmail = localStorage.getItem("resetEmail");
+    const storedEmail = localStorage.getItem("signupEmail") || localStorage.getItem("resetEmail");
     const otpSentTime = localStorage.getItem("otpSentTime");
     const timerKey = `otpTimer_${storedEmail}`;
     const storedTimeLeft = localStorage.getItem(timerKey);
 
     if (!storedEmail) {
       toast.error("Session expired", {
-        description: "Please start the password reset process again.",
+        description: "Please start the signup process again.",
       });
-      router.push("/forgot-password");
+      router.push("/signup");
       return;
     }
 
@@ -127,7 +127,7 @@ export default function VerifyOtp() {
 
       // Simulate successful OTP verification
       toast.success("OTP verified successfully!", {
-        description: "Redirecting to reset password...",
+        description: "Redirecting...",
         duration: 2000,
       });
 
@@ -139,8 +139,15 @@ export default function VerifyOtp() {
       const timerKey = `otpTimer_${email}`;
       localStorage.removeItem(timerKey);
 
+      // Check if it's signup or password reset flow
+      const isSignupFlow = localStorage.getItem("signupEmail");
+
       setTimeout(() => {
-        router.push("/reset-password");
+        if (isSignupFlow) {
+          router.push("/success");
+        } else {
+          router.push("/reset-password");
+        }
       }, 1000);
     } catch (error) {
       console.error("OTP verification error:", error);
