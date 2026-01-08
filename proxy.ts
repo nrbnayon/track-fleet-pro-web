@@ -180,23 +180,23 @@ export async function proxy(request: NextRequest) {
   if (accessToken) {
     // Development mode: Accept dummy credentials
     // Check for dummy credentials (allow in all environments for demo/design phase)
-    if (accessToken === "dev-admin-token") {
-      user = { email: "admin@gmail.com", role: "admin" };
+    if (accessToken === "dev-superadmin-token") {
+      user = { email: "superadmin@gmail.com", role: "superadmin" };
       isAuthenticated = true;
       if (!userRole) {
-        userRole = "admin";
+        userRole = "superadmin";
       }
-    } else if (accessToken === "dev-user-token") {
-      user = { email: "user@gmail.com", role: "user" };
+    } else if (accessToken === "dev-selleradmin-token") {
+      user = { email: "selleradmin@gmail.com", role: "selleradmin" };
       isAuthenticated = true;
       if (!userRole) {
-        userRole = "user";
+        userRole = "selleradmin";
       }
-    } else if (accessToken === "dev-manager-token") {
-      user = { email: "manager@gmail.com", role: "manager" };
+    } else if (accessToken === "dev-customer-token") {
+      user = { email: "customer@gmail.com", role: "customer" };
       isAuthenticated = true;
       if (!userRole) {
-        userRole = "manager";
+        userRole = "customer";
       }
     } else {
       // Production mode: Verify JWT token

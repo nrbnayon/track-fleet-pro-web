@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { CardHeader } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2, Mail, User, Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 
 // Updated validation schema for signup with account type

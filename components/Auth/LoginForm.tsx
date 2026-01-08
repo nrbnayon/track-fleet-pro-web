@@ -45,9 +45,9 @@ export default function LoginForm() {
 
       // Development dummy credentials check with role assignment
       const isDummyLogin =
-        (data.email === "admin@gmail.com" && data.password === "admin") ||
-        (data.email === "manager@gmail.com" && data.password === "manager") ||
-        (data.email === "user@gmail.com" && data.password === "user");
+        (data.email === "superadmin@gmail.com" && data.password === "admin") ||
+        (data.email === "selleradmin@gmail.com" && data.password === "seller") ||
+        (data.email === "customer@gmail.com" && data.password === "customer");
 
       if (isDummyLogin) {
         // Set development cookies for dummy login
@@ -57,12 +57,12 @@ export default function LoginForm() {
 
         // Determine user role based on email
         let userRole = "user";
-        if (data.email === "admin@gmail.com") {
-          userRole = "admin";
-        } else if (data.email === "manager@gmail.com") {
-          userRole = "manager";
-        } else if (data.email === "user@gmail.com") {
-          userRole = "user";
+        if (data.email === "superadmin@gmail.com") {
+          userRole = "superadmin";
+        } else if (data.email === "selleradmin@gmail.com") {
+          userRole = "selleradmin";
+        } else if (data.email === "customer@gmail.com") {
+          userRole = "customer";
         }
 
         // Set cookies
@@ -78,12 +78,12 @@ export default function LoginForm() {
 
         // Redirect based on user role
         setTimeout(() => {
-          if (userRole === "admin") {
-            router.push("/admin/dashboard");
-          } else if (userRole === "manager") {
-            router.push("/manager/dashboard");
-          } else {
-            router.push("/user/dashboard");
+          if (userRole === "superadmin") {
+            router.push("/super-admin/dashboard");
+          } else if (userRole === "selleradmin") {
+            router.push("/seller-admin/dashboard");
+          } else if (userRole === "customer") {
+            router.push("/customer");
           }
         }, 1000);
       } else {
@@ -113,7 +113,7 @@ export default function LoginForm() {
 
         // Redirect to user dashboard
         setTimeout(() => {
-          router.push("/user/dashboard");
+          router.push("/customer");
         }, 1000);
       }
     } catch (error) {
