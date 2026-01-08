@@ -1,0 +1,1 @@
+//app\(landing)\truck-parcel\page.tsx

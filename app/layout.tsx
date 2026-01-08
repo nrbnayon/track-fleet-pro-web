@@ -1,3 +1,4 @@
+// app\layout.tsx
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -34,6 +35,21 @@ export const metadata: Metadata = {
     "Driver Management",
     "Route Management",
     "Admin Dashboard",
+    "Track Parcel",
+    "Customer Dashboard",
+    "Seller Dashboard",
+    "Super Admin Dashboard",
+    "coverage",
+    "privacy policy",
+    "terms and conditions",
+    "about us",
+    "contact us",
+    "faq",
+    "blog",
+    "help center",
+    "support",
+    "career",
+    ""
   ],
   // PWA Configuration
   manifest: "/site.webmanifest",

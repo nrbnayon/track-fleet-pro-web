@@ -18,15 +18,24 @@ import { Switch } from "../ui/switch";
 
 type LoginFormData = z.infer<typeof loginValidationSchema>;
 
+// Dummy users for dev mode
+const dummyUsers = [
+  { label: "Super Admin", email: "superadmin@gmail.com", password: "admin", role: "superadmin" },
+  { label: "Seller Admin", email: "selleradmin@gmail.com", password: "seller", role: "selleradmin" },
+  { label: "Customer", email: "customer@gmail.com", password: "customer", role: "customer" },
+];
+
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const isDev = process.env.NODE_ENV === "development";
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginValidationSchema),
     defaultValues: {
@@ -35,6 +44,16 @@ export default function LoginForm() {
       rememberMe: false,
     },
   });
+
+  // Quick fill for dev mode
+  const handleQuickFill = (email: string, password: string) => {
+    setValue("email", email);
+    setValue("password", password);
+    toast.info("Credentials filled!", {
+      description: "Click Log In to continue",
+      duration: 2000,
+    });
+  };
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -83,7 +102,7 @@ export default function LoginForm() {
           } else if (userRole === "selleradmin") {
             router.push("/seller-admin/dashboard");
           } else if (userRole === "customer") {
-            router.push("/customer");
+            router.push("/track-parcel");
           }
         }, 1000);
       } else {
@@ -172,6 +191,29 @@ export default function LoginForm() {
             </h2>
           </CardHeader>
 
+          {/* Dev Mode Quick Login */}
+          {isDev && (
+            <div className="px-2 sm:px-4 lg:px-6 mb-6">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm font-semibold text-amber-800 mb-2">
+                  🚀 Dev Mode - Quick Login
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {dummyUsers.map((user) => (
+                    <button
+                      key={user.email}
+                      type="button"
+                      onClick={() => handleQuickFill(user.email, user.password)}
+                      className="px-3 py-1.5 text-xs sm:text-sm bg-white border border-amber-300 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors font-medium text-amber-900"
+                    >
+                      {user.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="px-2 sm:px-4 lg:px-6">
             <form
               className="space-y-4 sm:space-y-3"
@@ -249,8 +291,15 @@ export default function LoginForm() {
               {/* Remember Me and Forgot Password */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-10">
                 <div className="inline-flex items-center gap-2 relative">
-                  <Switch className="relative w-8 h-5" />
-                  <Label className="relative w-fit text-sm lg:text-base cursor-pointer">
+                  <Switch
+                    id="rememberMe"
+                    className="relative w-8 h-5"
+                    {...register("rememberMe")}
+                  />
+                  <Label
+                    htmlFor="rememberMe"
+                    className="relative w-fit text-sm lg:text-base cursor-pointer"
+                  >
                     Remember me
                   </Label>
                 </div>
