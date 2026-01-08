@@ -162,11 +162,11 @@ export default function LoginForm() {
       <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 sm:p-8  rounded-md sm:rounded-lg lg:rounded-2xl border-none shadow-none bg-white">
           <CardHeader className="text-center">
-            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-2 lg:mb-6">
               Log In
             </h1>
           </CardHeader>
-          <CardHeader className="text-center mb-10">
+          <CardHeader className="text-center mb-5 lg:mb-10">
             <h2 className="text-base text-foreground">
               Log in with Email & Password
             </h2>
@@ -279,6 +279,19 @@ export default function LoginForm() {
                     "Log In"
                   )}
                 </Button>
+              </div>
+
+              {/* Mobile Sign Up Link - Only visible on small screens */}
+              <div className="lg:hidden w-full flex justify-center items-center mt-4">
+                <p className="text-muted-foreground text-sm">
+                  Don't have an account?{" "}
+                  <Link
+                    href="/signup"
+                    className="text-primary font-semibold hover:underline transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </p>
               </div>
             </form>
           </div>

@@ -152,10 +152,10 @@ export default function ResetPassword() {
                 />
               </div>
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-2 lg:mb-6">
               Create New Password
             </h1>
-            <h2 className="text-lg text-secondary mb-5 px-5 mx-auto">
+            <h2 className="text-lg text-secondary mb-5 lg:mb-10 px-5 mx-auto">
               Create a new unique password.
             </h2>
           </div>

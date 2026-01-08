@@ -96,10 +96,10 @@ export default function ForgetPassword() {
                 />
               </div>
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-2 lg:mb-6">
               Forget Password?
             </h1>
-            <h2 className="text-base text-secondary mb-10 px-5 mx-auto">
+            <h2 className="text-base text-secondary mb-5 lg:mb-10 px-5 mx-auto">
               Enter the email used for your account and we’ll send  you a code for the confirmation.
             </h2>
           </div>

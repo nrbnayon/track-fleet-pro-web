@@ -136,11 +136,11 @@ export default function RegisterForm() {
       <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 sm:p-8 rounded-md sm:rounded-lg lg:rounded-2xl border-none shadow-none bg-white">
           <CardHeader className="text-center">
-            <h1 className="text-3xl lg:text-5xl font-bold text-primary mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-2 lg:mb-6">
               Create Account
             </h1>
           </CardHeader>
-          <CardHeader className="text-center mb-6">
+          <CardHeader className="text-center mb-5 lg:mb-10">
             <h2 className="text-base text-foreground">
               Register with Email
             </h2>
@@ -157,8 +157,8 @@ export default function RegisterForm() {
                   type="button"
                   onClick={() => handleAccountTypeChange("business")}
                   className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${accountType === "business"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
                   Business
@@ -167,8 +167,8 @@ export default function RegisterForm() {
                   type="button"
                   onClick={() => handleAccountTypeChange("personal")}
                   className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${accountType === "personal"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
                   Personal
@@ -189,8 +189,8 @@ export default function RegisterForm() {
                     type="text"
                     placeholder="John Doe"
                     className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.full_name
-                        ? "border-error focus:border-error"
-                        : "input-focus"
+                      ? "border-error focus:border-error"
+                      : "input-focus"
                       }`}
                     {...register("full_name")}
                     disabled={isLoading}
@@ -219,8 +219,8 @@ export default function RegisterForm() {
                       type="text"
                       placeholder="Fresco Inc"
                       className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.business_name
-                          ? "border-error focus:border-error"
-                          : "input-focus"
+                        ? "border-error focus:border-error"
+                        : "input-focus"
                         }`}
                       {...register("business_name")}
                       disabled={isLoading}
@@ -249,8 +249,8 @@ export default function RegisterForm() {
                     type="text"
                     placeholder="eg. mail@gmail.com"
                     className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.email
-                        ? "border-error focus:border-error"
-                        : "input-focus"
+                      ? "border-error focus:border-error"
+                      : "input-focus"
                       }`}
                     {...register("email")}
                     disabled={isLoading}
@@ -278,8 +278,8 @@ export default function RegisterForm() {
                     type={showPassword ? "text" : "password"}
                     placeholder="***************"
                     className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.password
-                        ? "border-error focus:border-error"
-                        : "input-focus"
+                      ? "border-error focus:border-error"
+                      : "input-focus"
                       }`}
                     {...register("password")}
                     disabled={isLoading}
@@ -321,6 +321,19 @@ export default function RegisterForm() {
                     "Sign Up"
                   )}
                 </Button>
+              </div>
+
+              {/* Mobile Login Link - Only visible on small screens */}
+              <div className="lg:hidden w-full flex justify-center items-center mt-6">
+                <p className="text-muted-foreground text-sm">
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="text-primary font-semibold hover:underline transition-colors"
+                  >
+                    Log In
+                  </Link>
+                </p>
               </div>
             </form>
           </div>
