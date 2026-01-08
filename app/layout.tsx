@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "sonner";
 import { LanguageProvider } from "@/context/LanguageContext";
+import StoreProvider from "@/lib/redux/StoreProvider";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -155,10 +156,12 @@ export default function RootLayout({
           disableTransitionOnChange
           forcedTheme="light"
         >
-          <LanguageProvider>
-            {children}
-            <Toaster richColors position="top-center" />
-          </LanguageProvider>
+          <StoreProvider>
+            <LanguageProvider>
+              {children}
+              <Toaster richColors position="top-center" />
+            </LanguageProvider>
+          </StoreProvider>
         </ThemeProvider>
       </body>
     </html>

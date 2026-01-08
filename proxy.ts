@@ -16,6 +16,9 @@ const PUBLIC_ROUTES = [
   "/verify-email",
   "/terms",
   "/privacy-policy",
+  "/track-parcel",
+  "/coverage",
+  "/about-us",
 ];
 
 // Common protected routes (accessible by all authenticated users)
