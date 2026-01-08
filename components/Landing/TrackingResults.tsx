@@ -76,9 +76,9 @@ export default function TrackingResults({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-16">
             {/* Header Info */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl p-6 border border-[#E7E7E7]">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                     <div className="text-sm text-secondary">
                         <p>{trackingData.date}</p>

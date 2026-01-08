@@ -29,29 +29,29 @@ export default function TrackParcelForm() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto">
+        <div className="w-full mx-auto">
             {/* Search Form */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 mb-8">
-                <form onSubmit={handleSearch} className="space-y-4">
-                    <div className="relative">
-                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div className="bg-white max-w-4xl mx-auto shadow-none mb-8">
+                <form onSubmit={handleSearch} className="flex items-center justify-center w-full">
+                    <div className="relative flex items-center flex-1">
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                         <Input
                             type="text"
                             placeholder="S4768324HJFNHFIR5654"
                             value={trackingNumber}
                             onChange={(e) => setTrackingNumber(e.target.value)}
-                            className="pl-12 pr-4 h-14 text-lg rounded-xl"
+                            className="pl-12 pr-4 h-14 text-lg rounded-l-md rounded-r-none"
                             disabled={isSearching}
                         />
+                        <Button
+                            type="submit"
+                            size="lg"
+                            className="h-14 bg-primary hover:bg-primary/80 rounded-l-none rounded-r-md text-white px-6 -ml-px"
+                            disabled={isSearching || !trackingNumber.trim()}
+                        >
+                            {isSearching ? "Searching..." : "Search"}
+                        </Button>
                     </div>
-                    <Button
-                        type="submit"
-                        size="lg"
-                        className="w-full h-12 text-lg rounded-xl"
-                        disabled={isSearching || !trackingNumber.trim()}
-                    >
-                        {isSearching ? "Searching..." : "Search"}
-                    </Button>
                 </form>
             </div>
 

@@ -31,12 +31,12 @@ export const metadata: Metadata = {
 
 export default function TrackParcelPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="min-h-screen bg-linear-to-t from-blue-50 to-white">
             {/* Hero Section */}
-            <section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+            <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+                    <div className="text-center mb-10">
+                        <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-foreground mb-4">
                             Tracking Your Consignment
                         </h1>
                         <p className="text-lg sm:text-xl text-secondary max-w-2xl mx-auto">
