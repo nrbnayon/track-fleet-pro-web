@@ -146,11 +146,11 @@ export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMa
                             }`}
                     >
                         <div className="flex-1 pr-4">
-                            <h4 className="font-bold text-lg text-foreground mb-2">
+                            <h4 className="font-bold text-base text-foreground mb-2">
                                 {location.name}
                             </h4>
-                            <p className="text-base text-secondary mb-1 leading-snug">{location.address}</p>
-                            <p className="text-base text-secondary">{location.phone}</p>
+                            <p className="text-sm text-secondary mb-1 leading-snug">{location.address}</p>
+                            <p className="text-sm text-secondary">{location.phone}</p>
                         </div>
 
                         <div
