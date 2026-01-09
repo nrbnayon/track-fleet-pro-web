@@ -1,5 +1,5 @@
 import ProfileClient from "@/components/Dashboard/Profile/ProfileClient";
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
 
 export default function ProfilePage() {
     return (

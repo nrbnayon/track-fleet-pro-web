@@ -1,7 +1,7 @@
 // app\(roles)\admin\history\page.tsx
 
 import HistoryClient from "@/components/Dashboard/History/HistoryClient";
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
 
 export default function HistoryPage() {
   return (

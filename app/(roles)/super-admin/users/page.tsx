@@ -1,5 +1,5 @@
 // app/(roles)/admin/users/page.tsx
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
 import UserManagementClient from "@/components/Dashboard/UserManagement/UserManagementClient";
 
 export default function UserManagementPage() {

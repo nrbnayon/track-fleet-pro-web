@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
 import DataManagementClient from "@/components/Dashboard/DataManagement/DataManagementClient";
 import DataUploadClient from "@/components/Dashboard/DataManagement/DataUploadClient";
 import ExportDropdown from "@/components/Dashboard/DataManagement/ExportDropdown";

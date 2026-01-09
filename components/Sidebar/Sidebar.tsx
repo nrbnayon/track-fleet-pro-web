@@ -26,8 +26,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useLogout } from "@/hooks/useLogout";
-import LogoutModal from "../Shared/LogoutModal";
 import TranslatedText from "@/components/Shared/TranslatedText";
+import LogoutModal from "../Shared/LogoutModal";
 
 interface SubLink {
   label: string;
@@ -93,12 +93,12 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     setUserEmail(email);
 
     // Set user name based on role
-    if (role === "admin") {
-      setUserName("Admin User");
-    } else if (role === "manager") {
-      setUserName("Manager User");
+    if (role === "superadmin") {
+      setUserName("Super Admin");
+    } else if (role === "selleradmin") {
+      setUserName("Seller Admin");
     } else {
-      setUserName("Regular User");
+      setUserName("Customer");
     }
   }, []);
 
@@ -106,10 +106,10 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const links: LinkType[] = useMemo(
     () => [
       {
-        label: "Dashboard",
-        href: userRole === "admin" ? "/admin/dashboard" : "/user/dashboard",
+        label: "Dashboard Overview",
+        href: userRole === "superadmin" ? "/super-admin/dashboard" : "/seller-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["admin", "user"], // All roles can access
+        roles: ["superadmin", "selleradmin"], // All roles can access
       },
       {
         label: "Upload Data",

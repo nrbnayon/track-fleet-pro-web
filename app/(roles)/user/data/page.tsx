@@ -1,6 +1,6 @@
 // app/(roles)/user/data/page.tsx
 "use client";
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
 import DataManagementClient from "@/components/Dashboard/DataManagement/DataManagementClient";
 import ExportDropdown from "@/components/Dashboard/DataManagement/ExportDropdown";
 import { landParcelsData } from "@/data/landParcelsData";

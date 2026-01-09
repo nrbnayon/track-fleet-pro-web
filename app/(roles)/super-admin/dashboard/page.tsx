@@ -1,6 +1,6 @@
 // app/(dashboard)/dashboard/page.tsx
-import DashboardHeader from "@/components/Dashboard/Shared/DashboardHeader";
-import { StatsCard } from "@/components/Dashboard/Shared/StatsCard";
+import DashboardHeader from "@/components/Shared/DashboardHeader";
+import { StatsCard } from "@/components/Shared/StatsCard";
 import { OwnershipBreakdownChart } from "@/components/Dashboard/Home/OwnershipBreakdownChart";
 import { RightTypeDistributionChart } from "@/components/Dashboard/Home/RightTypeDistributionChart";
 import { MonthlyGrowthTrendChart } from "@/components/Dashboard/Home/MonthlyGrowthTrendChart";
@@ -8,7 +8,7 @@ import { LandDistributionZoneChart } from "@/components/Dashboard/Home/LandDistr
 import LandParcelsTable from "@/components/Dashboard/Home/LandParcelsTable";
 import { statsData } from "@/data/statsData";
 
-export default function DashboardPage() {
+export default function SuperAdminDashboardPage() {
   return (
     <div className="min-h-screen">
       <DashboardHeader 
