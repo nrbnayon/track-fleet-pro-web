@@ -25,6 +25,7 @@ export default function UserDashboardPage() {
               title={stat.title}
               value={stat.value}
               icon={stat.icon}
+              iconColor={stat.iconColor}
               iconBgColor={stat.iconBgColor}
               subtitle={stat.subtitle}
             />
