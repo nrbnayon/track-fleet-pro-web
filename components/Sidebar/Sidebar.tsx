@@ -631,7 +631,7 @@ const Logo = ({ open }: { open: boolean }) => {
 const Dashboard = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-1 bg-gray">
-      <div className="p-0 flex flex-col gap-2 flex-1 w-full overflow-y-auto overflow-x-hidden scrollbar-custom scrollbar-thin">
+      <div className="p-0 flex flex-col gap-2 flex-1 w-full overflow-y-auto overflow-x-hidden">
         {children}
       </div>
     </div>

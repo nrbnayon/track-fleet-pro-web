@@ -1,69 +1,52 @@
-// data/statsData.ts
-import { 
-  Location01Icon, 
-  ChartLineData01Icon,
-  UniversityIcon,
-  Home02Icon,
-  Factory02Icon,
-  Plant03Icon,
-  City01Icon
-} from "@hugeicons/core-free-icons";
+import { Package, Clock, MapPin, CheckCircle, Truck } from "lucide-react";
 
 export const statsData = [
   {
     title: "Total Parcels",
-    value: "250",
-    icon: Location01Icon,
-    iconBgColor: "#3B82F6", // blue
+    value: "85",
+    subtitle: "8.5% Up from last month",
+    icon: Package,
+    iconColor: "#1D92ED",
+    iconBgColor: "#DFF0FF", // light blue
   },
   {
-    title: "Total Area",
-    value: "772,870 m²",
-    icon: ChartLineData01Icon,
-    iconBgColor: "#10B981", // green
+    title: "Pending Assignment",
+    value: "22",
+    subtitle: "8.5% Up from last month",
+    icon: Clock,
+    iconColor: "#F0B100",
+    iconBgColor: "#FFF6E5", // light yellow
   },
   {
-    title: "Average Parcel Area",
-    value: "3,091 m²",
-    icon: Location01Icon,
-    iconBgColor: "#8B5CF6", // purple
+    title: "Ongoing",
+    value: "25",
+    subtitle: "8.5% Up from last month",
+    icon: MapPin,
+    iconColor: "#AD46FF",
+    iconBgColor: "#F5EDFF", // light purple
   },
   {
-    title: "Leased Land",
-    value: "131",
-    subtitle: "(52.4%)",
-    icon: City01Icon,
-    iconBgColor: "#F97316", // orange
+    title: "Delivered Today",
+    value: "11",
+    subtitle: "8.5% Up from yesterday",
+    icon: CheckCircle,
+    iconColor: "#00C950",
+    iconBgColor: "#E6F9EF", // light green
   },
   {
-    title: "Owned Land",
-    value: "119",
-    subtitle: "(47.6%)",
-    icon: Home02Icon,
-    iconBgColor: "#14B8A6", // teal
+    title: "Active Drivers",
+    value: "24",
+    subtitle: "8.5% Up from yesterday",
+    icon: Truck,
+    iconColor: "#FF6900",
+    iconBgColor: "#FFE8D9", // light orange
   },
   {
-    title: "Commercial Land",
-    value: "50",
-    icon: City01Icon,
-    iconBgColor: "#6366F1", // indigo
-  },
-  {
-    title: "Residential Land",
-    value: "69",
-    icon: UniversityIcon,
-    iconBgColor: "#10B981", // green
-  },
-  {
-    title: "Industrial Land",
-    value: "61",
-    icon: Factory02Icon,
-    iconBgColor: "#6B7280", // gray
-  },
-  {
-    title: "Agricultural Land",
-    value: "70",
-    icon: Plant03Icon,
-    iconBgColor: "#22C55E", // green
+    title: "Total Drivers",
+    value: "14",
+    subtitle: "8.5% Up from yesterday",
+    icon: Truck,
+    iconColor: "#615FFF",
+    iconBgColor: "#EEEEFF", // light purple
   },
 ];
