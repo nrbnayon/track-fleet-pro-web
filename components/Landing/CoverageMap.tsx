@@ -40,13 +40,13 @@ export default function CoverageMap() {
     ];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border rounded-xl mb-6 md:mb-24">
             {/* Location List */}
-            <div className="space-y-4 lg:order-1 order-2">
+            <div className="space-y-4 lg:order-1 order-2 p-4">
                 {locations.map((location) => (
                     <div
                         key={location.id}
-                        className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+                        className="bg-white rounded-lg p-4 shadow-none hover:shadow-lg transition-shadow border border-border"
                     >
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
@@ -59,7 +59,7 @@ export default function CoverageMap() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-primary hover:text-white flex items-center gap-1 flex-shrink-0"
+                                className="text-primary hover:text-white flex items-center gap-1 shrink-0"
                             >
                                 <Navigation className="h-4 w-4" />
                                 Direction
@@ -71,7 +71,7 @@ export default function CoverageMap() {
 
             {/* Map Placeholder */}
             <div className="lg:order-2 order-1 col-span-2">
-                <div className="bg-gray-200 rounded-lg overflow-hidden h-[400px] lg:h-full min-h-[400px] relative">
+                <div className="bg-gray-200 rounded-r-lg rounded-l-none overflow-hidden h-[400px] lg:h-full min-h-[400px] relative">
                     {/* Map placeholder - Replace with actual map implementation */}
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
@@ -96,3 +96,28 @@ export default function CoverageMap() {
         </div>
     );
 }
+
+//Replace mock data with real API calls:
+
+// import { GoogleMap, Marker } from '@react-google-maps/api';
+
+// const mapOptions = {
+//     center: { lat: 29.7604, lng: -95.3698 }, // Houston
+//     zoom: 10,
+// };
+
+// const handleSearch = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   setIsSearching(true);
+
+//   try {
+//     const response = await fetch(`/api/tracking/${trackingNumber}`);
+//     const data = await response.json();
+//     setSearchedNumber(trackingNumber);
+//     // Handle data
+//   } catch (error) {
+//     toast.error("Tracking number not found");
+//   } finally {
+//     setIsSearching(false);
+//   }
+// };

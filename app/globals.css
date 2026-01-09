@@ -63,7 +63,7 @@
   --destructive: #ef4444;
   --error: #ef4444;
   --error-foreground: #ffffff;
-  --border: #e5e7eb;
+  --border: #E7E7E7;
   --input: #e8e8eb;
   --ring: #93c5fd;
   --chart-1: #1D92ED;
@@ -77,7 +77,7 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f5f7fa;
   --sidebar-accent-foreground: #111111;
-  --sidebar-border: #e5e7eb;
+  --sidebar-border: #E7E7E7;
   --sidebar-ring: #93c5fd;
   --card: #ffffff;
   --card-foreground: #111111;
@@ -103,7 +103,7 @@
   --destructive: #ef4444;
   --error: #ef4444;
   --error-foreground: #ffffff;
-  --border: #374151;
+  --border:  #E7E7E7;
   --input: #1f2937;
   --ring: #93c5fd;
   --chart-1: #1D92ED;
@@ -117,19 +117,19 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #1f2937;
   --sidebar-accent-foreground: #f3f4f6;
-  --sidebar-border: #374151;
+  --sidebar-border: #E7E7E7;
   --sidebar-ring: #1D92ED;
 }
 
 /* ===== Utilities Layer ===== */
 @layer utilities {
   .border-border {
-    border-color: #e5e7eb;
-    box-shadow: 0px 0px 20px 0px #0000001a;
+    border-color: var(--border);
+    /* box-shadow: 0px 0px 20px 0px #0000001a; */
   }
 
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #1D92ED 0%, #1571c1 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #1571c1 100%);
   }
 
   .hover\:bg-gradient-primary-hover:hover {

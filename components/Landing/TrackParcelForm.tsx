@@ -62,29 +62,3 @@ export default function TrackParcelForm() {
         </div>
     );
 }
-
-
-//Replace mock data with real API calls:
-
-// import { GoogleMap, Marker } from '@react-google-maps/api';
-
-// const mapOptions = {
-//     center: { lat: 29.7604, lng: -95.3698 }, // Houston
-//     zoom: 10,
-// };
-
-// const handleSearch = async (e: React.FormEvent) => {
-//   e.preventDefault();
-//   setIsSearching(true);
-
-//   try {
-//     const response = await fetch(`/api/tracking/${trackingNumber}`);
-//     const data = await response.json();
-//     setSearchedNumber(trackingNumber);
-//     // Handle data
-//   } catch (error) {
-//     toast.error("Tracking number not found");
-//   } finally {
-//     setIsSearching(false);
-//   }
-// };

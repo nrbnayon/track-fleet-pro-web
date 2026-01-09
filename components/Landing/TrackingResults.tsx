@@ -105,7 +105,7 @@ export default function TrackingResults({
     return (
         <div className="space-y-6 mt-16">
             {/* Header Info */}
-            <div className="bg-white rounded-xl p-6 border border-[#E7E7E7] shadow-xs">
+            <div className="bg-white rounded-xl p-6 border border-border shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                     <div className="text-sm text-secondary space-y-4">
                         <p>{trackingData.date}</p>
@@ -213,7 +213,7 @@ export default function TrackingResults({
                 <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
                     Tracking Updates
                 </h2>
-                <div className="bg-white rounded-2xl shadow-xs p-6 md:p-10 border border-gray-200">
+                <div className="bg-white rounded-2xl shadow-xs p-6 md:p-10 border border-border">
                     <div className="w-full mx-auto">
                         {trackingData.updates.map((update, index) => {
                             const isFirst = index === 0;
@@ -290,7 +290,7 @@ export default function TrackingResults({
         Tracking Updates
     </h2>
 
-    <Card className="w-full rounded-2xl border border-solid border-[#e7e7e7]">
+    <Card className="w-full rounded-2xl border border-border">
         <CardContent className="flex items-center justify-center gap-[140px] px-0 py-[60px]">
             <div className="flex flex-col items-start gap-12">
                 {trackingUpdates.map((update, index) => (

@@ -83,7 +83,7 @@ export default function AboutUsPage() {
     return (
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="bg-gradient-to-b from-blue-50 to-white py-20 px-4 sm:px-6 lg:px-8">
+            <section className="bg-linear-to-b from-blue-50 to-white py-20 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto text-center">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                         About TrackFleet Pro
