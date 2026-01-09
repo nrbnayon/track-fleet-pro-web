@@ -36,6 +36,7 @@
     "jose": "^6.1.3",
     "jspdf": "^4.0.0",
     "jspdf-autotable": "^5.0.2",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.561.0",
     "motion": "^12.23.26",
     "next": "16.0.10",
@@ -45,6 +46,7 @@
     "react-dom": "19.2.1",
     "react-hook-form": "^7.68.0",
     "react-icons": "^5.5.0",
+    "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
     "recharts": "^3.6.0",
     "sonner": "^2.0.7",
@@ -53,6 +55,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^20.19.27",
     "@types/react": "^19",
     "@types/react-dom": "^19",

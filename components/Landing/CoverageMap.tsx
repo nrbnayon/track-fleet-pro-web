@@ -1,123 +1,217 @@
-// components/landing/CoverageMap.tsx
+// components/Landing/CoverageMap.tsx
 "use client";
 
-import { Navigation } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Navigation, MapPin } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-export default function CoverageMap() {
-    // Mock location data
-    const locations = [
+// Fix for default marker icons in React Leaflet
+if (typeof window !== 'undefined') {
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    });
+}
+
+// Custom red marker icon
+const redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+// Component to update map center
+function ChangeMapView({ center, zoom }: { center: [number, number]; zoom: number }) {
+    const map = useMap();
+    map.setView(center, zoom);
+    return null;
+}
+
+interface Location {
+    id: number;
+    name: string;
+    address: string;
+    phone: string;
+    lat: number;
+    lng: number;
+}
+
+interface CoverageMapProps {
+    searchQuery?: string;
+    onLocationFound?: (found: boolean) => void;
+}
+
+export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMapProps) {
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+    const [mapCenter, setMapCenter] = useState<[number, number]>([29.7604, -95.3698]);
+    const [mapZoom, setMapZoom] = useState(11);
+
+    // Location data with real coordinates for Houston area
+    const locations: Location[] = [
         {
             id: 1,
             name: "Track Fleet - Jacinto city",
             address: "House 44, Road 2, Jacinto city, Houston",
             phone: "000-0000-000",
+            lat: 29.7654,
+            lng: -95.2269
         },
         {
             id: 2,
             name: "Track Fleet - Jacinto city",
             address: "House 44, Road 2, Jacinto city, Houston",
             phone: "000-0000-000",
+            lat: 29.8154,
+            lng: -95.3769
         },
         {
             id: 3,
             name: "Track Fleet - Jacinto city",
             address: "House 44, Road 2, Jacinto city, Houston",
             phone: "000-0000-000",
+            lat: 29.7204,
+            lng: -95.4269
         },
         {
             id: 4,
             name: "Track Fleet - Jacinto city",
             address: "House 44, Road 2, Jacinto city, Houston",
             phone: "000-0000-000",
+            lat: 29.6604,
+            lng: -95.2869
         },
         {
             id: 5,
             name: "Track Fleet - Jacinto city",
             address: "House 44, Road 2, Jacinto city, Houston",
             phone: "000-0000-000",
-        },
+            lat: 29.8404,
+            lng: -95.2069
+        }
     ];
 
+    // Handle search query changes
+    useEffect(() => {
+        if (searchQuery && searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            const foundLocation = locations.find(
+                (loc) =>
+                    loc.name.toLowerCase().includes(query) ||
+                    loc.address.toLowerCase().includes(query) ||
+                    loc.phone.includes(query)
+            );
+
+            if (foundLocation) {
+                setMapCenter([foundLocation.lat, foundLocation.lng]);
+                setMapZoom(13);
+                setSelectedLocation(foundLocation);
+                onLocationFound?.(true);
+            } else {
+                onLocationFound?.(false);
+            }
+        }
+    }, [searchQuery]);
+
+    const handleDirectionClick = (location: Location) => {
+        setSelectedLocation(location);
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`;
+        window.open(googleMapsUrl, '_blank');
+    };
+
+    const handleLocationCardClick = (location: Location) => {
+        setMapCenter([location.lat, location.lng]);
+        setMapZoom(14);
+        setSelectedLocation(location);
+    };
+
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border rounded-xl mb-6 md:mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border rounded-xl mb-6 md:mb-24 overflow-hidden">
             {/* Location List */}
-            <div className="space-y-4 lg:order-1 order-2 p-4">
+            <div className="space-y-4 lg:order-1 order-2 p-4 bg-gray-50 max-h-[600px] overflow-y-auto">
                 {locations.map((location) => (
                     <div
                         key={location.id}
-                        className="bg-white rounded-lg p-4 shadow-none hover:shadow-lg transition-shadow border border-border"
+                        onClick={() => handleLocationCardClick(location)}
+                        className={`bg-white rounded-xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer border flex justify-between items-start ${selectedLocation?.id === location.id
+                            ? 'border-primary ring-1 ring-primary/20'
+                            : 'border-border'
+                            }`}
                     >
-                        <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                                <h4 className="font-semibold text-foreground mb-2">
-                                    {location.name}
-                                </h4>
-                                <p className="text-sm text-secondary mb-1">{location.address}</p>
-                                <p className="text-sm text-secondary">{location.phone}</p>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-primary hover:text-white flex items-center gap-1 shrink-0"
-                            >
-                                <Navigation className="h-4 w-4" />
-                                Direction
-                            </Button>
+                        <div className="flex-1 pr-4">
+                            <h4 className="font-bold text-lg text-foreground mb-2">
+                                {location.name}
+                            </h4>
+                            <p className="text-base text-secondary mb-1 leading-snug">{location.address}</p>
+                            <p className="text-base text-secondary">{location.phone}</p>
+                        </div>
+
+                        <div
+                            className="flex flex-col items-center gap-1 min-w-[70px] pt-1"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDirectionClick(location);
+                            }}
+                        >
+                            <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" className="hover:scale-110 transition-transform duration-200">
+                                <path d="M11.8995 0.585787C12.6805 -0.195262 13.9469 -0.195262 14.7279 0.585786L26.0416 11.8995C26.8227 12.6805 26.8227 13.9469 26.0416 14.7279L14.7279 26.0416C13.9469 26.8227 12.6805 26.8227 11.8995 26.0416L0.585787 14.7279C-0.195262 13.9469 -0.195262 12.6805 0.585786 11.8995L11.8995 0.585787Z" fill="#1D92ED" />
+                                <path d="M9.31348 18.1715V14.1715C9.31348 13.6411 9.52419 13.1324 9.89926 12.7573C10.2743 12.3823 10.783 12.1715 11.3135 12.1715H17.9801M17.9801 12.1715L15.3135 9.50488M17.9801 12.1715L15.3135 14.8382" stroke="#E8F4FD" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <span className="text-primary text-sm font-medium">Direction</span>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Map Placeholder */}
-            <div className="lg:order-2 order-1 col-span-2">
-                <div className="bg-gray-200 rounded-r-lg rounded-l-none overflow-hidden h-[400px] lg:h-full min-h-[400px] relative">
-                    {/* Map placeholder - Replace with actual map implementation */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Navigation className="h-8 w-8 text-primary" />
-                            </div>
-                            <p className="text-secondary font-medium">Map View</p>
-                            <p className="text-sm text-gray-500 mt-1">
-                                Integrate Google Maps or Mapbox here
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Mock map markers */}
-                    <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-                    <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-                    <div className="absolute top-2/3 left-2/3 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-                    <div className="absolute top-1/3 left-2/3 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-                    <div className="absolute top-3/4 left-1/4 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
-                </div>
+            {/* Map */}
+            <div className="lg:order-2 order-1 col-span-2 h-[400px] lg:h-full lg:min-h-[600px] relative">
+                <MapContainer
+                    center={mapCenter}
+                    zoom={mapZoom}
+                    style={{ height: '100%', width: '100%', borderRadius: '0 0.75rem 0.75rem 0' }}
+                    scrollWheelZoom={true}
+                >
+                    <ChangeMapView center={mapCenter} zoom={mapZoom} />
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    {locations.map((location) => (
+                        <Marker
+                            key={location.id}
+                            position={[location.lat, location.lng]}
+                            icon={redIcon}
+                            eventHandlers={{
+                                click: () => handleLocationCardClick(location),
+                            }}
+                        >
+                            <Popup>
+                                <div className="p-2 min-w-[200px]">
+                                    <h4 className="font-semibold text-foreground mb-1">
+                                        {location.name}
+                                    </h4>
+                                    <p className="text-sm text-secondary mb-1">{location.address}</p>
+                                    <p className="text-sm text-secondary mb-2">{location.phone}</p>
+                                    <button
+                                        onClick={() => handleDirectionClick(location)}
+                                        className="text-primary text-sm hover:underline flex items-center gap-1"
+                                    >
+                                        <Navigation className="h-3 w-3" />
+                                        Get Directions
+                                    </button>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    ))}
+                </MapContainer>
             </div>
         </div>
     );
 }
-
-//Replace mock data with real API calls:
-
-// import { GoogleMap, Marker } from '@react-google-maps/api';
-
-// const mapOptions = {
-//     center: { lat: 29.7604, lng: -95.3698 }, // Houston
-//     zoom: 10,
-// };
-
-// const handleSearch = async (e: React.FormEvent) => {
-//   e.preventDefault();
-//   setIsSearching(true);
-
-//   try {
-//     const response = await fetch(`/api/tracking/${trackingNumber}`);
-//     const data = await response.json();
-//     setSearchedNumber(trackingNumber);
-//     // Handle data
-//   } catch (error) {
-//     toast.error("Tracking number not found");
-//   } finally {
-//     setIsSearching(false);
-//   }
-// };

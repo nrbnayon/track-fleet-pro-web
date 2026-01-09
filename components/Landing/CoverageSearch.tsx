@@ -1,4 +1,4 @@
-// components/landing/CoverageSearch.tsx
+// components/Landing/CoverageSearch.tsx
 "use client";
 
 import { useState } from "react";
@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
-export default function CoverageSearch() {
+interface CoverageSearchProps {
+    onSearch?: (query: string) => void;
+}
+
+export default function CoverageSearch({ onSearch }: CoverageSearchProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
@@ -23,6 +27,9 @@ export default function CoverageSearch() {
 
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Pass search query to parent
+        onSearch?.(searchQuery);
 
         toast.success("Search completed", {
             description: `Found coverage areas near ${searchQuery}`,

@@ -165,8 +165,8 @@
   .scrollbar-custom {
     /* For Webkit browsers */
     &::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 4px;
+      height: 4px;
     }
 
     &::-webkit-scrollbar-track {
@@ -265,4 +265,29 @@
 
 .animate-slide-down {
   animation: slide-down 0.4s ease-out;
+}
+
+/* Global Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5); /* gray-400 equivalent with opacity */
+  border-radius: 100vh;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.8); /* gray-500 equivalent */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
 }
