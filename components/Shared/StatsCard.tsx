@@ -22,7 +22,7 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        "bg-white px-5 py-6 rounded-2xl flex items-center justify-between h-full border border-border hover:bg-gray-50 transition-colors cursor-pointer hover:shadow-lg",
+        "bg-white px-5 py-6 rounded-2xl flex items-center justify-between h-full border-none hover:bg-gray-50 transition-colors cursor-pointer hover:shadow-lg",
         className
       )}
     >

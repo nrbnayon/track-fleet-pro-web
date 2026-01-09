@@ -12,8 +12,8 @@ export default function SuperAdminDashboardPage() {
   return (
     <div className="min-h-screen">
       <DashboardHeader 
-        title="Land Management Dashboard" 
-        description="Overview of all land parcels and their classifications" 
+        title="Dashboard Overview" 
+        description="A clear view of your tasks" 
       />
       
       <div className="p-4 md:p-8">

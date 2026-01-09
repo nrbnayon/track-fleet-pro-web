@@ -18,11 +18,11 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import type { IconSvgElement } from "@hugeicons/react";
 import {
   DashboardSquare02Icon,
-  UserGroup03Icon,
-  WaterfallUp01Icon,
-  CloudUploadIcon,
-  Clock05Icon,
   Settings01Icon,
+  PackageIcon,
+  DeliveryTruck01Icon,
+  Store02Icon,
+  Analytics01Icon,
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useLogout } from "@/hooks/useLogout";
@@ -51,7 +51,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const pathname = usePathname();
   const { logout } = useLogout();
   const [open, setOpen] = useState(true);
-  const [sidebarWidth, setSidebarWidth] = useState(250);
+  const [sidebarWidth, setSidebarWidth] = useState(290);
   const [isResizing, setIsResizing] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
@@ -109,41 +109,37 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Dashboard Overview",
         href: userRole === "superadmin" ? "/super-admin/dashboard" : "/seller-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["superadmin", "selleradmin"], // All roles can access
+        roles: ["superadmin", "selleradmin"],
       },
       {
-        label: "Upload Data",
-        href: "/admin/upload-data",
-        icon: CloudUploadIcon,
-        roles: ["admin"], // Only admin can access
+        label: "Parcels Management",
+        href: userRole === "superadmin" ? "/super-admin/parcels" : "/seller-admin/parcels",
+        icon: PackageIcon,
+        roles: ["superadmin", "selleradmin"],
       },
       {
-        label: "User Management",
-        href: "/admin/users",
-        icon: UserGroup03Icon,
-        roles: ["admin"], // Only admin can access
+        label: "Drivers Management",
+        href: "/super-admin/drivers",
+        icon: DeliveryTruck01Icon,
+        roles: ["superadmin"],
       },
       {
-        label: "History",
-        href: "/admin/history",
-        icon: Clock05Icon,
-        roles: ["admin"], // Only admin can access
+        label: "Sellers Management",
+        href: "/super-admin/sellers",
+        icon: Store02Icon,
+        roles: ["superadmin"],
       },
-
-      // user links
       {
-        label: "Data",
-        href: "/user/data",
-        icon: WaterfallUp01Icon,
-        roles: ["user"], // User only
+        label: "Analysis",
+        href: userRole === "superadmin" ? "/super-admin/analysis" : "/seller-admin/analysis",
+        icon: Analytics01Icon,
+        roles: ["superadmin", "selleradmin"],
       },
-
-      // shared links
       {
         label: "Settings",
         href: "/settings",
         icon: Settings01Icon,
-        roles: ["admin", "user"], // All roles can access
+        roles: ["superadmin", "selleradmin"],
       },
     ],
     [userRole]
@@ -260,8 +256,8 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     if (!isResizing && manualToggle) {
       const timeoutId = setTimeout(() => {
         if (open) {
-          setSidebarWidth(220);
-          setUserResizedWidth(220);
+          setSidebarWidth(290);
+          setUserResizedWidth(290);
         } else {
           setSidebarWidth(minWidth);
         }
@@ -276,8 +272,8 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     if (!isResizing) {
       const newOpen = !open;
       if (newOpen) {
-        setSidebarWidth(220);
-        setUserResizedWidth(220);
+        setSidebarWidth(290);
+        setUserResizedWidth(290);
       } else {
         setSidebarWidth(minWidth);
       }
@@ -307,7 +303,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
           "h-6 w-6 shrink-0 transition-colors duration-200",
           isActive
             ? "text-white font-bold"
-            : "text-[#0E2C48] group-hover:text-[#0E2C48] font-bold"
+            : "text-foreground group-hover:text-foreground font-bold"
         )}
       />
     );
@@ -330,14 +326,14 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   // Get role display name
   const getRoleDisplayName = (role: string) => {
     switch (role) {
-      case "admin":
+      case "superadmin":
         return "Super Admin";
-      case "manager":
-        return "Manager";
-      case "user":
-        return "User";
+      case "selleradmin":
+        return "Seller Admin";
+      case "customer":
+        return "Customer";
       default:
-        return "User";
+        return "Customer";
     }
   };
 
@@ -358,7 +354,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
           <SidebarBody
             className={cn(
               "justify-between gap-10 border-0.5",
-              "bg-white text-[#0E2C48]"
+              "bg-white text-foreground"
             )}
           >
             <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
