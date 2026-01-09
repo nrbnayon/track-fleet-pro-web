@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     },
 };
 
+// Prevent static generation since this page uses Leaflet map (requires window object)
+export const dynamic = 'force-dynamic';
+
 export default function CoveragePage() {
     return <CoverageClient />;
 }
