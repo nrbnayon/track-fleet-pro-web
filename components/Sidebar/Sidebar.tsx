@@ -1,4 +1,4 @@
-// components/Sidebar.tsx - RBAC-enabled Sidebar
+// components/Sidebar.tsx - RBAC-enabled Sidebar (FIXED)
 "use client";
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
@@ -60,13 +60,13 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [userRole, setUserRole] = useState<string>("user");
+  const [userRole, setUserRole] = useState<string>("customer");
   const [userName, setUserName] = useState<string>("User");
   const [userEmail, setUserEmail] = useState<string>("");
 
   const minWidth = 80;
   const maxWidth = 400;
-  console.log(userEmail);
+
   // Get user role from cookie on component mount
   useEffect(() => {
     const getUserRole = () => {
@@ -74,7 +74,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
       const roleCookie = cookies.find((cookie) =>
         cookie.trim().startsWith("userRole=")
       );
-      return roleCookie ? roleCookie.split("=")[1] : "user";
+      return roleCookie ? roleCookie.split("=")[1] : "customer";
     };
 
     const getUserEmail = () => {
@@ -88,7 +88,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     const role = getUserRole();
     const email = getUserEmail();
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUserRole(role);
     setUserEmail(email);
 
@@ -102,20 +101,21 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     }
   }, []);
 
-  // Memoize links array with role-based access control
+  // FIXED: Memoize links array with proper role-based routes matching middleware
   const links: LinkType[] = useMemo(
     () => [
+      // Super Admin Only Routes
       {
         label: "Dashboard Overview",
-        href: userRole === "superadmin" ? "/super-admin/dashboard" : "/seller-admin/dashboard",
+        href: "/super-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["superadmin", "selleradmin"],
+        roles: ["superadmin"],
       },
       {
         label: "Parcels Management",
-        href: userRole === "superadmin" ? "/super-admin/parcels" : "/seller-admin/parcels",
+        href: "/super-admin/parcels",
         icon: PackageIcon,
-        roles: ["superadmin", "selleradmin"],
+        roles: ["superadmin"],
       },
       {
         label: "Drivers Management",
@@ -131,18 +131,46 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
       },
       {
         label: "Analysis",
-        href: userRole === "superadmin" ? "/super-admin/analysis" : "/seller-admin/analysis",
+        href: "/super-admin/analysis",
         icon: Analytics01Icon,
-        roles: ["superadmin", "selleradmin"],
+        roles: ["superadmin"],
+      },
+
+      // Seller Admin Only Routes
+      {
+        label: "Dashboard Overview",
+        href: "/seller-admin/dashboard",
+        icon: DashboardSquare02Icon,
+        roles: ["selleradmin"],
+      },
+      {
+        label: "Parcels Management",
+        href: "/seller-admin/parcels",
+        icon: PackageIcon,
+        roles: ["selleradmin"],
+      },
+      {
+        label: "Analysis",
+        href: "/seller-admin/analysis",
+        icon: Analytics01Icon,
+        roles: ["selleradmin"],
+      },
+
+      // Shared Routes (All Authenticated Users)
+      {
+        label: "Track Parcel",
+        href: "/track-parcel",
+        icon: PackageIcon,
+        roles: ["superadmin", "selleradmin", "customer"],
       },
       {
         label: "Settings",
         href: "/settings",
         icon: Settings01Icon,
-        roles: ["superadmin", "selleradmin"],
+        roles: ["superadmin", "selleradmin", "customer"],
       },
     ],
-    [userRole]
+    []
   );
 
   // Filter links based on user role
@@ -312,11 +340,11 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   // Get role badge color
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "admin":
+      case "superadmin":
         return "text-primary";
-      case "manager":
+      case "selleradmin":
         return "text-secondary";
-      case "user":
+      case "customer":
         return "text-primary";
       default:
         return "text-secondary";

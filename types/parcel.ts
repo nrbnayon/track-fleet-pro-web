@@ -49,6 +49,7 @@ export interface Parcel {
     rider_email?: string;
     rider_phone?: string;
     rider_vehicle?: string;
+    rider_image?: string;
   };
   trackingHistory: ParcelTracking[];
   payment_status?: "paid" | "pending" | "cod";

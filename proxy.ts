@@ -22,33 +22,28 @@ const PUBLIC_ROUTES = [
 ];
 
 // Common protected routes (accessible by all authenticated users)
-const COMMON_PROTECTED_ROUTES = ["/dashboard", "/profile", "/settings"];
+const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/terms", "/privacy-policy", "/settings", "/profile","/"];
 
 // Role-specific routes configuration
 const ROLE_ROUTES = {
-  admin: ["/admin", "/admin/dashboard","/admin/upload-data", "/admin/users", "/admin/history"],
-  user: ["/user/dashboard", "/user/data"],
-  // manager: [
-  //   "/manager/dashboard",
-  //   "/manager/team",
-  //   "/manager/reports",
-  //   "/documents", // Manager can access documents
-  //   "/reports", // Manager can access reports
-  //   "/ai-interaction", // Manager can access AI
-  // ],
+  superadmin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis"],
+  selleradmin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis"],
+  customer: ["/track-parcel", "/profile", "/settings", "/"],
+
   // Add more roles as needed
 };
 
 // Routes that multiple roles can access (shared access)
 const SHARED_ROUTES = {
-  "/settings": ["admin", "user"], // All roles can access
-  "/profile": ["admin", "user"], // All roles can access
+  "/settings": ["superadmin", "selleradmin", "customer"], // All roles can access
+  "/profile": ["superadmin", "selleradmin", "customer"], // All roles can access
 };
 
 // Default redirect paths for each role after login
 const ROLE_DEFAULT_PATHS = {
-  admin: "/admin/dashboard",
-  user: "/user/dashboard",
+  superadmin: "/super-admin/dashboard",
+  selleradmin: "/seller-admin/dashboard",
+  customer: "/track-parcel",
 };
 
 // JWT Secret - Use environment variable in production
@@ -221,12 +216,12 @@ export async function proxy(request: NextRequest) {
   const isPublicRoute = matchesRoute(pathname, PUBLIC_ROUTES);
 
   if (isPublicRoute) {
-    // If authenticated user visits login/register, redirect to their role's default page
+    // If authenticated user visits login/signup, redirect to their role's default page
     if (
       isAuthenticated &&
-      (pathname === "/login" || pathname === "/register")
+      (pathname === "/login" || pathname === "/signup")
     ) {
-      const defaultPath = getRoleDefaultPath(userRole || "user");
+      const defaultPath = getRoleDefaultPath(userRole || "customer");
       return NextResponse.redirect(new URL(defaultPath, request.url));
     }
 
@@ -256,7 +251,7 @@ export async function proxy(request: NextRequest) {
     // Check if user has role-based access
     if (!hasRoleAccess(pathname, userRole || "")) {
       console.log("❌ Forbidden - User role does not have access");
-      const defaultPath = getRoleDefaultPath(userRole || "user");
+      const defaultPath = getRoleDefaultPath(userRole || "customer");
       return NextResponse.redirect(new URL(defaultPath, request.url));
     }
 

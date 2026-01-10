@@ -50,7 +50,7 @@ export default function ActiveDrivers() {
                         <div className="relative h-10 w-10 mr-4 shrink-0">
                             <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                    src={driver.driver_image?.startsWith('/') ? driver.driver_image : "/images/placeholder-avatar.png"}
+                                    src={driver.driver_image?.startsWith('/') ? driver.driver_image : "/drivers/driver.jpg"}
                                     alt={driver.driver_name}
                                     fill
                                     className="object-cover"

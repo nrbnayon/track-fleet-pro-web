@@ -42,7 +42,8 @@ export const allParcelsData: Parcel[] = [
       rider_name: "Sarah Johnson",
       rider_email: "sarah@trackfleet.com",
       rider_phone: "01534567890",
-      rider_vehicle: "Bike-DH-1234"
+      rider_vehicle: "Bike-DH-1234",
+      rider_image: "/drivers/driver.jpg"
     },
     trackingHistory: [
       {
@@ -136,7 +137,8 @@ export const allParcelsData: Parcel[] = [
       rider_name: "Michael Chen",
       rider_email: "michael@trackfleet.com",
       rider_phone: "01489012345",
-      rider_vehicle: "Bike-DH-5678"
+      rider_vehicle: "Bike-DH-5678",
+      rider_image: "/drivers/driver.jpg"
     },
     trackingHistory: [
       {
@@ -240,6 +242,14 @@ export const allParcelsData: Parcel[] = [
       phone: "01634567890",
       address: "Karwan Bazar, Dhaka"
     },
+    riderInfo: {
+      rider_id: "DRV004",
+      rider_name: "Sarah Johnson",
+      rider_email: "sarah@trackfleet.com",
+      rider_phone: "01534567890",
+      rider_vehicle: "Bike-DH-1234",
+      rider_image: "/drivers/driver.jpg"
+    },
     trackingHistory: [
       {
         status: "pending",
@@ -285,7 +295,8 @@ export const allParcelsData: Parcel[] = [
       rider_name: "Emily Rodriguez",
       rider_email: "emily@trackfleet.com",
       rider_phone: "01367890123",
-      rider_vehicle: "Van-DH-3456"
+      rider_vehicle: "Van-DH-3456",
+      rider_image: "/drivers/driver.jpg"
     },
     trackingHistory: [
       {
