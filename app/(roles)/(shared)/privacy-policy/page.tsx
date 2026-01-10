@@ -1,5 +1,5 @@
 // app\(dashboard)\privacy-policy\page.tsx
-import PrivacyPolicyClient from "@/components/Dashboard/PrivacyPolicy/PrivacyPolicyClient";
+import PrivacyPolicyClient from "@/components/Common/PrivacyPolicy/PrivacyPolicyClient";
 
 export default function PrivacyPolicyPage() {
     return (

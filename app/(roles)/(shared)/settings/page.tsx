@@ -1,4 +1,4 @@
-import ProfileClient from "@/components/Dashboard/Profile/ProfileClient";
+import ProfileClient from "@/components/Common/Profile/ProfileClient";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
 
 export default function SettingsPage() {
