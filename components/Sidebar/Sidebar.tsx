@@ -607,8 +607,8 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         <button
           onClick={handleToggleClick}
           className={cn(
-            "absolute hidden md:flex top-4 z-80 cursor-pointer p-2 rounded-full bg-gray border border-gray-300 shadow-none hover:bg-gray-50 transition-all duration-200",
-            open ? "-right-3" : "-right-3"
+            "absolute hidden md:flex top-4 z-20 cursor-pointer p-2 rounded-full bg-gray border border-gray-300 shadow-none hover:bg-gray-50 transition-all duration-200",
+            open ? "-right-4" : "-right-4"
           )}
         >
           {open ? (

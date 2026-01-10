@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { Package } from "lucide-react";
-import Image from "next/image";
 import { allParcelsData } from "@/data/allParcelsData";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

@@ -8,6 +8,7 @@ interface StatsCardProps {
   icon: LucideIcon;
   iconColor: string;
   iconBgColor: string;
+  isUp?: boolean;
   subtitle?: string;
   className?: string;
 }
@@ -18,6 +19,7 @@ export function StatsCard({
   icon: Icon,
   iconColor,
   iconBgColor,
+  isUp,
   subtitle,
   className,
 }: StatsCardProps) {
@@ -38,8 +40,8 @@ export function StatsCard({
         <div className="text-3xl font-bold text-foreground">{value}</div>
         {subtitle && (
           <div className="flex items-center gap-1 text-xs">
-            <TrendingUp className="w-3 h-3 text-emerald-500" />
-            <span className="text-emerald-500 font-medium">{percentage}%</span>
+            <TrendingUp className="w-3 h-3 text-primary" />
+            <span className="text-primary font-medium">{percentage}%</span>
             <span className="text-secondary">{subtitleText}</span>
           </div>
         )}
