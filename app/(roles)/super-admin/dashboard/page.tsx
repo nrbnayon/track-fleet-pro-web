@@ -2,8 +2,8 @@
 import DashboardHeader from "@/components/Shared/DashboardHeader";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { statsData } from "@/data/statsData";
-import RecentParcels from "@/components/SupperAdmin/RecentParcels";
-import ActiveDrivers from "@/components/SupperAdmin/ActiveDrivers";
+import RecentParcels from "@/components/SupperAdmin/Dashboard/RecentParcels";
+import ActiveDrivers from "@/components/SupperAdmin/Dashboard/ActiveDrivers";
 
 export default function SuperAdminDashboardPage() {
   return (

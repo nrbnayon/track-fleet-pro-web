@@ -15,8 +15,8 @@ import { Car, MapPin } from "lucide-react";
 import { Parcel } from "@/types/parcel";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/Shared/Pagination";
-import { AssignDriverModal } from "@/components/SupperAdmin/AssignDriverModal";
-import { TrackParcelModal } from "@/components/SupperAdmin/TrackParcelModal";
+import { AssignDriverModal } from "@/components/SupperAdmin/ParcelsManagement/AssignDriverModal";
+import { TrackParcelModal } from "@/components/SupperAdmin/ParcelsManagement/TrackParcelModal";
 
 interface ParcelsTableProps {
     data: Parcel[];

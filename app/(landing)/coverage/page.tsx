@@ -1,6 +1,6 @@
 // app/(landing)/coverage/page.tsx
 import type { Metadata } from "next";
-import CoverageClient from "@/components/Landing/CoverageClient";
+import CoverageClient from "@/components/Landing/Coverage/CoverageClient";
 
 export const metadata: Metadata = {
     title: "Coverage Areas - Delivery Service Coverage Map",

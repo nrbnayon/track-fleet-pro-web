@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import CoverageSearch from "@/components/Landing/CoverageSearch";
+import CoverageSearch from "@/components/Landing/Coverage/CoverageSearch";
 
-const CoverageMap = dynamic(() => import("@/components/Landing/CoverageMap"), {
+const CoverageMap = dynamic(() => import("@/components/Landing/Coverage/CoverageMap"), {
     ssr: false,
     loading: () => <div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-xl" />
 });
