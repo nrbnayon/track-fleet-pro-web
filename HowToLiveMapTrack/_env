@@ -1,0 +1,19 @@
+# Google Maps API Key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+
+# WebSocket Server URL
+NEXT_PUBLIC_WS_URL=ws://localhost:3001
+
+# OR for production:
+# NEXT_PUBLIC_WS_URL=wss://your-domain.com
+
+# WebSocket Server Port (for server/websocket.js)
+WS_PORT=3001
+
+# Get your API key from: https://console.cloud.google.com/google/maps-apis/
+# Enable these APIs in Google Cloud Console:
+# 1. Maps JavaScript API
+# 2. Directions API  
+# 3. Distance Matrix API
+# 4. Places API (optional)
+# 5. Geocoding API (optional)

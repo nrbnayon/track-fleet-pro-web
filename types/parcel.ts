@@ -50,6 +50,8 @@ export interface Parcel {
     rider_phone?: string;
     rider_vehicle?: string;
     rider_image?: string;
+    rider_vehicle_type?: string;
+    rider_vehicle_number?: string;
   };
   trackingHistory: ParcelTracking[];
   payment_status?: "paid" | "pending" | "cod";

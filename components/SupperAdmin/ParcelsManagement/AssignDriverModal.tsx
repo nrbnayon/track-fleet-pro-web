@@ -36,10 +36,9 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+            <DialogContent className="w-full md:min-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden border border-border">
                 <DialogHeader className="p-6 pb-2 border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
                     <DialogTitle className="text-xl font-bold">Assign Driver to Parcel</DialogTitle>
-                    {/* Close button is handled by DialogClose or default X, but we can customize if needed */}
                 </DialogHeader>
 
                 <div className="p-6 flex-1 overflow-y-auto space-y-6">

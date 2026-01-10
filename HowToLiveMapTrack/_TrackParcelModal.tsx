@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
 // Dynamically import the map component to avoid SSR issues
-const MapComponent = dynamic(() => import("@/components/SupperAdmin/ParcelsManagement/ParcelMap"), {
+const MapComponent = dynamic(() => import("@/components/SupperAdmin/ParcelMap"), {
     ssr: false,
     loading: () => (
         <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -23,6 +23,16 @@ interface TrackParcelModalProps {
     isOpen: boolean;
     onClose: () => void;
     parcel: Parcel;
+}
+
+interface MapComponentProps {
+    pickupLocation: { lat: number; lng: number };
+    deliveryLocation: { lat: number; lng: number };
+    currentLocation: { lat: number; lng: number };
+    parcelStatus: string;
+    driverAssigned: boolean;
+    trackingNo: string;
+    riderId?: string;
 }
 
 export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalProps) {
@@ -114,6 +124,8 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                             currentLocation={currentLocation}
                             parcelStatus={parcel.parcel_status}
                             driverAssigned={!!parcel.riderInfo}
+                            trackingNo={parcel.tracking_no}
+                            riderId={parcel.riderInfo?.rider_id}
                         />
                     </div>
 
@@ -151,7 +163,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                                 {parcel.riderInfo ? (
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden relative shrink-0">
+                                            <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden relative flex-shrink-0">
                                                 <Image
                                                     src={parcel.riderInfo.rider_image || "/drivers/driver.jpg"}
                                                     alt="Driver"
