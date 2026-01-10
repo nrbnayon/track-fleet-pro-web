@@ -52,8 +52,8 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
             return locationMap[location] || { lat: 23.8103, lng: 90.4125 };
         };
 
-        const pickup = getCoordinates(parcel.pickup_location);
-        const delivery = getCoordinates(parcel.delivery_location);
+        const pickup = getCoordinates(parcel.pickup_location || "");
+        const delivery = getCoordinates(parcel.delivery_location || "");
 
         // Calculate current position based on parcel status
         let current = pickup;
@@ -95,7 +95,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-full max-w-6xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden border border-border">
+            <DialogContent className="w-full md:min-w-4xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden border border-border">
                 <DialogHeader className="p-4 border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
                         Track Parcel
@@ -107,7 +107,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
 
                 <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
                     {/* Map Area */}
-                    <div className="flex-1 bg-gray-100 relative min-h-[400px]">
+                    <div className="w-full md:flex-1 h-[350px] md:h-auto md:min-h-[400px] bg-gray-100 relative order-1 md:order-1">
                         <MapComponent
                             pickupLocation={pickupCoords}
                             deliveryLocation={deliveryCoords}
@@ -118,8 +118,8 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                     </div>
 
                     {/* Sidebar Details */}
-                    <div className="w-full md:w-[380px] bg-white border-t md:border-t-0 md:border-l border-gray-100 flex flex-col overflow-y-auto">
-                        <div className="p-6 space-y-6">
+                    <div className="w-full md:w-[380px] bg-white border-t md:border-t-0 md:border-l border-gray-100 flex flex-col flex-1 md:flex-none overflow-y-auto order-2 md:order-2 h-full md:h-auto">
+                        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                             {/* Header Info */}
                             <div>
                                 <p className="text-sm text-secondary mb-1">Tracking Number</p>
@@ -131,15 +131,15 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                                 <h4 className="font-semibold text-sm mb-2">Parcel Details</h4>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-secondary">Name:</span>
-                                    <span className="font-medium">{parcel.parcel_name || "N/A"}</span>
+                                    <span className="font-medium text-right">{parcel.parcel_name || "N/A"}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-secondary">Weight:</span>
-                                    <span className="font-medium">{parcel.parcel_weight} Kg</span>
+                                    <span className="font-medium text-right">{parcel.parcel_weight} Kg</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-secondary">Type:</span>
-                                    <span className="font-medium capitalize">{parcel.parcel_type || "Package"}</span>
+                                    <span className="font-medium capitalize text-right">{parcel.parcel_type || "Package"}</span>
                                 </div>
                             </div>
 
