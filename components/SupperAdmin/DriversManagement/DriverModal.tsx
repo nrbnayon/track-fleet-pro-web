@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TranslatedText from "@/components/Shared/TranslatedText";
@@ -85,6 +86,8 @@ export default function DriverModal({
     if (validateForm()) {
       onSave(formData);
       onClose();
+    } else {
+      toast.error("Please fill in all required fields correctly");
     }
   };
 

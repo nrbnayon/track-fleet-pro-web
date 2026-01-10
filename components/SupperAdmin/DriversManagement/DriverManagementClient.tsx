@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, ChevronDown, Plus, Check } from "lucide-react";
+import { toast } from "sonner";
 import { allDriversData } from "@/data/allDriversData";
 import TranslatedText from "@/components/Shared/TranslatedText";
 import { Input } from "@/components/ui/input";
@@ -121,11 +122,13 @@ export default function DriverManagementClient({
         createdAt: new Date().toISOString(),
       };
       setDrivers([newDriver, ...drivers]);
+      toast.success("Driver added successfully");
     } else if (modalMode === "edit" && selectedDriver) {
       const updatedDrivers = drivers.map((driver) =>
         driver.id === selectedDriver.id ? { ...driver, ...data } : driver
       );
       setDrivers(updatedDrivers);
+      toast.success("Driver updated successfully");
     }
   };
 
@@ -140,6 +143,7 @@ export default function DriverManagementClient({
       setDrivers(updatedDrivers);
       setIsDeleteModalOpen(false);
       setDriverToDelete(null);
+      toast.success("Driver deleted successfully");
     }
   };
 

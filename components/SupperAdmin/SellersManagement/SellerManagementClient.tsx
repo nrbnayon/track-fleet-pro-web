@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, ChevronDown, Plus, Check } from "lucide-react";
+import { toast } from "sonner";
 import { allSellersData } from "@/data/allSellersData";
 import TranslatedText from "@/components/Shared/TranslatedText";
 import { Input } from "@/components/ui/input";
@@ -121,11 +122,13 @@ export default function SellerManagementClient({
                 createdAt: new Date().toISOString(),
             };
             setSellers([newSeller, ...sellers]);
+            toast.success("Seller added successfully");
         } else if (modalMode === "edit" && selectedSeller) {
             const updatedSellers = sellers.map((seller) =>
                 seller.id === selectedSeller.id ? { ...seller, ...data } : seller
             );
             setSellers(updatedSellers);
+            toast.success("Seller updated successfully");
         }
     };
 
@@ -140,6 +143,7 @@ export default function SellerManagementClient({
             setSellers(updatedSellers);
             setIsDeleteModalOpen(false);
             setSellerToDelete(null);
+            toast.success("Seller deleted successfully");
         }
     };
 

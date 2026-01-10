@@ -20,7 +20,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px]">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px]">
             <div className="bg-white rounded-[24px] w-full max-w-[440px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="flex justify-end p-4">
                     <button
