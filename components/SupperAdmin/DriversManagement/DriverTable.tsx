@@ -1,6 +1,6 @@
 
 "use client";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, Pencil } from "lucide-react";
 import { Pagination } from "@/components/Shared/Pagination";
 import TranslatedText from "@/components/Shared/TranslatedText";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +13,7 @@ interface DriverTableProps {
   currentPage: number;
   onPageChange: (page: number) => void;
   onView?: (driver: Driver) => void;
+  onEdit?: (driver: Driver) => void;
   onDelete?: (driver: Driver) => void;
 }
 
@@ -23,6 +24,7 @@ export default function DriverTable({
   currentPage,
   onPageChange,
   onView,
+  onEdit,
   onDelete,
 }: DriverTableProps) {
   const totalItems = data.length;
@@ -62,38 +64,38 @@ export default function DriverTable({
   };
 
   return (
-    <div className="bg-white rounded-[20px] shadow-sm border border-[#F1F1F1] overflow-hidden">
+    <div className="bg-white rounded-none shadow-none border border-none overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#E9F4FF] border-b border-[#F1F1F1]">
-              <th className="px-6 py-4 text-left text-[14px] font-semibold text-[#1F2937]">
+            <tr className="bg-[#E8F4FD] border-none">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 <TranslatedText text="Vehicle Number" />
               </th>
-              <th className="px-6 py-4 text-left text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 <TranslatedText text="Driver's Name" />
               </th>
-              <th className="px-6 py-4 text-left text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 <TranslatedText text="Email" />
               </th>
-              <th className="px-6 py-4 text-left text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 <TranslatedText text="Phone" />
               </th>
-              <th className="px-6 py-4 text-center text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
                 <TranslatedText text="Total Delivery" />
               </th>
-              <th className="px-6 py-4 text-center text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
                 <TranslatedText text="Active Delivery" />
               </th>
-              <th className="px-6 py-4 text-left text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 <TranslatedText text="Status" />
               </th>
-              <th className="px-6 py-4 text-center text-[14px] font-semibold text-[#1F2937]">
+              <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
                 <TranslatedText text="Action" />
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 text-[14px]">
+          <tbody className="divide-y divide-gray-50 text-sm">
             {isLoading ? (
               Array.from({ length: itemsPerPage }).map((_, index) => (
                 <tr key={`skeleton-${index}`}>
@@ -118,22 +120,22 @@ export default function DriverTable({
                   key={driver.id}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-4 text-[#4B5563]">
+                  <td className="px-6 py-4 text-secondary">
                     {driver.vehicle_number || "N/A"}
                   </td>
-                  <td className="px-6 py-4 font-medium text-[#111827]">
+                  <td className="px-6 py-4 font-medium text-foreground">
                     {driver.driver_name}
                   </td>
-                  <td className="px-6 py-4 text-[#4B5563]">
+                  <td className="px-6 py-4 text-secondary">
                     {driver.driver_email}
                   </td>
-                  <td className="px-6 py-4 text-[#4B5563]">
+                  <td className="px-6 py-4 text-secondary">
                     {driver.driver_phone}
                   </td>
-                  <td className="px-6 py-4 text-center text-[#4B5563]">
+                  <td className="px-6 py-4 text-center text-secondary">
                     {driver.stats?.total_deliveries || 0}
                   </td>
-                  <td className="px-6 py-4 text-center text-[#4B5563]">
+                  <td className="px-6 py-4 text-center text-secondary">
                     {driver.stats?.active_deliveries || 0}
                   </td>
                   <td className="px-6 py-4">
@@ -150,10 +152,19 @@ export default function DriverTable({
                       {onView && (
                         <button
                           onClick={() => onView(driver)}
-                          className="p-1.5 text-[#3B82F6] hover:bg-blue-50 border border-[#E5E7EB] rounded-md transition-colors cursor-pointer"
+                          className="p-1.5 text-primary hover:bg-blue-50 border border-[#E5E7EB] rounded-md transition-colors cursor-pointer"
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                      {onEdit && (
+                        <button
+                          onClick={() => onEdit(driver)}
+                          className="p-1.5 text-orange-500 hover:bg-orange-50 border border-[#E5E7EB] rounded-md transition-colors cursor-pointer"
+                          title="Edit Driver"
+                        >
+                          <Pencil className="w-4 h-4" />
                         </button>
                       )}
                       {onDelete && (

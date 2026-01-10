@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, ChevronDown, Plus } from "lucide-react";
+import { Search, ChevronDown, Plus, Check } from "lucide-react";
 import { allDriversData } from "@/data/allDriversData";
 import TranslatedText from "@/components/Shared/TranslatedText";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,12 @@ import { Driver } from "@/types/driver";
 import DriverTable from "./DriverTable";
 import DriverModal from "./DriverModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface DriverManagementClientProps {
   itemsPerPage?: number;
@@ -23,39 +29,59 @@ export default function DriverManagementClient({
   const [drivers, setDrivers] = useState<Driver[]>(allDriversData);
   const [filteredData, setFilteredData] = useState<Driver[]>(allDriversData);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All Drivers");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "view">("create");
+  const [modalMode, setModalMode] = useState<"create" | "view" | "edit">("create");
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [driverToDelete, setDriverToDelete] = useState<Driver | null>(null);
+
+  const statuses = ["All Drivers", "Available", "Assigned", "Busy", "Ongoing", "Delivered", "Offline"];
 
   useEffect(() => {
     let filtered = drivers;
 
+    // Filter by Status
+    if (selectedStatus !== "All Drivers") {
+      filtered = filtered.filter((driver) => {
+        const status = driver.driver_status.toLowerCase();
+        const target = selectedStatus.toLowerCase();
+        if (target === "assigned" || target === "busy") {
+          return status === "busy" || status === "assigned";
+        }
+        return status === target;
+      });
+    }
+
+    // Filter by Search Query
     if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (driver) =>
-          driver.driver_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          driver.driver_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          driver.vehicle_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          driver.driver_phone.includes(searchQuery)
+          driver.driver_name.toLowerCase().includes(query) ||
+          driver.driver_email.toLowerCase().includes(query) ||
+          driver.driver_id.toLowerCase().includes(query) ||
+          (driver.vehicle_number && driver.vehicle_number.toLowerCase().includes(query)) ||
+          driver.driver_phone.includes(query)
       );
     }
 
     setFilteredData(filtered);
     setCurrentPage(1);
-  }, [searchQuery, drivers]);
 
-  useEffect(() => {
+    // Trigger loading state for visual feedback
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 600);
+    }, 400);
     return () => clearTimeout(timer);
-  }, [currentPage]);
+  }, [searchQuery, selectedStatus, drivers]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 400);
   };
 
   const handleAddDriver = () => {
@@ -66,6 +92,12 @@ export default function DriverManagementClient({
 
   const handleViewDriver = (driver: Driver) => {
     setModalMode("view");
+    setSelectedDriver(driver);
+    setIsModalOpen(true);
+  };
+
+  const handleEditDriver = (driver: Driver) => {
+    setModalMode("edit");
     setSelectedDriver(driver);
     setIsModalOpen(true);
   };
@@ -89,6 +121,11 @@ export default function DriverManagementClient({
         createdAt: new Date().toISOString(),
       };
       setDrivers([newDriver, ...drivers]);
+    } else if (modalMode === "edit" && selectedDriver) {
+      const updatedDrivers = drivers.map((driver) =>
+        driver.id === selectedDriver.id ? { ...driver, ...data } : driver
+      );
+      setDrivers(updatedDrivers);
     }
   };
 
@@ -117,16 +154,33 @@ export default function DriverManagementClient({
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 h-[52px] w-full rounded-[12px] border-[#E5E7EB] bg-white focus:ring-[#3B82F6] transition-all"
+            className="pl-12 h-[52px] w-full rounded-lg border-border bg-white focus:ring-primary transition-all"
           />
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
-          <button className="flex items-center justify-between px-4 h-[52px] min-w-[140px] bg-white border border-[#E5E7EB] rounded-[12px] text-gray-700 font-medium">
-            <TranslatedText text="All Drivers" />
-            <ChevronDown className="w-4 h-4 ml-2" />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center justify-between px-4 h-[52px] min-w-[140px] bg-white border border-border rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
+                <TranslatedText text={selectedStatus} />
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[140px]">
+              {statuses.map((status) => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={() => setSelectedStatus(status)}
+                  className="flex items-center justify-between cursor-pointer"
+                >
+                  <TranslatedText text={status} />
+                  {selectedStatus === status && <Check className="w-4 h-4" />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
-            className="bg-[#0081FE] text-white hover:bg-[#0070E0] h-[52px] px-6 rounded-[12px] flex items-center gap-2 font-semibold transition-all shadow-sm"
+            className="bg-primary text-white hover:bg-primary/80 h-[52px] px-6 rounded-lg flex items-center gap-2 font-semibold transition-all shadow-sm"
             onClick={handleAddDriver}
           >
             <Plus className="w-5 h-5" />
@@ -136,8 +190,8 @@ export default function DriverManagementClient({
       </div>
 
       {/* Drivers Table Section */}
-      <div className="space-y-4 bg-white p-6 rounded-[24px] shadow-sm border border-[#F1F1F1]">
-        <h2 className="text-[20px] font-bold text-[#111827]">
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)]">
+        <h2 className="pb-4 text-xl font-bold text-foreground">
           <TranslatedText text="Drivers List" />
         </h2>
         <DriverTable
@@ -147,6 +201,7 @@ export default function DriverManagementClient({
           currentPage={currentPage}
           onPageChange={handlePageChange}
           onView={handleViewDriver}
+          onEdit={handleEditDriver}
           onDelete={handleDeleteClick}
         />
       </div>

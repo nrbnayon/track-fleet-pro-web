@@ -12,7 +12,7 @@ interface DriverModalProps {
   onClose: () => void;
   onSave: (data: Partial<Driver>) => void;
   driver: Driver | null;
-  mode: "create" | "view";
+  mode: "create" | "view" | "edit";
 }
 
 export default function DriverModal({
@@ -32,7 +32,7 @@ export default function DriverModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (mode === "view" && driver) {
+    if ((mode === "view" || mode === "edit") && driver) {
       setFormData({
         driver_name: driver.driver_name,
         driver_email: driver.driver_email,
@@ -106,7 +106,13 @@ export default function DriverModal({
         <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100">
           <h2 className="text-[20px] font-bold text-[#111827]">
             <TranslatedText
-              text={mode === "create" ? "Add New Driver" : "Driver Details"}
+              text={
+                mode === "create"
+                  ? "Add New Driver"
+                  : mode === "edit"
+                    ? "Edit Driver"
+                    : "Driver Details"
+              }
             />
           </h2>
           <button
@@ -233,7 +239,15 @@ export default function DriverModal({
               type="submit"
               className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all"
             >
-              <TranslatedText text={mode === "create" ? "Add Driver" : "Done"} />
+              <TranslatedText
+                text={
+                  mode === "create"
+                    ? "Add Driver"
+                    : mode === "edit"
+                      ? "Update Driver"
+                      : "Done"
+                }
+              />
             </Button>
           </div>
         </form>
