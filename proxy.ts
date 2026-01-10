@@ -22,7 +22,7 @@ const PUBLIC_ROUTES = [
 ];
 
 // Common protected routes (accessible by all authenticated users)
-const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/terms", "/privacy-policy", "/settings", "/profile","/"];
+const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/terms", "/privacy-policy", "/settings", "/profile","/", "notifications"];
 
 // Role-specific routes configuration
 const ROLE_ROUTES = {
