@@ -137,7 +137,7 @@ export const MobileSidebar = ({
         )}
         {...props}
       >
-        <div className="flex justify-end z-80 w-full">
+        <div className="flex justify-end z-40 w-full">
           <IconMenu2
             className="font-bold text-primary hover:scale-110 transition duration-150 cursor-pointer"
             onClick={() => setOpen(!open)}
@@ -145,27 +145,37 @@ export const MobileSidebar = ({
         </div>
         <AnimatePresence>
           {open && (
-            <motion.div
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              className={cn(
-                "fixed h-full w-75 inset-y-0 left-0 bg-white p-10 z-100 flex flex-col justify-between shadow-xl",
-                className
-              )}
-            >
-              <div
-                className="absolute right-10 top-10 z-50 rounded-full border border-destructive p-0.5 text-destructive scale-90 cursor-pointer hover:scale-110 transition duration-150"
-                onClick={() => setOpen(!open)}
+            <>
+              {/* Backdrop Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 z-90"
+                onClick={() => setOpen(false)}
+              />
+              <motion.div
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "-100%", opacity: 0 }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeInOut",
+                }}
+                className={cn(
+                  "fixed h-full w-75 inset-y-0 left-0 bg-white p-10 z-100 flex flex-col justify-between shadow-xl",
+                  className
+                )}
               >
-                <IconX className="text-destructive" />
-              </div>
-              {children}
-            </motion.div>
+                <div
+                  className="absolute right-10 top-10 z-50 rounded-full border border-destructive p-0.5 text-destructive scale-90 cursor-pointer hover:scale-110 transition duration-150"
+                  onClick={() => setOpen(!open)}
+                >
+                  <IconX className="text-destructive" />
+                </div>
+                {children}
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>

@@ -12,7 +12,7 @@ export default function DashboardHeader({
   return (
     <div className="bg-white flex justify-between items-center border-b border-border">
       <div className="flex flex-col items-start justify-between p-4 md:px-8">
-        <h1 className="text-2xl font-bold text-foreground">
+        <h1 className="text-lg md:text-2xl font-bold text-foreground">
           {title}
         </h1>
         {description && (

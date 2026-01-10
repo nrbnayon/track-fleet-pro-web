@@ -26,7 +26,6 @@ import {
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useLogout } from "@/hooks/useLogout";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import LogoutModal from "../Shared/LogoutModal";
 
 interface SubLink {
@@ -369,7 +368,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row bg-gray w-full flex-1 mx-auto",
-        "h-screen overflow-hidden relative"
+        "min-h-screen md:h-screen md:overflow-hidden relative"
       )}
     >
       <div className="relative overflow-visible flex">
@@ -453,9 +452,9 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                               display: open ? "inline-block" : "none",
                               opacity: open ? 1 : 0,
                             }}
-                            className="text-md"
+                            className="text-sm md:text-base"
                           >
-                            <TranslatedText text={link.label} />
+                            {link.label}
                           </motion.span>
 
                           {/* Expand/Collapse Button */}
@@ -659,7 +658,7 @@ const Logo = ({ open }: { open: boolean }) => {
 const Dashboard = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-1 bg-gray">
-      <div className="p-0 flex flex-col gap-2 flex-1 w-full overflow-y-auto overflow-x-hidden">
+      <div className="p-0 flex flex-col gap-2 flex-1 w-full md:h-screen md:overflow-y-auto overflow-x-hidden">
         {children}
       </div>
     </div>

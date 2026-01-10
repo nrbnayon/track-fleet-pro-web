@@ -60,90 +60,92 @@ export default function ParcelsTable({ data, itemsPerPage = 10 }: ParcelsTablePr
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block relative w-full overflow-auto rounded-none border-none max-h-[70vh]">
-                <table className="w-full caption-bottom text-sm">
-                    <TableHeader className="bg-[#E8F4FD] sticky top-0 z-10 shadow-sm">
-                        <TableRow className="border-none hover:bg-[#E8F4FD]">
-                            <TableHead className="font-semibold text-primary">Tracking Number</TableHead>
-                            <TableHead className="font-semibold text-primary">Sender</TableHead>
-                            <TableHead className="font-semibold text-primary">Receiver</TableHead>
-                            <TableHead className="font-semibold text-primary">Delivery Address</TableHead>
-                            <TableHead className="font-semibold text-primary">Weight</TableHead>
-                            <TableHead className="font-semibold text-primary">Driver</TableHead>
-                            <TableHead className="font-semibold text-primary">Status</TableHead>
-                            <TableHead className="font-semibold text-primary">Action</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {currentData.length > 0 ? (
-                            currentData.map((parcel) => (
-                                <TableRow
-                                    key={parcel.id}
-                                    className="border-b border-[#F3EEE7] hover:bg-blue-50/30 transition-colors"
-                                >
-                                    <TableCell className="font-medium text-secondary">{parcel.tracking_no}</TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-foreground">{parcel.senderInfo?.name || "N/A"}</span>
-                                            <span className="text-xs text-secondary">{parcel.senderInfo?.phone || "N/A"}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-foreground">{parcel.receiverInfo?.name || "N/A"}</span>
-                                            <span className="text-xs text-secondary">{parcel.receiverInfo?.phone || "N/A"}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="max-w-[200px] truncate text-secondary" title={parcel.delivery_location}>
-                                        {parcel.delivery_location}
-                                    </TableCell>
-                                    <TableCell className="text-secondary">{parcel.parcel_weight} Kg</TableCell>
-                                    <TableCell>
-                                        {parcel.riderInfo ? (
-                                            <span className="text-secondary">{parcel.riderInfo.rider_name}</span>
-                                        ) : (
-                                            <span className="text-secondary italic">Unassigned</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium capitalize", getStatusColor(parcel.parcel_status))}>
-                                            {parcel.parcel_status}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => setSelectedParcelForTrack(parcel)}
-                                                className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-primary transition-colors border border-border hover:border-primary cursor-pointer"
-                                                title="Track Parcel"
-                                            >
-                                                <MapPin className="w-4 h-4" />
-                                            </button>
-                                            <Button
-                                                size="sm"
-                                                className="bg-primary hover:bg-primary/90 text-white gap-2 px-3 h-8"
-                                                onClick={() => setSelectedParcelForAssign(parcel)}
-                                            >
-                                                <Car className="w-4 h-4" />
-                                                Assign
-                                            </Button>
-                                        </div>
+            <div className="hidden md:block">
+                <div className="relative w-full overflow-x-auto overflow-y-auto rounded-none border-none max-h-[70vh]">
+                    <table className="w-full caption-bottom text-sm">
+                        <TableHeader className="bg-[#E8F4FD] sticky top-0 z-10 shadow-sm">
+                            <TableRow className="border-none hover:bg-[#E8F4FD]">
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Tracking Number</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Sender</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Receiver</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Delivery Address</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Weight</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Driver</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Status</TableHead>
+                                <TableHead className="font-semibold text-primary whitespace-nowrap">Action</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {currentData.length > 0 ? (
+                                currentData.map((parcel) => (
+                                    <TableRow
+                                        key={parcel.id}
+                                        className="border-b border-[#F3EEE7] hover:bg-blue-50/30 transition-colors"
+                                    >
+                                        <TableCell className="font-medium text-secondary whitespace-nowrap">{parcel.tracking_no}</TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-foreground">{parcel.senderInfo?.name || "N/A"}</span>
+                                                <span className="text-xs text-secondary">{parcel.senderInfo?.phone || "N/A"}</span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-foreground">{parcel.receiverInfo?.name || "N/A"}</span>
+                                                <span className="text-xs text-secondary">{parcel.receiverInfo?.phone || "N/A"}</span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="max-w-[200px] truncate text-secondary" title={parcel.delivery_location}>
+                                            {parcel.delivery_location}
+                                        </TableCell>
+                                        <TableCell className="text-secondary whitespace-nowrap">{parcel.parcel_weight} Kg</TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            {parcel.riderInfo ? (
+                                                <span className="text-secondary">{parcel.riderInfo.rider_name}</span>
+                                            ) : (
+                                                <span className="text-secondary italic">Unassigned</span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium capitalize", getStatusColor(parcel.parcel_status))}>
+                                                {parcel.parcel_status}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => setSelectedParcelForTrack(parcel)}
+                                                    className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-primary transition-colors border border-border hover:border-primary cursor-pointer"
+                                                    title="Track Parcel"
+                                                >
+                                                    <MapPin className="w-4 h-4" />
+                                                </button>
+                                                <Button
+                                                    size="sm"
+                                                    className="bg-primary hover:bg-primary/90 text-white gap-2 px-3 h-8"
+                                                    onClick={() => setSelectedParcelForAssign(parcel)}
+                                                >
+                                                    <Car className="w-4 h-4" />
+                                                    Assign
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="text-center py-8 text-secondary">
+                                        No parcels found matching your criteria
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={8} className="text-center py-8 text-secondary">
-                                    No parcels found matching your criteria
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </table>
+                            )}
+                        </TableBody>
+                    </table>
+                </div>
             </div>
 
             {/* Mobile Card View */}
-            <div className="md:hidden space-y-4 max-h-[75vh] overflow-y-auto pr-1">
+            <div className="md:hidden space-y-4">
                 {currentData.length > 0 ? (
                     currentData.map((parcel) => (
                         <div key={parcel.id} className="bg-white border border-gray-100 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -218,14 +220,16 @@ export default function ParcelsTable({ data, itemsPerPage = 10 }: ParcelsTablePr
 
             {/* Pagination - Only show if data exceeds itemsPerPage */}
             {showPagination && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                    totalItems={data.length}
-                    itemsPerPage={itemsPerPage}
-                    currentItemsCount={currentData.length}
-                />
+                <div className="mt-4">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        totalItems={data.length}
+                        itemsPerPage={itemsPerPage}
+                        currentItemsCount={currentData.length}
+                    />
+                </div>
             )}
 
             {/* Modals */}
