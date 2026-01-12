@@ -47,7 +47,7 @@ export default function ActionRequired() {
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full flex flex-col">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Action Required</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">Action Required</h2>
 
             <div className="space-y-4 flex-1">
                 {actions.map((action, index) => (
@@ -58,7 +58,7 @@ export default function ActionRequired() {
                             </div>
                             <p className="text-sm font-medium text-gray-700">{action.label}</p>
                         </div>
-                        <span className="text-sm font-bold text-gray-900">{action.count}</span>
+                        <span className="text-sm font-bold text-foreground">{action.count}</span>
                     </div>
                 ))}
             </div>

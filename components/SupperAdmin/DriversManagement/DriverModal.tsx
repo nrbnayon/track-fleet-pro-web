@@ -120,7 +120,7 @@ export default function DriverModal({
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 p-1 rounded-full"
+            className="text-gray-400 hover:text-secondary transition-colors bg-gray-50 p-1 rounded-full"
           >
             <X className="w-5 h-5" />
           </button>

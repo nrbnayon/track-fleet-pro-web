@@ -27,7 +27,7 @@ export default function DeleteConfirmModal({
             <AlertTriangle className="w-5 h-5" />
             <TranslatedText text="Delete Driver" />
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 hover:text-secondary">
             <X className="w-5 h-5" />
           </button>
         </div>

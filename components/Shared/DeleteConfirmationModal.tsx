@@ -22,9 +22,8 @@ export function DeleteConfirmationModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${
-        isOpen ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"
+        }`}
     >
       {/* Backdrop */}
       <div
@@ -34,9 +33,8 @@ export function DeleteConfirmationModal({
 
       {/* Modal Container */}
       <div
-        className={`relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-2xl transform transition-all duration-300 ${
-          isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
-        }`}
+        className={`relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-2xl transform transition-all duration-300 ${isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
+          }`}
       >
         <button
           onClick={onClose}
@@ -67,7 +65,7 @@ export function DeleteConfirmationModal({
             <button
               onClick={onClose}
               disabled={isLoading}
-              className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-secondary font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>

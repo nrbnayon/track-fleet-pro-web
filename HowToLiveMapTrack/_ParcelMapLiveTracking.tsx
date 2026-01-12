@@ -336,7 +336,7 @@
 //                                 <span className="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
 //                             </div>
 //                             <div>
-//                                 <p className="text-sm font-semibold text-gray-900">
+//                                 <p className="text-sm font-semibold text-foreground">
 //                                     {isConnected ? "Live Tracking Active" : "Updating..."}
 //                                 </p>
 //                                 {distance && duration && (
@@ -349,7 +349,7 @@
 //                     {/* Speed indicator */}
 //                     <div className="absolute top-20 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-lg shadow-lg border border-gray-200">
 //                         <p className="text-xs text-gray-500">Last Update</p>
-//                         <p className="text-sm font-semibold text-gray-900">
+//                         <p className="text-sm font-semibold text-foreground">
 //                             {new Date().toLocaleTimeString()}
 //                         </p>
 //                     </div>

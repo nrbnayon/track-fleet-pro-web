@@ -25,7 +25,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
                 <div className="flex justify-end p-4">
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 p-1 rounded-full"
+                        className="text-gray-400 hover:text-secondary transition-colors bg-gray-50 p-1 rounded-full"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -41,7 +41,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
                     </h3>
                     <p className="text-gray-500 text-[15px] leading-relaxed mb-8">
                         <TranslatedText text="Are you sure you want to delete" />{" "}
-                        <span className="font-semibold text-gray-900">"{sellerName}"</span>?{" "}
+                        <span className="font-semibold text-foreground">"{sellerName}"</span>?{" "}
                         <TranslatedText text="This action cannot be undone." />
                     </p>
 

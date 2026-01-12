@@ -48,7 +48,7 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="font-bold text-blue-600">{parcel.tracking_no}</p>
-                                <p className="text-sm text-gray-600 mt-1">{parcel.pickup_location}</p>
+                                <p className="text-sm text-secondary mt-1">{parcel.pickup_location}</p>
                             </div>
                             <Badge variant="outline" className="bg-white">{parcel.parcel_status}</Badge>
                         </div>
@@ -92,7 +92,7 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
 
                                     <div className="flex-1">
                                         <div className="flex justify-between items-center">
-                                            <h4 className="font-semibold text-gray-900">{driver.driver_name}</h4>
+                                            <h4 className="font-semibold text-foreground">{driver.driver_name}</h4>
                                             <Badge variant={driver.driver_status === 'available' ? 'default' : 'secondary'} className={cn(
                                                 "capitalize",
                                                 driver.driver_status === 'available' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-700'

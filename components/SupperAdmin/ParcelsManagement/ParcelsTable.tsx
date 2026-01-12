@@ -247,7 +247,7 @@ export default function ParcelsTable({ data, itemsPerPage = 10, isLoading = fals
                                     <div className="flex justify-between items-start mb-3">
                                         <div>
                                             <p className="text-xs text-gray-500 mb-1">Tracking ID</p>
-                                            <p className="font-semibold text-gray-900">{parcel.tracking_no}</p>
+                                            <p className="font-semibold text-foreground">{parcel.tracking_no}</p>
                                         </div>
                                         <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium capitalize", getStatusColor(parcel.parcel_status))}>
                                             {parcel.parcel_status}

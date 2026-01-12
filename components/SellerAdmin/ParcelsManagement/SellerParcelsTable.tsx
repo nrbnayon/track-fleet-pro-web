@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Eye } from "lucide-react";
 import { Parcel } from "@/types/parcel";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/Shared/Pagination";
 import { SellerTrackParcelModal } from "./SellerTrackParcelModal";
 import { SellerParcelDetailsModal } from "./SellerParcelDetailsModal";
 
@@ -26,12 +27,12 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
 
     const getStatusColor = (status: string | undefined) => {
         switch (status?.toLowerCase()) {
-            case "ongoing": return "bg-blue-100 text-blue-600";
+            case "ongoing": return "bg-blue-100 text-primary";
             case "pending": return "bg-amber-100 text-amber-600";
             case "delivered": return "bg-emerald-100 text-emerald-600";
             case "return": return "bg-red-100 text-red-600";
-            case "cancelled": return "bg-gray-100 text-gray-600";
-            default: return "bg-gray-100 text-gray-600";
+            case "cancelled": return "bg-gray-100 text-secondary";
+            default: return "bg-gray-100 text-secondary";
         }
     };
 
@@ -57,23 +58,23 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
 
     return (
         <div className="bg-white rounded-3xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] overflow-hidden border border-gray-50 flex flex-col min-h-[600px]">
-            <div className="p-8 border-b border-gray-100">
-                <h2 className="text-2xl font-bold text-gray-900">Parcel List</h2>
+            <div className="p-6 border-b border-gray-100">
+                <h2 className="text-2xl font-bold text-foreground">Parcel List</h2>
             </div>
 
             <div className="flex-1 overflow-x-auto">
                 {/* Desktop View */}
                 <table className="w-full text-left hidden lg:table">
-                    <thead className="bg-blue-50/50">
+                    <thead className="bg-[#E8F4FD]">
                         <tr>
-                            <th className="px-8 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Tracking Number</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Receiver</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Delivery Address</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Distance</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Parcel Weight</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Assigned Driver</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-5 text-sm font-bold text-blue-600 uppercase tracking-wider text-center">Action</th>
+                            <th className="px-8 py-5 text-sm font-bold text-primary uppercase tracking-wider">Tracking Number</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Receiver</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Delivery Address</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Distance</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Parcel Weight</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Assigned Driver</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -85,22 +86,22 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                             </tr>
                         ) : currentData.length > 0 ? (
                             currentData.map((parcel) => (
-                                <tr key={parcel.id} className="hover:bg-blue-50/30 transition-colors group">
-                                    <td className="px-8 py-5 text-sm font-bold text-gray-700">{parcel.tracking_no}</td>
+                                <tr key={parcel.id} className="hover:bg-gray-50 transition-colors group">
+                                    <td className="px-8 py-5 text-sm font-bold text-secondary">{parcel.tracking_no}</td>
                                     <td className="px-6 py-5">
                                         <div className="space-y-0.5">
-                                            <p className="text-sm font-bold text-gray-900">{parcel.receiverInfo?.name}</p>
-                                            <p className="text-[10px] font-bold text-gray-400">{parcel.receiverInfo?.phone || "000-0000-000"}</p>
+                                            <p className="text-sm font-bold text-foreground">{parcel.receiverInfo?.name}</p>
+                                            <p className="text-xs font-bold text-gray-400">{parcel.receiverInfo?.phone || "000-0000-000"}</p>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5 text-sm font-semibold text-gray-600">{parcel.delivery_location}</td>
-                                    <td className="px-6 py-5 text-sm font-bold text-gray-700">18.2 Km</td>
-                                    <td className="px-6 py-5 text-sm font-bold text-gray-700">{parcel.parcel_weight} Kg</td>
-                                    <td className="px-6 py-5 text-sm font-bold text-gray-700">
+                                    <td className="px-6 py-5 text-sm font-semibold text-secondary">{parcel.delivery_location}</td>
+                                    <td className="px-6 py-5 text-sm font-bold text-secondary">18.2 Km</td>
+                                    <td className="px-6 py-5 text-sm font-bold text-secondary">{parcel.parcel_weight} Kg</td>
+                                    <td className="px-6 py-5 text-sm font-bold text-secondary">
                                         {parcel.riderInfo?.rider_name || <span className="text-gray-400 italic font-medium">Unassigned</span>}
                                     </td>
                                     <td className="px-6 py-5">
-                                        <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider", getStatusColor(parcel.parcel_status))}>
+                                        <span className={cn("px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider", getStatusColor(parcel.parcel_status))}>
                                             {parcel.parcel_status}
                                         </span>
                                     </td>
@@ -108,13 +109,13 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                                         <div className="flex items-center justify-center gap-3">
                                             <button
                                                 onClick={() => setSelectedParcelForTrack(parcel)}
-                                                className="p-2 rounded-xl border border-gray-100 text-gray-400 hover:text-blue-500 hover:bg-white hover:shadow-md transition-all"
+                                                className="p-2 rounded-lg border border-gray-100 text-gray-400 hover:bg-white hover:shadow-md transition-all cursor-pointer hover:border-primary hover:text-primary"
                                             >
                                                 <MapPin className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => setSelectedParcelForView(parcel)}
-                                                className="p-2 rounded-xl border border-gray-100 text-gray-400 hover:text-blue-500 hover:bg-white hover:shadow-md transition-all"
+                                                className="p-2 rounded-lg border border-gray-100 text-gray-400 hover:bg-white hover:shadow-md transition-all cursor-pointer hover:border-primary hover:text-primary"
                                             >
                                                 <Eye className="w-4 h-4" />
                                             </button>
@@ -152,34 +153,34 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                             <div key={parcel.id} className="p-6 rounded-3xl border border-gray-50 shadow-sm space-y-4 hover:shadow-md transition-all">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tracking Number</p>
-                                        <p className="text-sm font-bold text-gray-900">{parcel.tracking_no}</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Tracking Number</p>
+                                        <p className="text-sm font-bold text-foreground">{parcel.tracking_no}</p>
                                     </div>
-                                    <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase", getStatusColor(parcel.parcel_status))}>
+                                    <span className={cn("px-3 py-1 rounded-full text-xs font-bold uppercase", getStatusColor(parcel.parcel_status))}>
                                         {parcel.parcel_status}
                                     </span>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Receiver</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Receiver</p>
                                         <p className="text-xs font-bold text-gray-800">{parcel.receiverInfo?.name}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Weight</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Weight</p>
                                         <p className="text-xs font-bold text-gray-800">{parcel.parcel_weight} Kg</p>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Delivery Address</p>
-                                    <p className="text-xs font-semibold text-gray-600 line-clamp-1">{parcel.delivery_location}</p>
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Delivery Address</p>
+                                    <p className="text-xs font-semibold text-secondary line-clamp-1">{parcel.delivery_location}</p>
                                 </div>
 
                                 <div className="flex gap-2 pt-2">
                                     <Button
                                         variant="outline"
-                                        className="flex-1 rounded-xl h-10 gap-2 text-xs font-bold border-gray-100"
+                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-primary"
                                         onClick={() => setSelectedParcelForTrack(parcel)}
                                     >
                                         <MapPin className="w-3 h-3" />
@@ -187,7 +188,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="flex-1 rounded-xl h-10 gap-2 text-xs font-bold border-gray-100"
+                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-primary"
                                         onClick={() => setSelectedParcelForView(parcel)}
                                     >
                                         <Eye className="w-3 h-3" />
@@ -197,8 +198,8 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                             </div>
                         ))
                     ) : (
-                        <div className="py-12 text-center text-gray-400 font-medium">
-                            No parcels found
+                        <div className="py-12 text-center text-secondary font-medium">
+                          <Eye className="w-6 h-6" />  No parcels found
                         </div>
                     )}
                 </div>
@@ -206,38 +207,14 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="p-8 border-t border-gray-50 flex items-center justify-center gap-3">
-                    <button
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        className="p-2 rounded-xl border border-gray-100 text-gray-400 hover:text-blue-500 disabled:opacity-50 transition-all"
-                    >
-                        <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <div className="flex items-center gap-2">
-                        {[...Array(totalPages)].map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={cn(
-                                    "w-10 h-10 rounded-xl text-sm font-bold transition-all",
-                                    currentPage === i + 1
-                                        ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
-                                        : "text-gray-400 hover:bg-gray-50"
-                                )}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-                    </div>
-                    <button
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        className="p-2 rounded-xl border border-gray-100 text-gray-400 hover:text-blue-500 disabled:opacity-50 transition-all"
-                    >
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
-                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={data.length}
+                    itemsPerPage={itemsPerPage}
+                    currentItemsCount={currentData.length}
+                />
             )}
 
             <SellerTrackParcelModal

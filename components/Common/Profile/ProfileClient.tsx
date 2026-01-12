@@ -229,7 +229,7 @@ export default function ProfileClient() {
           <Button
             onClick={handleGlobalSave}
             disabled={isSaving || !hasChanges}
-            className="bg-gray-800 text-white hover:bg-gray-900"
+            className="bg-gray-800 text-white hover:bg-foreground"
           >
             {isSaving ? "Saving..." : "Save"}
           </Button>
@@ -488,7 +488,7 @@ export default function ProfileClient() {
                             <Button
                               type="button"
                               onClick={handleChangePassword}
-                              className="bg-gray-900 text-white hover:bg-gray-800"
+                              className="bg-foreground text-white hover:bg-gray-800"
                             >
                               Save
                             </Button>

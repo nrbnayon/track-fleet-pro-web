@@ -166,14 +166,14 @@ export default function PrivacyPolicyClient() {
             variant="outline"
             onClick={handleCancel}
             disabled={isSaving}
-            className="text-gray-700 border-gray-300 hover:bg-gray-50 dark:text-gray-200 dark:border-gray-600  "
+            className="text-gray-700 border-gray-300 hover:bg-gray-50 dark:text-gray-200 dark:border-secondary  "
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={isSaving || !hasChanges}
-            className="bg-gray-800 text-white hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600"
+            className="bg-gray-800 text-white hover:bg-foreground dark:bg-gray-700 dark:hover:bg-secondary"
           >
             {isSaving ? "Saving..." : "Save"}
           </Button>
@@ -206,7 +206,7 @@ export default function PrivacyPolicyClient() {
                 <Input
                   value={policy.title}
                   onChange={(e) => handleTitleChange(policy.id, e.target.value)}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-foreground dark:text-gray-100 h-11"
+                  className="bg-white dark:bg-foreground border-gray-300 dark:border-secondary text-foreground dark:text-gray-100 h-11"
                   placeholder="Enter policy title"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function PrivacyPolicyClient() {
                   onChange={(e) =>
                     handleDescriptionChange(policy.id, e.target.value)
                   }
-                  className="min-h-35 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-foreground dark:text-gray-100 resize-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-35 bg-white dark:bg-foreground border-gray-300 dark:border-secondary text-foreground dark:text-gray-100 resize-none focus:ring-2 focus:ring-primary/20"
                   placeholder="Enter policy description"
                 />
                 <div className="text-right text-xs text-gray-500   font-medium">
@@ -234,7 +234,7 @@ export default function PrivacyPolicyClient() {
         {/* Add Policy Button */}
         <button
           onClick={handleAddPolicy}
-          className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 flex items-center justify-center gap-2 text-gray-500   font-medium hover:bg-gray-50  /50 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+          className="w-full border-2 border-dashed border-gray-300 dark:border-secondary rounded-xl p-6 flex items-center justify-center gap-2 text-gray-500   font-medium hover:bg-gray-50  /50 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Add Policy

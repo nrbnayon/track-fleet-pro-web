@@ -253,11 +253,11 @@ export default function TrackingResults({
                                                     </Badge>
                                                 )}
                                             </div>
-                                            <p className="text-sm text-gray-600 mb-3 flex items-center gap-2">
+                                            <p className="text-sm text-secondary mb-3 flex items-center gap-2">
                                                 <Clock className="w-4 h-4" />
                                                 {update.time}
                                             </p>
-                                            <p className={`${isFirst ? 'text-gray-900 font-medium' : 'text-gray-700'
+                                            <p className={`${isFirst ? 'text-foreground font-medium' : 'text-gray-700'
                                                 }`}>
                                                 {update.status}
                                             </p>

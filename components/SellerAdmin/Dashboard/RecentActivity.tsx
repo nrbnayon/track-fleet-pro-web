@@ -50,7 +50,7 @@ export default function RecentActivity() {
             case "pending": return "bg-amber-100 text-amber-600";
             case "ongoing": return "bg-blue-100 text-blue-600";
             case "delivered": return "bg-emerald-100 text-emerald-600";
-            default: return "bg-gray-100 text-gray-600";
+            default: return "bg-gray-100 text-secondary";
         }
     };
 
@@ -67,7 +67,7 @@ export default function RecentActivity() {
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full flex flex-col">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">Recent Activity</h2>
 
             <div className="space-y-6 flex-1">
                 {activities.map((activity, index) => {
@@ -79,7 +79,7 @@ export default function RecentActivity() {
                                     <Icon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-semibold text-gray-900">
+                                    <p className="text-sm font-semibold text-foreground">
                                         Parcel {activity.tracking_no} {activity.status}
                                     </p>
                                     <p className="text-xs text-gray-500">{formatRelativeTime(activity.timestamp)}</p>

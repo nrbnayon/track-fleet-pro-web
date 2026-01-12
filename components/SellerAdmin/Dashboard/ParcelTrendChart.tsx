@@ -39,7 +39,7 @@ export default function ParcelTrendChart() {
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
-            <h2 className="text-xl font-bold text-gray-900 mb-8">
+            <h2 className="text-xl font-bold text-foreground mb-8">
                 <TranslatedText text="Parcel Trend" />
             </h2>
             <div className="h-[300px] w-full">

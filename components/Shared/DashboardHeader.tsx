@@ -49,7 +49,7 @@ export default function DashboardHeader({
             />
           </div>
           <div className="hidden md:flex flex-col">
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-medium text-foreground">
               Admin
             </p>
             <p className="text-xs text-gray-500">

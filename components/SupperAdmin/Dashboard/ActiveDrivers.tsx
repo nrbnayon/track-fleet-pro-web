@@ -28,16 +28,16 @@ export default function ActiveDrivers() {
             case "busy":
                 return "bg-purple-100 text-purple-600"; // Light purple/pinkish
             case "offline":
-                return "bg-gray-100 text-gray-600";
+                return "bg-gray-100 text-secondary";
             default:
-                return "bg-gray-100 text-gray-600";
+                return "bg-gray-100 text-secondary";
         }
     };
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)] h-full flex flex-col">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Active Drivers</h2>
+                <h2 className="text-xl font-bold text-foreground">Active Drivers</h2>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-4">
@@ -65,7 +65,7 @@ export default function ActiveDrivers() {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-gray-900 truncate">
+                            <h3 className="text-sm font-semibold text-foreground truncate">
                                 {driver.driver_name}
                             </h3>
                             <p className="text-xs text-gray-500 truncate mt-0.5">

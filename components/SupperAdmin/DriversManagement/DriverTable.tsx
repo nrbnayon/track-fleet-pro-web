@@ -48,7 +48,7 @@ export default function DriverTable({
       case "pending":
         return "bg-[#FFF4E5] text-[#F2994A]";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-gray-100 text-secondary";
     }
   };
 

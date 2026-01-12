@@ -28,7 +28,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[600px] p-6 rounded-2xl border-none">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-gray-900 mb-4">Add New Parcel</DialogTitle>
+                    <DialogTitle className="text-xl font-bold text-foreground mb-4">Add New Parcel</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
@@ -38,7 +38,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                             <Input
                                 id="recipientName"
                                 placeholder="John Doe"
-                                className="bg-gray-50 border-gray-100 rounded-xl h-11"
+                                className="bg-gray-50 border-gray-100 rounded-lg h-11"
                             />
                         </div>
                         <div className="space-y-2">
@@ -46,7 +46,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                             <Input
                                 id="recipientNumber"
                                 placeholder="000-0000-000"
-                                className="bg-gray-50 border-gray-100 rounded-xl h-11"
+                                className="bg-gray-50 border-gray-100 rounded-lg h-11"
                             />
                         </div>
                     </div>
@@ -56,7 +56,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                         <Input
                             id="recipientAddress"
                             placeholder="H42, Road 19, Shyamoli, Dhaka"
-                            className="bg-gray-50 border-gray-100 rounded-xl h-11"
+                            className="bg-gray-50 border-gray-100 rounded-lg h-11"
                         />
                     </div>
 
@@ -64,7 +64,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                         <div className="space-y-2">
                             <Label htmlFor="parcelType" className="text-sm font-semibold text-gray-700">Parcel Type</Label>
                             <Select defaultValue="fragile">
-                                <SelectTrigger className="bg-gray-50 border-gray-100 rounded-xl h-11">
+                                <SelectTrigger className="bg-gray-50 border-gray-100 rounded-lg h-11">
                                     <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -80,7 +80,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                             <Input
                                 id="parcelWeight"
                                 placeholder="2.5 Kg"
-                                className="bg-gray-50 border-gray-100 rounded-xl h-11"
+                                className="bg-gray-50 border-gray-100 rounded-lg h-11"
                             />
                         </div>
                     </div>
@@ -90,7 +90,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                         <Textarea
                             id="notes"
                             placeholder="Add a note."
-                            className="bg-gray-50 border-gray-100 rounded-xl min-h-[100px] resize-none"
+                            className="bg-gray-50 border-gray-100 rounded-lg min-h-[100px] resize-none"
                         />
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                 <div className="flex justify-end mt-4">
                     <Button
                         onClick={onClose}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl h-11 transition-all shadow-lg shadow-blue-500/25"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg h-11 transition-all shadow-lg shadow-blue-500/25"
                     >
                         Add Parcel
                     </Button>

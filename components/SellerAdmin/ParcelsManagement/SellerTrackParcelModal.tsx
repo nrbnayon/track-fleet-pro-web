@@ -12,7 +12,7 @@ const MapComponent = dynamic(() => import("@/components/SupperAdmin/ParcelsManag
     ssr: false,
     loading: () => (
         <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl">
-            <p className="text-gray-500">Loading map...</p>
+            <p className="text-secondary">Loading map...</p>
         </div>
     ),
 });
@@ -68,24 +68,24 @@ export function SellerTrackParcelModal({ isOpen, onClose, parcel }: TrackParcelM
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
-            case "ongoing": return "bg-blue-100 text-blue-600";
+            case "ongoing": return "bg-blue-100 text-primary";
             case "delivered": return "bg-emerald-100 text-emerald-600";
             case "pending": return "bg-amber-100 text-amber-600";
-            default: return "bg-gray-100 text-gray-600";
+            default: return "bg-gray-100 text-secondary";
         }
     };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[750px] p-0 rounded-3xl border-none overflow-hidden bg-white shadow-2xl">
-                <DialogHeader className="absolute top-0 right-0 z-50 p-4">
+            <DialogContent className="sm:max-w-3xl p-0 rounded-xl border-none overflow-hidden bg-white shadow-2xl">
+                <DialogHeader className="absolute top-0 right-0 z-0 p-4">
                     {/* The close button is handled by DialogContent internally but we can style if needed */}
                 </DialogHeader>
 
                 <div className="flex flex-col">
                     {/* Header */}
                     <div className="p-6 pb-2">
-                        <DialogTitle className="text-xl font-bold text-gray-900 mb-4">Track Parcel</DialogTitle>
+                        <DialogTitle className="text-xl font-bold text-foreground mb-4">Track Parcel</DialogTitle>
                     </div>
 
                     {/* Map Section */}
@@ -107,14 +107,14 @@ export function SellerTrackParcelModal({ isOpen, onClose, parcel }: TrackParcelM
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-6">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <h3 className="text-lg font-bold text-gray-900">Tracking Number #{parcel.tracking_no}</h3>
+                                    <h3 className="text-lg font-bold text-foreground">Tracking Number #{parcel.tracking_no}</h3>
                                     <span className={cn("px-3 py-1 rounded-full text-xs font-bold uppercase", getStatusColor(parcel.parcel_status))}>
                                         {parcel.parcel_status}
                                     </span>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-sm font-semibold text-gray-700">
-                                        Assigned Driver : <span className="font-bold text-gray-900">{parcel.riderInfo?.rider_name || "Unassigned"}</span>
+                                        Assigned Driver : <span className="font-bold text-foreground">{parcel.riderInfo?.rider_name || "Unassigned"}</span>
                                     </p>
                                     <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                                         Vehicle Number #{parcel.riderInfo?.rider_vehicle || "N/A"}
@@ -122,7 +122,7 @@ export function SellerTrackParcelModal({ isOpen, onClose, parcel }: TrackParcelM
                                 </div>
                             </div>
                             {parcel.riderInfo && (
-                                <Button variant="outline" className="rounded-full border-gray-200 text-gray-700 font-bold px-6 h-10 hover:bg-gray-50 transition-all">
+                                <Button variant="outline" className="rounded-full border-gray-200 text-gray-700 font-bold px-6 h-10 transition-all">
                                     Contact Driver
                                 </Button>
                             )}
@@ -132,29 +132,29 @@ export function SellerTrackParcelModal({ isOpen, onClose, parcel }: TrackParcelM
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase mb-2">From</p>
-                                <p className="text-sm font-bold text-gray-800">{parcel.pickup_location?.split(',')[0] || "Unknown"}</p>
-                                <p className="text-xs font-semibold text-gray-500">{parcel.pickup_location?.split(',')[1]?.trim() || "Dhaka"}</p>
+                                <p className="text-sm font-bold text-foreground">{parcel.pickup_location?.split(',')[0] || "Unknown"}</p>
+                                <p className="text-xs font-semibold text-secondary">{parcel.pickup_location?.split(',')[1]?.trim() || "Dhaka"}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase mb-2">To</p>
-                                <p className="text-sm font-bold text-gray-800">{parcel.delivery_location?.split(',')[0] || "Unknown"}</p>
-                                <p className="text-xs font-semibold text-gray-500">{parcel.delivery_location?.split(',')[1]?.trim() || "Dhaka"}</p>
+                                <p className="text-sm font-bold text-foreground">{parcel.delivery_location?.split(',')[0] || "Unknown"}</p>
+                                <p className="text-xs font-semibold text-secondary">{parcel.delivery_location?.split(',')[1]?.trim() || "Dhaka"}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase mb-2">Current Location</p>
-                                <p className="text-sm font-bold text-gray-800">{parcel.parcel_status === "ongoing" ? "Mirpur" : parcel.delivery_location?.split(',')[0]}</p>
-                                <p className="text-xs font-semibold text-gray-500">Dhaka</p>
+                                <p className="text-sm font-bold text-foreground">{parcel.parcel_status === "ongoing" ? "Mirpur" : parcel.delivery_location?.split(',')[0]}</p>
+                                <p className="text-xs font-semibold text-secondary">Dhaka</p>
                             </div>
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase mb-2">Total Distance</p>
-                                <p className="text-xl font-black text-gray-900">40 Km</p>
+                                <p className="text-xl font-black text-foreground">40 Km</p>
                             </div>
                         </div>
 
                         <div className="pt-2">
                             <Button
                                 onClick={onClose}
-                                className="w-full md:w-auto md:float-right bg-blue-500 hover:bg-blue-600 text-white font-black py-6 px-12 rounded-xl h-12 transition-all shadow-lg shadow-blue-500/25"
+                                className="w-full md:w-auto md:float-right bg-primary hover:bg-primary/80 text-white font-black py-6 px-12 rounded-xl h-12 transition-all shadow-lg shadow-primary/25"
                             >
                                 Close
                             </Button>

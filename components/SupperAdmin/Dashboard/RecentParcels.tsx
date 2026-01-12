@@ -40,16 +40,16 @@ export default function RecentParcels() {
             case "return":
                 return "bg-red-100 text-red-600";
             case "cancelled":
-                return "bg-gray-100 text-gray-600";
+                return "bg-gray-100 text-secondary";
             default:
-                return "bg-gray-100 text-gray-600";
+                return "bg-gray-100 text-secondary";
         }
     };
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)] h-full flex flex-col">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Recent Parcels</h2>
+                <h2 className="text-xl font-bold text-foreground">Recent Parcels</h2>
                 <div className="relative">
                     <select
                         value={filter}
@@ -82,7 +82,7 @@ export default function RecentParcels() {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-gray-900 truncate">
+                            <h3 className="text-sm font-semibold text-foreground truncate">
                                 {parcel.tracking_no}
                             </h3>
                             <p className="text-xs text-gray-500 truncate mt-0.5">
