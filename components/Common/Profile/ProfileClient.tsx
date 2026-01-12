@@ -255,10 +255,10 @@ export default function ProfileClient() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
-            <TranslatedText text={user.role} />
+            Welcome {user.name}!
           </h1>
           <p className="text-sm text-secondary mt-1">
-            <TranslatedText text="Track, manage and forecast your lands." />
+            Manage your profile information here.
           </p>
         </div>
 
@@ -303,7 +303,7 @@ export default function ProfileClient() {
           <div>
             <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
             <p className="text-sm text-secondary">
-              <TranslatedText text="Update your username and manage your account" />
+              Update your username and manage your account
             </p>
           </div>
         </div>
@@ -318,7 +318,7 @@ export default function ProfileClient() {
                 : "text-secondary hover:bg-blue-50"
                 }`}
             >
-              <TranslatedText text="Account Settings" />
+              Account Settings
             </button>
             <button
               onClick={() => setActiveSection("notifications")}
@@ -327,7 +327,7 @@ export default function ProfileClient() {
                 : "text-secondary hover:bg-blue-50"
                 }`}
             >
-              <TranslatedText text="Notifications" />
+              Notifications
             </button>
             {/* <button
               onClick={() => setActiveSection("language")}
@@ -350,7 +350,7 @@ export default function ProfileClient() {
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
                       <label className="block text-sm font-medium text-foreground mb-1.5">
-                        <TranslatedText text="Your name" />
+                        Your name
                       </label>
 
                       {isEditingName ? (
