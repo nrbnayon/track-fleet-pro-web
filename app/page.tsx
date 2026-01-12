@@ -17,12 +17,8 @@ export default async function Home() {
         redirect("/seller-admin/dashboard");
       case "customer":
         redirect("/track-parcel");
-      case "admin":
-        redirect("/admin/dashboard");
-      case "user":
-        redirect("/user/dashboard");
       default:
-        redirect("/login");
+        redirect("/track-parcel");
     }
   }
 

@@ -1,4 +1,4 @@
-// components/Sidebar.tsx - RBAC-enabled Sidebar (FIXED)
+// components/Sidebar.tsx - Optimized with merged useEffect
 "use client";
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
@@ -6,7 +6,7 @@ import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LogOut,
   PanelLeftOpen,
@@ -31,7 +31,7 @@ import LogoutModal from "../Shared/LogoutModal";
 interface SubLink {
   label: string;
   href: string;
-  roles?: string[]; // Roles that can access this sublink
+  roles?: string[];
 }
 
 interface LinkType {
@@ -39,7 +39,7 @@ interface LinkType {
   href: string;
   icon: IconSvgElement;
   subLinks?: SubLink[];
-  roles?: string[]; // Roles that can access this link
+  roles?: string[];
 }
 
 interface DashboardWrapperProps {
@@ -48,7 +48,10 @@ interface DashboardWrapperProps {
 
 export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { logout } = useLogout();
+
+  // State management
   const [open, setOpen] = useState(true);
   const [sidebarWidth, setSidebarWidth] = useState(290);
   const [isResizing, setIsResizing] = useState(false);
@@ -59,6 +62,9 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // User state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string>("customer");
   const [userName, setUserName] = useState<string>("User");
   const [userEmail, setUserEmail] = useState<string>("");
@@ -66,27 +72,36 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const minWidth = 80;
   const maxWidth = 400;
 
-  // Get user role from cookie on component mount
+  // MERGED useEffect - Get user data and check authentication
   useEffect(() => {
-    const getUserRole = () => {
-      const cookies = document.cookie.split(";");
-      const roleCookie = cookies.find((cookie) =>
-        cookie.trim().startsWith("userRole=")
-      );
-      return roleCookie ? roleCookie.split("=")[1] : "customer";
-    };
+    const cookies = document.cookie.split(";");
 
-    const getUserEmail = () => {
-      const cookies = document.cookie.split(";");
-      const emailCookie = cookies.find((cookie) =>
-        cookie.trim().startsWith("userEmail=")
-      );
-      return emailCookie ? decodeURIComponent(emailCookie.split("=")[1]) : "";
-    };
+    // Get access token
+    const accessTokenCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("accessToken=")
+    );
+    const accessToken = accessTokenCookie
+      ? accessTokenCookie.split("=")[1]
+      : null;
 
-    const role = getUserRole();
-    const email = getUserEmail();
+    // Get user role
+    const roleCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("userRole=")
+    );
+    const role = roleCookie ? roleCookie.split("=")[1] : "customer";
 
+    // Get user email
+    const emailCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("userEmail=")
+    );
+    const email = emailCookie
+      ? decodeURIComponent(emailCookie.split("=")[1])
+      : "";
+
+    // Set authentication status
+    setIsAuthenticated(!!accessToken);
+
+    // Set user data
     setUserRole(role);
     setUserEmail(email);
 
@@ -98,12 +113,18 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     } else {
       setUserName("Customer");
     }
-  }, []);
 
-  // FIXED: Memoize links array with proper role-based routes matching middleware
+    // Redirect if not authenticated (optional - middleware should handle this)
+    if (!accessToken) {
+      // You can optionally redirect here, but middleware should already handle it
+      // router.push('/login');
+    }
+  }, [router]);
+
+  // Navigation links configuration
   const links: LinkType[] = useMemo(
     () => [
-      // Super Admin Only Routes
+      // Super Admin Routes
       {
         label: "Dashboard Overview",
         href: "/super-admin/dashboard",
@@ -135,7 +156,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         roles: ["superadmin"],
       },
 
-      // Seller Admin Only Routes
+      // Seller Admin Routes
       {
         label: "Dashboard Overview",
         href: "/seller-admin/dashboard",
@@ -155,7 +176,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         roles: ["selleradmin"],
       },
 
-      // Shared Routes (All Authenticated Users)
+      // Shared Routes
       {
         label: "Settings",
         href: "/settings",
@@ -175,28 +196,20 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   // Filter links based on user role
   const filteredLinks = useMemo(() => {
     return links.filter((link) => {
-      // If no roles specified, show to everyone
       if (!link.roles || link.roles.length === 0) return true;
-      // Check if user's role is in the allowed roles
       return link.roles.includes(userRole);
     });
   }, [links, userRole]);
 
-  // Check if current path matches link or its sublinks (including dynamic routes)
+  // Check if current path matches link
   const isLinkActive = useCallback(
     (link: LinkType) => {
-      // Exact match
       if (pathname === link.href) return true;
-
-      // Check if pathname starts with link.href (for dynamic routes like /users/123)
       if (pathname.startsWith(link.href + "/")) return true;
 
-      // Check sublinks
       if (link.subLinks) {
         return link.subLinks.some((subLink) => {
-          // Exact match
           if (pathname === subLink.href) return true;
-          // Dynamic route match
           if (pathname.startsWith(subLink.href + "/")) return true;
           return false;
         });
@@ -207,7 +220,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     [pathname]
   );
 
-  // Toggle expanded state for items with sublinks
+  // Toggle expanded state
   const toggleExpanded = useCallback((label: string) => {
     setExpandedItems((prev) =>
       prev.includes(label)
@@ -233,6 +246,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     });
   }, [pathname, filteredLinks, expandedItems]);
 
+  // Resize handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsResizing(true);
     setStartX(e.clientX);
@@ -241,7 +255,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     document.body.style.userSelect = "none";
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
 
@@ -278,7 +292,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     };
   }, [isResizing, startX, startWidth]);
 
-  // Handle width update after resizing completes
   useEffect(() => {
     if (!isResizing && manualToggle) {
       const timeoutId = setTimeout(() => {
@@ -311,7 +324,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     }
   };
 
-  // Handle logout functionality
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
   };
@@ -320,7 +332,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     setShowLogoutModal(false);
   };
 
-  // Render icon with proper styling
   const renderIcon = useCallback((icon: IconSvgElement, isActive: boolean) => {
     return (
       <HugeiconsIcon
@@ -336,7 +347,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     );
   }, []);
 
-  // Get role badge color
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "superadmin":
@@ -350,7 +360,6 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     }
   };
 
-  // Get role display name
   const getRoleDisplayName = (role: string) => {
     switch (role) {
       case "superadmin":
@@ -363,6 +372,17 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         return "Customer";
     }
   };
+
+  // If not authenticated, render children without sidebar
+  if (!isAuthenticated) {
+    return (
+      <div className="w-full min-h-screen bg-gray">
+        <div className="p-0 flex flex-col gap-2 flex-1 w-full">
+          {children}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

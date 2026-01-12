@@ -163,45 +163,30 @@ export async function proxy(request: NextRequest) {
   console.log("🔐 Middleware:", pathname);
 
   // ============================================
-  // STEP 1: Extract tokens from cookies
+  // STEP 1 & 2: Extract and verify tokens (your existing code)
   // ============================================
   const accessToken = request.cookies.get("accessToken")?.value;
   let userRole = request.cookies.get("userRole")?.value;
 
-  // ============================================
-  // STEP 2: Verify access token
-  // ============================================
   let user = null;
   let isAuthenticated = false;
-  const isDevelopment = process.env.NODE_ENV !== "production";
 
   if (accessToken) {
-    // Development mode: Accept dummy credentials
-    // Check for dummy credentials (allow in all environments for demo/design phase)
     if (accessToken === "dev-superadmin-token") {
       user = { email: "superadmin@gmail.com", role: "superadmin" };
       isAuthenticated = true;
-      if (!userRole) {
-        userRole = "superadmin";
-      }
+      userRole = userRole || "superadmin";
     } else if (accessToken === "dev-selleradmin-token") {
       user = { email: "selleradmin@gmail.com", role: "selleradmin" };
       isAuthenticated = true;
-      if (!userRole) {
-        userRole = "selleradmin";
-      }
+      userRole = userRole || "selleradmin";
     } else if (accessToken === "dev-customer-token") {
       user = { email: "customer@gmail.com", role: "customer" };
       isAuthenticated = true;
-      if (!userRole) {
-        userRole = "customer";
-      }
+      userRole = userRole || "customer";
     } else {
-      // Production mode: Verify JWT token
       user = await verifyToken(accessToken);
       isAuthenticated = !!user;
-
-      // Extract role from token payload (if not in cookie)
       if (user && !userRole) {
         userRole = (user.role as string) || (user.userRole as string);
       }
@@ -216,17 +201,12 @@ export async function proxy(request: NextRequest) {
   const isPublicRoute = matchesRoute(pathname, PUBLIC_ROUTES);
 
   if (isPublicRoute) {
-    // If authenticated user visits login/signup, redirect to their role's default page
-    if (
-      isAuthenticated &&
-      (pathname === "/login" || pathname === "/signup")
-    ) {
+    if (isAuthenticated && (pathname === "/login" || pathname === "/signup")) {
       const defaultPath = getRoleDefaultPath(userRole || "customer");
       return NextResponse.redirect(new URL(defaultPath, request.url));
     }
 
     const response = NextResponse.next();
-    // Add security headers
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -240,7 +220,6 @@ export async function proxy(request: NextRequest) {
   const requiresAuth = isProtectedRoute(pathname);
 
   if (requiresAuth) {
-    // Not authenticated - redirect to login
     if (!isAuthenticated) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
@@ -248,17 +227,14 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // Check if user has role-based access
     if (!hasRoleAccess(pathname, userRole || "")) {
       console.log("❌ Forbidden - User role does not have access");
       const defaultPath = getRoleDefaultPath(userRole || "customer");
       return NextResponse.redirect(new URL(defaultPath, request.url));
     }
 
-    // Authenticated and authorized - allow access
     console.log("✅ Authorized - Access granted");
     const response = NextResponse.next();
-    // Add security headers
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -266,13 +242,19 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  // Default: Allow all other routes with security headers
-  const response = NextResponse.next();
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-XSS-Protection", "1; mode=block");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  return response;
+  // ============================================
+  // STEP 5: Handle UNKNOWN ROUTES (FIXED)
+  // ============================================
+  console.log("⚠️  Unknown route - Redirecting based on auth status");
+
+  if (isAuthenticated) {
+    // Authenticated users: redirect to their dashboard
+    const defaultPath = getRoleDefaultPath(userRole || "customer");
+    return NextResponse.redirect(new URL(defaultPath, request.url));
+  } else {
+    // Unauthenticated users: redirect to home/landing page
+    return NextResponse.redirect(new URL("/track-parcel", request.url));
+  }
 }
 
 // ============================================
