@@ -293,7 +293,7 @@ export default function LoginForm() {
                 <div className="inline-flex items-center gap-2 relative">
                   <Switch
                     id="rememberMe"
-                    className="relative w-8 h-5"
+                    className="relative w-8 h-5 cursor-pointer"
                     {...register("rememberMe")}
                   />
                   <Label

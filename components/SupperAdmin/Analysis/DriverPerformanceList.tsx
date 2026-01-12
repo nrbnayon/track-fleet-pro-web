@@ -1,7 +1,6 @@
 
 "use client";
 
-import TranslatedText from "@/components/Shared/TranslatedText";
 
 const drivers = [
     { name: "Michael Chen", deliveries: 89, rank: "01" },
@@ -14,7 +13,7 @@ export default function DriverPerformanceList() {
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
             <h2 className="text-lg font-bold text-foreground mb-6">
-                <TranslatedText text="Driver Performance" />
+                Driver Performance
             </h2>
             <div className="space-y-4">
                 {drivers.map((driver, index) => (
@@ -28,10 +27,10 @@ export default function DriverPerformanceList() {
                             </h3>
                             <p className="text-[13px] text-secondary">
                                 {driver.deliveries}{" "}
-                                <TranslatedText text="deliveries" />
+                                deliveries
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-[15px]">
+                        <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-base">
                             {driver.rank}
                         </div>
                     </div>

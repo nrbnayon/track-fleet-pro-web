@@ -6,7 +6,7 @@ import WeeklyDeliveriesBarChart from "./WeeklyDeliveriesBarChart";
 import RevenueTrendLineChart from "./RevenueTrendLineChart";
 import DeliveryStatusDonutChart from "./DeliveryStatusDonutChart";
 import DriverPerformanceList from "./DriverPerformanceList";
-import { DollarSign, Package, Users } from "lucide-react";
+import { DollarSign, Package, Truck } from "lucide-react";
 
 export default function AnalysisDashboardClient() {
     const stats = [
@@ -36,7 +36,7 @@ export default function AnalysisDashboardClient() {
             percentage: "8.5%",
             subtitle: "Up from last month",
             isUp: true,
-            icon: Users,
+            icon: Truck,
             iconColor: "#615FFF",
             iconBg: "#615FFF33",
         },

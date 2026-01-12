@@ -254,7 +254,7 @@ export default function ParcelMap({
 
             {/* Route Info Card */}
             {routeInfo && (
-                <div className="hidden md:flex absolute top-4 left-1 bg-white/95 backdrop-blur p-2 rounded-lg shadow-lg border border-gray-200 min-w-[120px]">
+                <div className="hidden md:flex md:flex-col absolute top-4 left-1 bg-white/50 backdrop-blur p-2 rounded-lg shadow-lg border border-gray-200 min-w-[120px]">
                     <h4 className="font-semibold text-sm mb-2 text-gray-700">Route Information</h4>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
@@ -270,7 +270,7 @@ export default function ParcelMap({
             )}
 
             {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur p-3 rounded-lg shadow-lg border border-gray-200 text-xs space-y-2">
+            <div className="absolute bottom-4 left-4 bg-white/50 backdrop-blur p-3 rounded-lg shadow-lg border border-gray-200 text-xs space-y-2">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white"></div>
                     <span className="text-gray-700">Pickup</span>
