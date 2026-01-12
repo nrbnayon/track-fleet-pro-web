@@ -105,7 +105,7 @@ export default function TrackingResults({
     return (
         <div className="space-y-6 mt-16">
             {/* Header Info */}
-            <div className="bg-white rounded-xl p-6 border border-border shadow-xs">
+            <div className="bg-white rounded-xl p-3 md:p-6 border border-border shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                     <div className="text-sm text-secondary space-y-4">
                         <p>{trackingData.date}</p>
@@ -126,7 +126,7 @@ export default function TrackingResults({
                 </div>
 
                 {/* Customer Info */}
-                <div className="rounded-lg my-8 gap-8">
+                <div className="rounded-lg my-8 gap-4 md:gap-8">
                     <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Customer Info
@@ -148,7 +148,7 @@ export default function TrackingResults({
                 </div>
 
                 {/* Sender Info */}
-                <div className="rounded-lg my-8 gap-8">
+                <div className="rounded-lg my-8 gap-4 md:gap-8">
                     <div className="w-full bg-purple-200 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Sender Info
@@ -170,14 +170,14 @@ export default function TrackingResults({
                 </div>
 
                 {/* Assigned To */}
-                <div className="rounded-lg mt-8 gap-8">
+                <div className="rounded-lg mt-8 gap-4 md:gap-8">
                     <div className="w-full bg-primary/30 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Assigned to
                         </h3></div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center">
+                            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-gray-300 flex items-center justify-center">
                                 <Image src={trackingData.assignedTo.avatar} alt="driver" width={500} height={500} className="rounded-full" />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -213,7 +213,7 @@ export default function TrackingResults({
                 <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
                     Tracking Updates
                 </h2>
-                <div className="bg-white rounded-2xl shadow-xs p-6 md:p-10 border border-border">
+                <div className="bg-white rounded-2xl shadow-xs p-3 md:p-10 border border-border">
                     <div className="w-full mx-auto">
                         {trackingData.updates.map((update, index) => {
                             const isFirst = index === 0;
