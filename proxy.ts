@@ -26,9 +26,9 @@ const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/te
 
 // Role-specific routes configuration
 const ROLE_ROUTES = {
-  superadmin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis"],
-  selleradmin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis"],
-  customer: ["/track-parcel", "/profile", "/settings", "/"],
+  superadmin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis","/notifications"],
+  selleradmin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis","/notifications"],
+  customer: ["/track-parcel", "/profile", "/settings", "/","/notifications"],
 
   // Add more roles as needed
 };
@@ -37,6 +37,7 @@ const ROLE_ROUTES = {
 const SHARED_ROUTES = {
   "/settings": ["superadmin", "selleradmin", "customer"], // All roles can access
   "/profile": ["superadmin", "selleradmin", "customer"], // All roles can access
+  "/notifications": ["superadmin", "selleradmin", "customer"], // All roles can access
 };
 
 // Default redirect paths for each role after login
