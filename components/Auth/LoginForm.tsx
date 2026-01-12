@@ -316,7 +316,7 @@ export default function LoginForm() {
                 <Button
                   type="submit"
                   size='lg'
-                  className="w-1/2 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 bg-primary rounded-full"
+                  className="w-1/2 text-white disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 bg-primary rounded-full"
                   disabled={isLoading || isSubmitting}
                 >
                   {isLoading ? (

@@ -16,26 +16,26 @@ import { useUser } from "@/hooks/useUser";
  */
 export const PERMISSIONS = {
   member: {
-    create: ["admin"],
-    edit: ["admin"],
-    delete: ["admin"],
-    view: ["admin", "user", "manager"],
+    create: ["superadmin"],
+    edit: ["superadmin"],
+    delete: ["superadmin"],
+    view: ["superadmin", "customer", "selleradmin"],
   },
   billing: {
-    view: ["admin"],
-    edit: ["admin"],
-    delete: ["admin"],
+    view: ["superadmin"],
+    edit: ["superadmin"],
+    delete: ["superadmin"],
   },
   property: {
-    create: ["admin"],
-    edit: ["admin"], 
-    delete: ["admin"],
-    view: ["admin", "user", "manager"],
+    create: ["superadmin"],
+    edit: ["superadmin"], 
+    delete: ["superadmin"],
+    view: ["superadmin", "customer", "selleradmin"],
   },
   reports: {
-      view: ["admin", "manager"],
-      create: ["admin"],
-      download: ["admin", "manager"],
+      view: ["superadmin", "customer", "selleradmin"],
+      create: ["superadmin"],
+      download: ["superadmin", "customer", "selleradmin"],
   },
   // Add more resources and permissions here
 };
