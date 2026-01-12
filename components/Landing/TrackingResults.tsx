@@ -213,7 +213,7 @@ export default function TrackingResults({
                 <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
                     Tracking Updates
                 </h2>
-                <div className="bg-white rounded-2xl shadow-xs p-3 md:p-10 border border-border">
+                <div className="bg-white rounded-2xl shadow-xs p-4 md:p-10 border border-border">
                     <div className="w-full mx-auto">
                         {trackingData.updates.map((update, index) => {
                             const isFirst = index === 0;
