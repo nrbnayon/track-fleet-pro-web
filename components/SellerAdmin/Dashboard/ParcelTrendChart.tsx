@@ -83,25 +83,25 @@ export default function ParcelTrendChart() {
                         <Line
                             type="monotone"
                             dataKey="delivered"
-                            stroke="#00C950"
+                            stroke="#10B981"
                             strokeWidth={2}
-                            dot={{ fill: "#00C950", strokeWidth: 2, r: 4, stroke: "#fff" }}
+                            dot={{ fill: "#10B981", strokeWidth: 2, r: 4, stroke: "#fff" }}
                             activeDot={{ r: 6, strokeWidth: 0 }}
                         />
                         <Line
                             type="monotone"
                             dataKey="ongoing"
-                            stroke="#1D92ED"
+                            stroke="#337DF3"
                             strokeWidth={2}
-                            dot={{ fill: "#1D92ED", strokeWidth: 2, r: 4, stroke: "#fff" }}
+                            dot={{ fill: "#337DF3", strokeWidth: 2, r: 4, stroke: "#fff" }}
                             activeDot={{ r: 6, strokeWidth: 0 }}
                         />
                         <Line
                             type="monotone"
                             dataKey="pending"
-                            stroke="#F0B100"
+                            stroke="#FFC04C"
                             strokeWidth={2}
-                            dot={{ fill: "#F0B100", strokeWidth: 2, r: 4, stroke: "#fff" }}
+                            dot={{ fill: "#FFC04C", strokeWidth: 2, r: 4, stroke: "#fff" }}
                             activeDot={{ r: 6, strokeWidth: 0 }}
                         />
                     </LineChart>

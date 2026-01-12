@@ -403,7 +403,7 @@ export default function ProfileClient() {
                       </label>
 
                       {isEditingPassword ? (
-                        <div className="mt-3 max-w-lg bg-gray-50 text-foreground p-6 rounded-lg space-y-4">
+                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg space-y-4">
                           <div className="space-y-2">
                             <label className="text-xs font-medium text-secondary">
                               Current password
