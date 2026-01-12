@@ -8,7 +8,7 @@ export const allSellersData: Seller[] = [
     seller_id: "SLR001",
     seller_name: "John Doe",
     business_name: "Tech World",
-    seller_email: "john@techworld.com",
+    seller_email: "selleradmin@gmail.com",
     seller_phone: "01623456789",
     seller_address: "Shop 12, Bashundhara City, Dhaka",
     seller_status: "active",

@@ -1,7 +1,7 @@
 // components/SupperAdmin/ParcelsPageClient.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
 import ParcelsTable from "@/components/SupperAdmin/ParcelsManagement/ParcelsTable";
 import { Search, Filter } from "lucide-react";
@@ -22,6 +22,15 @@ interface ParcelsPageClientProps {
 export default function ParcelsPageClient({ data }: ParcelsPageClientProps) {
     const [search, setSearch] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Simulate initial data loading
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const filteredData = useMemo(() => {
         return data.filter(parcel => {
@@ -76,13 +85,17 @@ export default function ParcelsPageClient({ data }: ParcelsPageClientProps) {
                 </div>
 
                 {/* Results Summary */}
-                {search.length > 0 && <div className="mt-4 text-sm text-secondary">
+                {!isLoading && search.length > 0 && <div className="mt-4 text-sm text-secondary">
                     Showing {filteredData.length} of {data.length} parcels
                 </div>}
             </div>
 
             <div className="px-4 md:px-8 pb-8">
-                <ParcelsTable data={filteredData} itemsPerPage={7} />
+                <ParcelsTable
+                    data={filteredData}
+                    itemsPerPage={7}
+                    isLoading={isLoading}
+                />
             </div>
         </div>
     );

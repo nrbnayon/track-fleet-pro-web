@@ -6,9 +6,9 @@ import { allParcelsData } from "@/data/allParcelsData";
 import { useMemo } from "react";
 
 export function useSellerData() {
-  const { email } = useUser();
+  const { email, isLoading } = useUser();
 
-  return useMemo(() => {
+  const data = useMemo(() => {
     // Find seller by email
     const seller = allSellersData.find((s) => s.seller_email === email);
     
@@ -21,7 +21,6 @@ export function useSellerData() {
     }
 
     // Filter parcels for this seller
-    // We check by seller_id, business_name, or emails to be robust with the mock data
     const parcels = allParcelsData.filter((p) => {
       const isSeller = p.sellerInfo?.id === seller.seller_id || 
                        p.sellerInfo?.name === seller.business_name;
@@ -38,4 +37,9 @@ export function useSellerData() {
       stats: seller.stats,
     };
   }, [email]);
+
+  return {
+    ...data,
+    isLoading,
+  };
 }
