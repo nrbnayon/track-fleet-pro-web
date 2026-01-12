@@ -62,7 +62,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                 <h2 className="text-2xl font-bold text-foreground">Parcel List</h2>
             </div>
 
-            <div className="flex-1 overflow-x-auto">
+            <div className="flex-1 overflow-auto">
                 {/* Desktop View */}
                 <table className="w-full text-left hidden lg:table">
                     <thead className="bg-[#E8F4FD]">
@@ -180,7 +180,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                                 <div className="flex gap-2 pt-2">
                                     <Button
                                         variant="outline"
-                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-primary"
+                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-white"
                                         onClick={() => setSelectedParcelForTrack(parcel)}
                                     >
                                         <MapPin className="w-3 h-3" />
@@ -188,7 +188,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-primary"
+                                        className="flex-1 rounded-lg h-10 gap-2 text-xs font-bold border-gray-100 cursor-pointer hover:border-primary hover:text-white"
                                         onClick={() => setSelectedParcelForView(parcel)}
                                     >
                                         <Eye className="w-3 h-3" />
