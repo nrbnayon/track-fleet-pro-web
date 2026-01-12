@@ -83,7 +83,7 @@ export default function TrackingResults({
     };
 
     const getStatusIcon = (iconType: string, isActive: boolean) => {
-        const iconClass = `${isActive ? 'text-white' : 'text-blue-500'}`;
+        const iconClass = `${isActive ? 'text-white' : 'text-primary'}`;
         const size = 20;
 
         switch (iconType) {
@@ -219,46 +219,45 @@ export default function TrackingResults({
                             const isFirst = index === 0;
                             const isLast = index === trackingData.updates.length - 1;
                             return (
-                                <div key={index} className="relative flex gap-6 pb-12 last:pb-0">
+                                <div key={index} className="relative flex gap-3 md:gap-6 pb-10 md:pb-12 last:pb-0">
                                     {/* Timeline with Icon */}
                                     <div className="flex flex-col items-center relative">
                                         <div
-                                            className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${isFirst
-                                                ? 'bg-blue-500 shadow-lg shadow-blue-500/50 scale-110'
-                                                : 'bg-white border-2 border-blue-500'
+                                            className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${isFirst
+                                                ? 'bg-primary shadow-lg shadow-primary/50 scale-105 md:scale-110'
+                                                : 'bg-white border-2 border-primary'
                                                 }`}
                                         >
-                                            {getStatusIcon(update.icon, isFirst)}
+                                            <div className="scale-75 md:scale-100">
+                                                {getStatusIcon(update.icon, isFirst)}
+                                            </div>
                                         </div>
                                         {!isLast && (
-                                            <div className="absolute top-12 bottom-0 w-0.5 bg-linear-to-b from-blue-500 to-blue-300" />
+                                            <div className="absolute top-10 md:top-12 bottom-0 w-0.5 bg-linear-to-b from-primary to-blue-300" />
                                         )}
                                     </div>
 
                                     {/* Content Card */}
-                                    <div className={`flex-1 transition-all duration-300 ${isFirst ? 'transform scale-[1.02]' : ''
-                                        }`}>
-                                        <div className={`rounded-xl p-5 border-2 transition-all duration-300 ${isFirst
+                                    <div className={`flex-1 transition-all duration-300 ${isFirst ? 'transform md:scale-[1.02]' : ''}`}>
+                                        <div className={`rounded-xl p-4 md:p-5 border-2 transition-all duration-300 ${isFirst
                                             ? 'bg-blue-50 border-blue-300 shadow-md'
                                             : 'bg-gray-50 border-gray-200 hover:border-blue-200 hover:shadow-sm'
                                             }`}>
-                                            <div className="flex items-start justify-between gap-4 mb-2">
-                                                <p className={`font-semibold ${isFirst ? 'text-blue-600 text-lg' : 'text-blue-500'
-                                                    }`}>
+                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-4 mb-2">
+                                                <p className={`font-semibold ${isFirst ? 'text-blue-600 text-base md:text-lg' : 'text-primary'}`}>
                                                     {update.date}
                                                 </p>
                                                 {isFirst && (
-                                                    <Badge className="bg-green-500 text-white px-3 py-1 text-xs">
+                                                    <Badge className="bg-green-500 text-white px-2 md:px-3 py-0.5 md:py-1 text-[10px] md:text-xs w-fit">
                                                         Latest
                                                     </Badge>
                                                 )}
                                             </div>
-                                            <p className="text-sm text-secondary mb-3 flex items-center gap-2">
-                                                <Clock className="w-4 h-4" />
+                                            <p className="text-xs md:text-sm text-secondary mb-2 md:mb-3 flex items-center gap-2">
+                                                <Clock className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                                 {update.time}
                                             </p>
-                                            <p className={`${isFirst ? 'text-foreground font-medium' : 'text-gray-700'
-                                                }`}>
+                                            <p className={`text-sm md:text-base ${isFirst ? 'text-foreground font-medium' : 'text-gray-700'}`}>
                                                 {update.status}
                                             </p>
                                         </div>
