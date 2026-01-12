@@ -5,6 +5,50 @@ import { Notification } from "@/types/notification";
 
 export const allNotificationsData: Notification[] = [
   {
+    id: "11",
+    type: "driver_assigned",
+    title: "Driver assigned for your parcel",
+    message: "John Doe has assigned to deliver the parcel to deliver. Track Your parcel here.",
+    tracking_no: "TRK176725527",
+    parcel_id: "PCL011",
+    timestamp: "2026-01-13T14:00:00Z",
+    status: "unread",
+    priority: "medium"
+  },
+  {
+    id: "12",
+    type: "parcel_delivered",
+    title: "Parcel Delivered",
+    message: "Your parcel has been delivered to the customer.",
+    tracking_no: "TRK176725528",
+    parcel_id: "PCL012",
+    timestamp: "2026-01-13T14:00:00Z",
+    status: "unread",
+    priority: "low"
+  },
+  {
+    id: "13",
+    type: "driver_assigned",
+    title: "Driver assigned for your parcel",
+    message: "John Doe has assigned to deliver the parcel to deliver. Track Your parcel here.",
+    tracking_no: "TRK176725527",
+    parcel_id: "PCL011",
+    timestamp: "2026-01-13T14:00:00Z",
+    status: "read",
+    priority: "medium"
+  },
+  {
+    id: "14",
+    type: "parcel_delivered",
+    title: "Parcel Delivered",
+    message: "Your parcel has been delivered to the customer.",
+    tracking_no: "TRK176725528",
+    parcel_id: "PCL012",
+    timestamp: "2026-01-13T14:00:00Z",
+    status: "read",
+    priority: "low"
+  },
+  {
     id: "1",
     type: "driver_location_off",
     title: "Driver location off",

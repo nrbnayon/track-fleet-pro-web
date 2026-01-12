@@ -157,15 +157,15 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
 
       // Shared Routes (All Authenticated Users)
       {
-        label: "Track Parcel",
-        href: "/track-parcel",
-        icon: PackageIcon,
-        roles: ["superadmin", "selleradmin", "customer"],
-      },
-      {
         label: "Settings",
         href: "/settings",
         icon: Settings01Icon,
+        roles: ["superadmin", "selleradmin", "customer"],
+      },
+      {
+        label: "Track Parcel",
+        href: "/track-parcel",
+        icon: PackageIcon,
         roles: ["superadmin", "selleradmin", "customer"],
       },
     ],
@@ -644,7 +644,7 @@ const Logo = ({ open }: { open: boolean }) => {
       >
         <Image
           className="w-full h-full object-contain"
-          alt="TalkFlow Logo"
+          alt="Track Fleet Pro"
           src="/icons/logo.svg"
           width={open ? 120 : 40}
           height={open ? 120 : 40}

@@ -10,12 +10,15 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import TranslatedText from "@/components/Shared/TranslatedText";
 import { useLanguage } from "@/context/LanguageContext";
+import NotificationsClient from "@/components/Notifications/NotificationsClient";
 
 interface UserProfile {
   name: string;
   fullName: string;
   email: string;
   role: string;
+  phone: string;
+  address: string;
   avatar?: string;
 }
 
@@ -24,6 +27,8 @@ const MOCK_USER: UserProfile = {
   fullName: "Nrb Nayon",
   email: "nrbnayon@gmail.com",
   role: "Super Admin",
+  phone: "000-0000-000",
+  address: "123 Admin Street, Dhaka",
 };
 
 export default function ProfileClient() {
@@ -34,12 +39,16 @@ export default function ProfileClient() {
     "account" | "notifications" | "language"
   >("account");
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [user, setUser] = useState<UserProfile>(MOCK_USER);
   const [editNameValue, setEditNameValue] = useState(user.fullName);
+  const [editPhoneValue, setEditPhoneValue] = useState(user.phone);
+  const [editAddressValue, setEditAddressValue] = useState(user.address);
   const [passwordData, setPasswordData] = useState({
     current: "",
     new: "",
@@ -98,6 +107,38 @@ export default function ProfileClient() {
   const handleCancelName = () => {
     setEditNameValue(user.fullName);
     setIsEditingName(false);
+  };
+
+  const handleSavePhone = () => {
+    if (!editPhoneValue.trim()) {
+      toast.error("Phone number is required");
+      return;
+    }
+    setUser({ ...user, phone: editPhoneValue });
+    setIsEditingPhone(false);
+    setHasChanges(true);
+    toast.success("Phone number updated");
+  };
+
+  const handleCancelPhone = () => {
+    setEditPhoneValue(user.phone);
+    setIsEditingPhone(false);
+  };
+
+  const handleSaveAddress = () => {
+    if (!editAddressValue.trim()) {
+      toast.error("Address is required");
+      return;
+    }
+    setUser({ ...user, address: editAddressValue });
+    setIsEditingAddress(false);
+    setHasChanges(true);
+    toast.success("Address updated");
+  };
+
+  const handleCancelAddress = () => {
+    setEditAddressValue(user.address);
+    setIsEditingAddress(false);
   };
 
   const handleChangePassword = () => {
@@ -172,8 +213,12 @@ export default function ProfileClient() {
 
     // Reset all editing states
     setIsEditingName(false);
+    setIsEditingPhone(false);
+    setIsEditingAddress(false);
     setIsEditingPassword(false);
     setEditNameValue(user.fullName);
+    setEditPhoneValue(user.phone);
+    setEditAddressValue(user.address);
     setPasswordData({ current: "", new: "", confirm: "" });
     setPopUpNotification(true);
     setChatNotification(true);
@@ -212,7 +257,7 @@ export default function ProfileClient() {
           <h1 className="text-2xl font-bold text-foreground">
             <TranslatedText text={user.role} />
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-secondary mt-1">
             <TranslatedText text="Track, manage and forecast your lands." />
           </p>
         </div>
@@ -229,7 +274,7 @@ export default function ProfileClient() {
           <Button
             onClick={handleGlobalSave}
             disabled={isSaving || !hasChanges}
-            className="bg-gray-800 text-white hover:bg-foreground"
+            className="bg-foreground text-white hover:bg-foreground"
           >
             {isSaving ? "Saving..." : "Save"}
           </Button>
@@ -257,7 +302,7 @@ export default function ProfileClient() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-secondary">
               <TranslatedText text="Update your username and manage your account" />
             </p>
           </div>
@@ -269,8 +314,8 @@ export default function ProfileClient() {
             <button
               onClick={() => setActiveSection("account")}
               className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "account"
-                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                : "text-secondary hover:bg-gray-50"
+                ? "bg-green-50 text-primary border-l-4 border-primary"
+                : "text-secondary hover:bg-blue-50"
                 }`}
             >
               <TranslatedText text="Account Settings" />
@@ -278,21 +323,21 @@ export default function ProfileClient() {
             <button
               onClick={() => setActiveSection("notifications")}
               className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "notifications"
-                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                : "text-secondary hover:bg-gray-50"
+                ? "bg-green-50 text-primary border-l-4 border-primary"
+                : "text-secondary hover:bg-blue-50"
                 }`}
             >
               <TranslatedText text="Notifications" />
             </button>
-            <button
+            {/* <button
               onClick={() => setActiveSection("language")}
               className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "language"
-                ? "bg-green-50 text-green-700 border-l-4 border-green-500"
-                : "text-secondary hover:bg-gray-50"
+                ? "bg-green-50 text-primary border-l-4 border-primary"
+                : "text-secondary hover:bg-blue-50"
                 }`}
             >
               <TranslatedText text="Language" />
-            </button>
+            </button> */}
           </div>
 
           {/* Form Fields */}
@@ -309,9 +354,9 @@ export default function ProfileClient() {
                       </label>
 
                       {isEditingName ? (
-                        <div className="mt-3 max-w-lg bg-gray-50 text-foreground p-6 rounded-lg">
-                          <p className="text-sm text-gray-500 mb-3">
-                            Make sure this match the name on your any gov. ID.
+                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
+                          <p className="text-sm text-secondary mb-3">
+                            Make sure this match the name on your any Govt. ID.
                           </p>
 
                           <div className="space-y-2">
@@ -343,7 +388,7 @@ export default function ProfileClient() {
                             <Button
                               type="button"
                               onClick={handleSaveName}
-                              className="text-white hover:bg-gray-800"
+                              className="text-white hover:bg-foreground"
                             >
                               <TranslatedText text="Save" />
                             </Button>
@@ -359,7 +404,115 @@ export default function ProfileClient() {
                     {!isEditingName && (
                       <button
                         onClick={() => setIsEditingName(true)}
-                        className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors mt-1"
+                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
+                      >
+                        <Pencil className="w-4 h-4" /> Edit
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Phone Number Field */}
+                <div className="py-6 border-b border-gray-100">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="w-full">
+                      <label className="block text-sm font-medium text-foreground mb-1.5">
+                        <TranslatedText text="Phone Number" />
+                      </label>
+
+                      {isEditingPhone ? (
+                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
+                          <div className="space-y-2">
+                            <Input
+                              value={editPhoneValue}
+                              onChange={(e) => setEditPhoneValue(e.target.value)}
+                              className="w-full bg-white border-gray-300 text-foreground"
+                              placeholder="000-0000-000"
+                            />
+                          </div>
+                          <div className="flex items-center gap-3 mt-4">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={handleCancelPhone}
+                              className="bg-gray-100 text-foreground hover:bg-gray-200"
+                            >
+                              <TranslatedText text="Cancel" />
+                            </Button>
+                            <Button
+                              type="button"
+                              onClick={handleSavePhone}
+                              className="text-white hover:bg-foreground"
+                            >
+                              <TranslatedText text="Save" />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-foreground mt-1">
+                          {user.phone}
+                        </div>
+                      )}
+                    </div>
+
+                    {!isEditingPhone && (
+                      <button
+                        onClick={() => setIsEditingPhone(true)}
+                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
+                      >
+                        <Pencil className="w-4 h-4" /> Edit
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Address Field */}
+                <div className="py-6 border-b border-gray-100">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="w-full">
+                      <label className="block text-sm font-medium text-foreground mb-1.5">
+                        <TranslatedText text="Address" />
+                      </label>
+
+                      {isEditingAddress ? (
+                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
+                          <div className="space-y-2">
+                            <Input
+                              value={editAddressValue}
+                              onChange={(e) => setEditAddressValue(e.target.value)}
+                              className="w-full bg-white border-gray-300 text-foreground"
+                              placeholder="123 Admin Street, Dhaka"
+                            />
+                          </div>
+                          <div className="flex items-center gap-3 mt-4">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={handleCancelAddress}
+                              className="bg-gray-100 text-foreground hover:bg-gray-200"
+                            >
+                              <TranslatedText text="Cancel" />
+                            </Button>
+                            <Button
+                              type="button"
+                              onClick={handleSaveAddress}
+                              className="text-white hover:bg-foreground"
+                            >
+                              <TranslatedText text="Save" />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-foreground mt-1">
+                          {user.address}
+                        </div>
+                      )}
+                    </div>
+
+                    {!isEditingAddress && (
+                      <button
+                        onClick={() => setIsEditingAddress(true)}
+                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
                       >
                         <Pencil className="w-4 h-4" /> Edit
                       </button>
@@ -382,7 +535,7 @@ export default function ProfileClient() {
                     </div>
                     <button
                       onClick={() => setShowEmail(!showEmail)}
-                      className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors"
+                      className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors"
                     >
                       {showEmail ? (
                         <EyeOff className="w-4 h-4" />
@@ -488,7 +641,7 @@ export default function ProfileClient() {
                             <Button
                               type="button"
                               onClick={handleChangePassword}
-                              className="bg-foreground text-white hover:bg-gray-800"
+                              className="bg-foreground text-white hover:bg-foreground"
                             >
                               Save
                             </Button>
@@ -504,7 +657,7 @@ export default function ProfileClient() {
                     {!isEditingPassword && (
                       <button
                         onClick={() => setIsEditingPassword(true)}
-                        className="flex items-center gap-2 text-gray-500 hover:text-foreground font-semibold text-sm transition-colors mt-1"
+                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
                       >
                         <Pencil className="w-4 h-4" /> Change
                       </button>
@@ -516,83 +669,13 @@ export default function ProfileClient() {
 
             {/* Notifications Section */}
             {activeSection === "notifications" && (
-              <div className="py-6">
-                <div className="w-full">
-                  <label className="block text-sm font-medium text-foreground mb-6">
-                    <TranslatedText text="Notifications" />
-                  </label>
-
-                  <div className="space-y-4">
-                    {/* Pop up notification */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-foreground">
-                        <TranslatedText text="Pop up notification" />
-                      </span>
-                      <button
-                        onClick={() => {
-                          setPopUpNotification(!popUpNotification);
-                          setHasChanges(true);
-                        }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${popUpNotification ? "bg-green-500" : "bg-gray-300"
-                          }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${popUpNotification
-                            ? "translate-x-6"
-                            : "translate-x-1"
-                            }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Turn on all chat notification */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-foreground">
-                        <TranslatedText text="Turn on all chat notification" />
-                      </span>
-                      <button
-                        onClick={() => {
-                          setChatNotification(!chatNotification);
-                          setHasChanges(true);
-                        }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${chatNotification ? "bg-green-500" : "bg-gray-300"
-                          }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${chatNotification ? "translate-x-6" : "translate-x-1"
-                            }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Turn on new update notification */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-foreground">
-                        <TranslatedText text="Turn on new update notification" />
-                      </span>
-                      <button
-                        onClick={() => {
-                          setNewUpdateNotification(!newUpdateNotification);
-                          setHasChanges(true);
-                        }}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${newUpdateNotification ? "bg-green-500" : "bg-gray-300"
-                          }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${newUpdateNotification
-                            ? "translate-x-6"
-                            : "translate-x-1"
-                            }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <NotificationsClient />
               </div>
             )}
 
             {/* Language Section */}
-            {activeSection === "language" && (
+            {/* {activeSection === "language" && (
               <div className="py-6">
                 <div className="w-full">
                   <label className="block text-sm font-medium text-foreground mb-4">
@@ -600,13 +683,12 @@ export default function ProfileClient() {
                   </label>
 
                   <div className="space-y-3">
-                    {/* English */}
                     <button
                       onClick={() => {
                         setSelectedLanguage("English");
                         setHasChanges(true);
                       }}
-                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🇬🇧</span>
@@ -616,7 +698,7 @@ export default function ProfileClient() {
                       </div>
                       {selectedLanguage === "English" && (
                         <svg
-                          className="w-5 h-5 text-green-500"
+                          className="w-5 h-5 text-primary"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -629,13 +711,12 @@ export default function ProfileClient() {
                       )}
                     </button>
 
-                    {/* Oromo */}
                     <button
                       onClick={() => {
                         setSelectedLanguage("Oromo");
                         setHasChanges(true);
                       }}
-                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">🇪🇹</span>
@@ -645,7 +726,7 @@ export default function ProfileClient() {
                       </div>
                       {selectedLanguage === "Oromo" && (
                         <svg
-                          className="w-5 h-5 text-green-500"
+                          className="w-5 h-5 text-primary"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -660,7 +741,7 @@ export default function ProfileClient() {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
