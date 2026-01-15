@@ -168,7 +168,7 @@ export default function NotificationsClient() {
                         onClick={() => { setActiveTab("all"); setCurrentPage(1); }}
                         className={cn(
                             "pb-4 text-sm font-bold transition-all relative min-w-fit cursor-pointer",
-                            activeTab === "all" ? "text-primary" : "text-gray-400 hover:text-gray-600"
+                            activeTab === "all" ? "text-primary" : "text-gray-400 hover:text-secondary"
                         )}
                     >
                         All
@@ -178,7 +178,7 @@ export default function NotificationsClient() {
                         onClick={() => { setActiveTab("unread"); setCurrentPage(1); }}
                         className={cn(
                             "pb-4 text-sm font-bold transition-all relative min-w-fit cursor-pointer",
-                            activeTab === "unread" ? "text-primary" : "text-gray-400 hover:text-gray-600"
+                            activeTab === "unread" ? "text-primary" : "text-gray-400 hover:text-secondary"
                         )}
                     >
                         Unread
@@ -262,7 +262,7 @@ export default function NotificationsClient() {
                                 onClick={closeModal}
                                 className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                             >
-                                <X className="w-5 h-5 text-gray-600" />
+                                <X className="w-5 h-5 text-secondary" />
                             </button>
 
                             <div className="flex items-start gap-4">
