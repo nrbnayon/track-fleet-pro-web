@@ -1,14 +1,14 @@
 {
-  "id": "/",
+  "id": "track-fleet-pro",
   "name": "Track Fleet Pro",
   "short_name": "TrackFleet",
-  "description": "Modern fleet management system for managing vehicles, drivers, and routes.",
+  "description": "Modern fleet management system for vehicles and drivers.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#FBECEB",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
       "src": "/favicon-96x96.png",
@@ -40,15 +40,13 @@
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobile Dashboard"
+      "form_factor": "narrow"
     },
     {
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Desktop Dashboard"
+      "form_factor": "wide"
     }
   ],
   "categories": ["business", "productivity"]
