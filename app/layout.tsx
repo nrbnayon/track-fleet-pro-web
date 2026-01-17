@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     ""
   ],
   // PWA Configuration
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.webmanifest",
   authors: [{ name: "Nayon" }],
   creator: "Nayon",
   publisher: "Nayon",
