@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     ""
   ],
   // PWA Configuration
-  manifest: "/manifest.webmanifest",
+  manifest: "/manifest.json",
   authors: [{ name: "Nayon" }],
   creator: "Nayon",
   publisher: "Nayon",
@@ -118,7 +118,7 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=5"
         />
         <meta name="theme-color" content="#FBECEB" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon-96x96.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <script
           type="application/ld+json"
