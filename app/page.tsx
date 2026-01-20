@@ -11,9 +11,9 @@ export default async function Home() {
   // If user is authenticated, redirect to their dashboard
   if (accessToken && userRole) {
     switch (userRole) {
-      case "superadmin":
+      case "super_admin":
         redirect("/super-admin/dashboard");
-      case "selleradmin":
+      case "seller_admin":
         redirect("/seller-admin/dashboard");
       case "customer":
         redirect("/track-parcel");

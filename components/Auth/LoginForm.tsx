@@ -20,8 +20,8 @@ type LoginFormData = z.infer<typeof loginValidationSchema>;
 
 // Dummy users for dev mode
 const dummyUsers = [
-  { label: "Super Admin", email: "superadmin@gmail.com", password: "admin", role: "superadmin" },
-  { label: "Seller Admin", email: "selleradmin@gmail.com", password: "seller", role: "selleradmin" },
+  { label: "Super Admin", email: "superadmin@gmail.com", password: "admin", role: "super_admin" },
+  { label: "Seller Admin", email: "selleradmin@gmail.com", password: "seller", role: "seller_admin" },
   { label: "Customer", email: "customer@gmail.com", password: "customer", role: "customer" },
 ];
 
@@ -75,11 +75,11 @@ export default function LoginForm() {
         const expiresString = expires.toUTCString();
 
         // Determine user role based on email
-        let userRole = "user";
+        let userRole = "customer";
         if (data.email === "superadmin@gmail.com") {
-          userRole = "superadmin";
+          userRole = "super_admin";
         } else if (data.email === "selleradmin@gmail.com") {
-          userRole = "selleradmin";
+          userRole = "seller_admin";
         } else if (data.email === "customer@gmail.com") {
           userRole = "customer";
         }
@@ -97,9 +97,9 @@ export default function LoginForm() {
 
         // Redirect based on user role
         setTimeout(() => {
-          if (userRole === "superadmin") {
+          if (userRole === "super_admin") {
             router.push("/super-admin/dashboard");
-          } else if (userRole === "selleradmin") {
+          } else if (userRole === "seller_admin") {
             router.push("/seller-admin/dashboard");
           } else if (userRole === "customer") {
             router.push("/track-parcel");

@@ -106,9 +106,9 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     setUserEmail(email);
 
     // Set user name based on role
-    if (role === "superadmin") {
+    if (role === "super_admin") {
       setUserName("Super Admin");
-    } else if (role === "selleradmin") {
+    } else if (role === "seller_admin") {
       setUserName("Seller Admin");
     } else {
       setUserName("Customer");
@@ -129,31 +129,31 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Dashboard Overview",
         href: "/super-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["superadmin"],
+        roles: ["super_admin"],
       },
       {
         label: "Parcels Management",
         href: "/super-admin/parcels",
         icon: PackageIcon,
-        roles: ["superadmin"],
+        roles: ["super_admin"],
       },
       {
         label: "Drivers Management",
         href: "/super-admin/drivers",
         icon: DeliveryTruck01Icon,
-        roles: ["superadmin"],
+        roles: ["super_admin"],
       },
       {
         label: "Sellers Management",
         href: "/super-admin/sellers",
         icon: Store02Icon,
-        roles: ["superadmin"],
+        roles: ["super_admin"],
       },
       {
         label: "Analysis",
         href: "/super-admin/analysis",
         icon: Analytics01Icon,
-        roles: ["superadmin"],
+        roles: ["super_admin"],
       },
 
       // Seller Admin Routes
@@ -161,19 +161,19 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Dashboard Overview",
         href: "/seller-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["selleradmin"],
+        roles: ["seller_admin"],
       },
       {
         label: "Parcels Management",
         href: "/seller-admin/parcels",
         icon: PackageIcon,
-        roles: ["selleradmin"],
+        roles: ["seller_admin"],
       },
       {
         label: "Analysis",
         href: "/seller-admin/analysis",
         icon: Analytics01Icon,
-        roles: ["selleradmin"],
+        roles: ["seller_admin"],
       },
 
       // Shared Routes
@@ -181,13 +181,13 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Settings",
         href: "/settings",
         icon: Settings01Icon,
-        roles: ["superadmin", "selleradmin", "customer"],
+        roles: ["super_admin", "seller_admin", "customer"],
       },
       {
         label: "Track Parcel",
         href: "/track-parcel",
         icon: PackageIcon,
-        roles: ["superadmin", "selleradmin", "customer"],
+        roles: ["super_admin", "seller_admin", "customer"],
       },
     ],
     []
@@ -349,9 +349,9 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "superadmin":
+      case "super_admin":
         return "text-primary";
-      case "selleradmin":
+      case "seller_admin":
         return "text-secondary";
       case "customer":
         return "text-primary";
@@ -362,9 +362,9 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
 
   const getRoleDisplayName = (role: string) => {
     switch (role) {
-      case "superadmin":
+      case "super_admin":
         return "Super Admin";
-      case "selleradmin":
+      case "seller_admin":
         return "Seller Admin";
       case "customer":
         return "Customer";

@@ -14,8 +14,8 @@ export default function SellerAdminDashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || role !== "selleradmin")) {
-      // If not authenticated or not selleradmin, we could redirect or show unauthorized
+    if (!isLoading && (!isAuthenticated || role !== "seller_admin")) {
+      // If not authenticated or not seller_admin, we could redirect or show unauthorized
       // For now, let's just log or handle it if needed.
       // In a real app, middleware would handle this.
     }
@@ -29,7 +29,7 @@ export default function SellerAdminDashboardPage() {
     );
   }
 
-  if (role !== "selleradmin") {
+  if (role !== "seller_admin") {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

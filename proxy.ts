@@ -29,8 +29,8 @@ const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/te
 
 // Role-specific routes configuration
 const ROLE_ROUTES = {
-  superadmin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis","/notifications"],
-  selleradmin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis","/notifications"],
+  super_admin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis","/notifications"],
+  seller_admin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis","/notifications"],
   customer: ["/track-parcel", "/profile", "/settings", "/","/notifications"],
 
   // Add more roles as needed
@@ -38,15 +38,15 @@ const ROLE_ROUTES = {
 
 // Routes that multiple roles can access (shared access)
 const SHARED_ROUTES = {
-  "/settings": ["superadmin", "selleradmin", "customer"], // All roles can access
-  "/profile": ["superadmin", "selleradmin", "customer"], // All roles can access
-  "/notifications": ["superadmin", "selleradmin", "customer"], // All roles can access
+  "/settings": ["super_admin", "seller_admin", "customer"], // All roles can access
+  "/profile": ["super_admin", "seller_admin", "customer"], // All roles can access
+  "/notifications": ["super_admin", "seller_admin", "customer"], // All roles can access
 };
 
 // Default redirect paths for each role after login
 const ROLE_DEFAULT_PATHS = {
-  superadmin: "/super-admin/dashboard",
-  selleradmin: "/seller-admin/dashboard",
+  super_admin: "/super-admin/dashboard",
+  seller_admin: "/seller-admin/dashboard",
   customer: "/track-parcel",
 };
 
@@ -180,13 +180,13 @@ export async function proxy(request: NextRequest) {
 
   if (accessToken) {
     if (accessToken === "dev-superadmin-token") {
-      user = { email: "superadmin@gmail.com", role: "superadmin" };
+      user = { email: "superadmin@gmail.com", role: "super_admin" };
       isAuthenticated = true;
-      userRole = userRole || "superadmin";
+      userRole = userRole || "super_admin";
     } else if (accessToken === "dev-selleradmin-token") {
-      user = { email: "selleradmin@gmail.com", role: "selleradmin" };
+      user = { email: "selleradmin@gmail.com", role: "seller_admin" };
       isAuthenticated = true;
-      userRole = userRole || "selleradmin";
+      userRole = userRole || "seller_admin";
     } else if (accessToken === "dev-customer-token") {
       user = { email: "customer@gmail.com", role: "customer" };
       isAuthenticated = true;

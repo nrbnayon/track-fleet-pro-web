@@ -61,7 +61,7 @@ export default function NotificationsClient() {
         // Filter based on role
         let roleNotifications = notifications;
 
-        if (role === "selleradmin") {
+        if (role === "seller_admin") {
             const sellerTypes: NotificationType[] = [
                 "parcel_delivered",
                 "driver_assigned",
@@ -70,7 +70,7 @@ export default function NotificationsClient() {
                 "new_order"
             ];
             roleNotifications = notifications.filter(n => sellerTypes.includes(n.type));
-        } else if (role === "superadmin") {
+        } else if (role === "super_admin") {
             const superAdminTypes: NotificationType[] = [
                 "driver_location_off",
                 "delivery_request_rejected",
