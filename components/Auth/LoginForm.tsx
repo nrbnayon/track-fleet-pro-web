@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardHeader } from "@/components/ui/card";
-import { Eye, EyeOff, EyeOffIcon, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { loginValidationSchema } from "@/lib/formDataValidation";
 import Link from "next/link";
@@ -160,7 +160,7 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-col w-full max-w-3xl lg:max-w-4xl items-center gap-4 lg:gap-6 relative z-10 px-4">
-          <h1 className="relative font-bold text-foreground text-3xl lg:text-5xl text-center tracking-[0] leading-[36px] lg:leading-[57.6px]">
+          <h1 className="relative font-bold text-foreground text-3xl lg:text-5xl text-center tracking-[0] leading-9 lg:leading-[57.6px]">
             Don&apos;t Have an Account Yet?
           </h1>
           <p className="relative font-medium text-secondary text-lg lg:text-2xl text-center max-w-xl">
@@ -333,7 +333,7 @@ export default function LoginForm() {
               {/* Mobile Sign Up Link - Only visible on small screens */}
               <div className="lg:hidden w-full flex justify-center items-center mt-4">
                 <p className="text-muted-foreground text-sm">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link
                     href="/signup"
                     className="text-primary font-semibold hover:underline transition-colors"

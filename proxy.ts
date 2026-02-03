@@ -179,11 +179,11 @@ export async function proxy(request: NextRequest) {
   let isAuthenticated = false;
 
   if (accessToken) {
-    if (accessToken === "dev-superadmin-token") {
+    if (accessToken === "dev-super_admin-token") {
       user = { email: "superadmin@gmail.com", role: "super_admin" };
       isAuthenticated = true;
       userRole = userRole || "super_admin";
-    } else if (accessToken === "dev-selleradmin-token") {
+    } else if (accessToken === "dev-seller_admin-token") {
       user = { email: "selleradmin@gmail.com", role: "seller_admin" };
       isAuthenticated = true;
       userRole = userRole || "seller_admin";
@@ -191,6 +191,10 @@ export async function proxy(request: NextRequest) {
       user = { email: "customer@gmail.com", role: "customer" };
       isAuthenticated = true;
       userRole = userRole || "customer";
+    } else if (accessToken === "dev-user-token") {
+      user = { email: "", role: "user" };
+      isAuthenticated = true;
+      userRole = userRole || "user";
     } else {
       user = await verifyToken(accessToken);
       isAuthenticated = !!user;
