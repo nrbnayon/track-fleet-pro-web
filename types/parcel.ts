@@ -37,7 +37,16 @@ export interface Parcel {
   parcel_value?: number; // in currency
   parcel_image?: string;
   pickup_location?: string;
+  pickup_coordinates?: {
+    lat: number;
+    lng: number;
+  };
   delivery_location?: string;
+  delivery_coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  appoximate_distance?: string;
   estimated_delivery?: string;
   actual_delivery?: string;
   senderInfo?: ContactInfo;
