@@ -31,7 +31,7 @@ export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(300);
   const [email, setEmail] = useState("");
   const router = useRouter();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
