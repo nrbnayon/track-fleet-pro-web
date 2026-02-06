@@ -1,4 +1,4 @@
-// src\app\(auth)\components\LoginForm.tsx
+// components/Auth/LoginForm.tsx
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -8,33 +8,37 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardHeader } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { loginValidationSchema } from "@/lib/formDataValidation";
 import Link from "next/link";
-import { Mail } from "lucide-react";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
+import { useLoginMutation } from "@/redux/services/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { setCredentials } from "@/redux/features/authSlice";
+import { setCookie } from "@/redux/services/apiSlice";
 
 type LoginFormData = z.infer<typeof loginValidationSchema>;
 
 // Dummy users for dev mode
 const dummyUsers = [
-  { label: "Super Admin", email: "superadmin@gmail.com", password: "admin", role: "super_admin" },
-  { label: "Seller Admin", email: "selleradmin@gmail.com", password: "seller", role: "seller_admin" },
-  { label: "Customer", email: "customer@gmail.com", password: "customer", role: "customer" },
+  { label: "Super Admin", email: "superadmin@gmail.com", password: "admin", role: "SUPER_ADMIN" },
+  { label: "Seller Admin", email: "selleradmin@gmail.com", password: "seller", role: "SELLER" },
+  { label: "Customer", email: "customer@gmail.com", password: "customer", role: "CUSTOMER" },
 ];
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [login, { isLoading }] = useLoginMutation();
   const isDev = process.env.NODE_ENV === "development";
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setValue,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginValidationSchema),
@@ -45,7 +49,6 @@ export default function LoginForm() {
     },
   });
 
-  // Quick fill for dev mode
   const handleQuickFill = (email: string, password: string) => {
     setValue("email", email);
     setValue("password", password);
@@ -56,93 +59,61 @@ export default function LoginForm() {
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await login({
+        email_address: data.email,
+        password: data.password,
+      }).unwrap();
 
-      // Development dummy credentials check with role assignment
-      const isDummyLogin =
-        (data.email === "superadmin@gmail.com" && data.password === "admin") ||
-        (data.email === "selleradmin@gmail.com" && data.password === "seller") ||
-        (data.email === "customer@gmail.com" && data.password === "customer");
+      if (response.success && response.data) {
+        const { access_token, refresh_token, user_id, role } = response.data;
 
-      if (isDummyLogin) {
-        // Set development cookies for dummy login
-        const expires = new Date();
-        expires.setTime(expires.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-        const expiresString = expires.toUTCString();
+        // Save to cookies for middleware and persistence
+        setCookie("accessToken", access_token, 7);
+        setCookie("refreshToken", refresh_token, 7);
+        setCookie("userRole", role, 7);
+        setCookie("userId", user_id, 7);
+        setCookie("userEmail", data.email, 7);
 
-        // Determine user role based on email
-        let userRole = "customer";
-        if (data.email === "superadmin@gmail.com") {
-          userRole = "super_admin";
-        } else if (data.email === "selleradmin@gmail.com") {
-          userRole = "seller_admin";
-        } else if (data.email === "customer@gmail.com") {
-          userRole = "customer";
-        }
-
-        // Set cookies
-        document.cookie = `accessToken=dev-${userRole}-token; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `refreshToken=dev-refresh-token; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `userRole=${userRole}; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `userEmail=${encodeURIComponent(data.email)}; expires=${expiresString}; path=/; SameSite=Lax`;
+        // Update Redux state
+        dispatch(
+          setCredentials({
+            user: {
+              user_id,
+              email_address: data.email,
+              role,
+            },
+            token: access_token,
+            refreshToken: refresh_token,
+          })
+        );
 
         toast.success("Login successful!", {
-          description: `Welcome back, ${data.email}!`,
+          description: `Welcome back!`,
           duration: 2000,
         });
 
         // Redirect based on user role
         setTimeout(() => {
-          if (userRole === "super_admin") {
+          if (role === "SUPER_ADMIN") {
             router.push("/super-admin/dashboard");
-          } else if (userRole === "seller_admin") {
+          } else if (role === "SELLER") {
             router.push("/seller-admin/dashboard");
-          } else if (userRole === "customer") {
+          } else {
             router.push("/track-parcel");
           }
         }, 1000);
       } else {
-        // Log the form data to console
-        console.log("Login Form Data:", {
-          email: data.email,
-          password: data.password,
-          rememberMe: data.rememberMe,
-          timestamp: new Date().toISOString(),
-        });
-
-        // Simulate successful login for other credentials (default to user role)
-        const expires = new Date();
-        expires.setTime(expires.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-        const expiresString = expires.toUTCString();
-
-        // Set cookies with user role as default
-        document.cookie = `accessToken=dev-user-token; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `refreshToken=dev-refresh-token; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `userRole=user; expires=${expiresString}; path=/; SameSite=Lax`;
-        document.cookie = `userEmail=${encodeURIComponent(data.email)}; expires=${expiresString}; path=/; SameSite=Lax`;
-
-        toast.success("Login successful!", {
-          description: `Welcome back, ${data.email}!`,
-          duration: 2000,
-        });
-
-        // Redirect to user dashboard
-        setTimeout(() => {
-          router.push("/customer");
-        }, 1000);
+        toast.error(response.message || "Login failed");
       }
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Login error:", error);
+      const errorMessage = error?.data?.message || "Please check your credentials and try again.";
       toast.error("Login failed", {
-        description: "Please check your credentials and try again.",
+        description: errorMessage,
         duration: 3000,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -169,7 +140,7 @@ export default function LoginForm() {
           </p>
         </div>
 
-        <Link href='signup' className="flex w-65 items-center justify-center py-2.5 text-white bg-primary rounded-full">
+        <Link href='/signup' className="flex w-64 items-center justify-center py-2.5 text-white bg-primary rounded-full hover:bg-primary/90 transition-colors">
           Sign Up
         </Link>
 
@@ -179,7 +150,7 @@ export default function LoginForm() {
 
       {/* ------------- Right side ------------- */}
       <div className="flex w-full lg:w-1/2 min-h-screen relative flex-col items-center justify-center gap-8 lg:gap-12 px-6 py-12 lg:px-8 xl:px-12">
-        <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 sm:p-8  rounded-md sm:rounded-lg lg:rounded-2xl border-none shadow-none bg-white">
+        <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl p-4 sm:p-8 rounded-md sm:rounded-lg lg:rounded-2xl border-none shadow-none bg-white">
           <CardHeader className="text-center">
             <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-2 lg:mb-6">
               Log In
@@ -216,7 +187,7 @@ export default function LoginForm() {
 
           <div className="px-2 sm:px-4 lg:px-6">
             <form
-              className="space-y-4 sm:space-y-3"
+              className="space-y-4 sm:space-y-6"
               onSubmit={handleSubmit(onSubmit)}
             >
               {/* Email Field */}
@@ -233,8 +204,8 @@ export default function LoginForm() {
                     type="text"
                     placeholder="Enter your email"
                     className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.email
-                      ? "border-error focus:border-error"
-                      : "input-focus"
+                      ? "border-error focus:ring-error/20"
+                      : "focus:ring-primary/20"
                       }`}
                     {...register("email")}
                     disabled={isLoading}
@@ -242,7 +213,7 @@ export default function LoginForm() {
                   <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                 </div>
                 {errors.email && (
-                  <p className="text-error text-xs mt-1">
+                  <p className="text-red-500 text-xs mt-1">
                     {errors.email.message}
                   </p>
                 )}
@@ -262,8 +233,8 @@ export default function LoginForm() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     className={`pl-4 pr-10 h-10 sm:h-12 rounded-md shadow-none text-foreground placeholder:text-muted-foreground text-sm sm:text-base ${errors.password
-                      ? "border-error focus:border-error"
-                      : "input-focus"
+                      ? "border-red-500 focus:ring-red-500/20"
+                      : "focus:ring-primary/20"
                       }`}
                     {...register("password")}
                     disabled={isLoading}
@@ -282,14 +253,14 @@ export default function LoginForm() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-error text-xs mt-1">
+                  <p className="text-red-500 text-xs mt-1">
                     {errors.password.message}
                   </p>
                 )}
               </div>
 
               {/* Remember Me and Forgot Password */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <div className="inline-flex items-center gap-2 relative">
                   <Switch
                     id="rememberMe"
@@ -312,17 +283,17 @@ export default function LoginForm() {
               </div>
 
               {/* Login Button */}
-              <div className="w-full flex justify-center items-center my-5">
+              <div className="w-full flex justify-center items-center py-4">
                 <Button
                   type="submit"
                   size='lg'
-                  className="w-1/2 text-white disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500/20 bg-primary rounded-full"
-                  disabled={isLoading || isSubmitting}
+                  className="w-1/2 text-white disabled:opacity-50 disabled:cursor-not-allowed bg-primary rounded-full"
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Log In...
+                      Logging In...
                     </>
                   ) : (
                     "Log In"
@@ -330,8 +301,8 @@ export default function LoginForm() {
                 </Button>
               </div>
 
-              {/* Mobile Sign Up Link - Only visible on small screens */}
-              <div className="lg:hidden w-full flex justify-center items-center mt-4">
+              {/* Mobile Sign Up Link */}
+              <div className="lg:hidden w-full flex justify-center items-center">
                 <p className="text-muted-foreground text-sm">
                   Don&apos;t have an account?{" "}
                   <Link

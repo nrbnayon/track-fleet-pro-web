@@ -14,40 +14,29 @@ const PUBLIC_ROUTES = [
   "/forgot-password",
   "/reset-password",
   "/verify-otp",
-  "/reset-success",
-  "/success",
   "/verify-email",
-  "/terms",
-  "/privacy-policy",
   "/track-parcel",
   "/coverage",
   "/about-us",
+  "/terms",
+  "/privacy-policy",
 ];
 
 // Common protected routes (accessible by all authenticated users)
-const COMMON_PROTECTED_ROUTES = ["/track-parcel", "/coverage", "/about-us", "/terms", "/privacy-policy", "/settings", "/profile","/", "notifications"];
+const COMMON_PROTECTED_ROUTES = ["/settings", "/profile", "/notifications"];
 
 // Role-specific routes configuration
 const ROLE_ROUTES = {
-  super_admin: ["/super-admin/dashboard", "/super-admin/parcels", "/super-admin/drivers", "/super-admin/sellers", "/super-admin/analysis","/notifications"],
-  seller_admin: ["/seller-admin/dashboard", "/seller-admin/parcels", "/seller-admin/analysis","/notifications"],
-  customer: ["/track-parcel", "/profile", "/settings", "/","/notifications"],
-
-  // Add more roles as needed
-};
-
-// Routes that multiple roles can access (shared access)
-const SHARED_ROUTES = {
-  "/settings": ["super_admin", "seller_admin", "customer"], // All roles can access
-  "/profile": ["super_admin", "seller_admin", "customer"], // All roles can access
-  "/notifications": ["super_admin", "seller_admin", "customer"], // All roles can access
+  SUPER_ADMIN: ["/super-admin"],
+  SELLER: ["/seller-admin"],
+  CUSTOMER: ["/track-parcel", "/profile"],
 };
 
 // Default redirect paths for each role after login
 const ROLE_DEFAULT_PATHS = {
-  super_admin: "/super-admin/dashboard",
-  seller_admin: "/seller-admin/dashboard",
-  customer: "/track-parcel",
+  SUPER_ADMIN: "/super-admin/dashboard",
+  SELLER: "/seller-admin/dashboard",
+  CUSTOMER: "/track-parcel",
 };
 
 // JWT Secret - Use environment variable in production
@@ -59,228 +48,91 @@ const JWT_SECRET = new TextEncoder().encode(
 // HELPER FUNCTIONS
 // ============================================
 
-/**
- * Verify JWT token
- */
 async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload;
   } catch (error) {
-    console.error("❌ Error verifying token:", error);
     return null;
   }
 }
 
-/**
- * Check if a path matches any route in the list
- */
 function matchesRoute(pathname: string, routes: string[]): boolean {
   return routes.some((route) => {
-    // Exact match
     if (pathname === route) return true;
-    // Prefix match (e.g., /dashboard matches /dashboard/*)
     if (pathname.startsWith(route + "/")) return true;
     return false;
   });
 }
 
-/**
- * Check if a user role has access to a specific path
- */
 function hasRoleAccess(pathname: string, userRole: string): boolean {
-  // Check if it's a common protected route (accessible by all authenticated users)
   if (matchesRoute(pathname, COMMON_PROTECTED_ROUTES)) {
     return true;
   }
 
-  // Check if it's a shared route
-  for (const [route, allowedRoles] of Object.entries(SHARED_ROUTES)) {
-    if (pathname === route || pathname.startsWith(route + "/")) {
-      return allowedRoles.includes(userRole);
-    }
-  }
-
-  // Check role-specific routes
   const roleRoutes = ROLE_ROUTES[userRole as keyof typeof ROLE_ROUTES] || [];
   return matchesRoute(pathname, roleRoutes);
 }
 
-/**
- * Get the appropriate redirect path for a role
- */
 function getRoleDefaultPath(userRole: string): string {
   return (
     ROLE_DEFAULT_PATHS[userRole as keyof typeof ROLE_DEFAULT_PATHS] ||
-    "/"
+    "/track-parcel"
   );
 }
 
-/**
- * Check if the route requires authentication
- */
 function isProtectedRoute(pathname: string): boolean {
-  // Check if it's a public route
   if (matchesRoute(pathname, PUBLIC_ROUTES)) {
     return false;
   }
-
-  // Check if it's a common protected route
-  if (matchesRoute(pathname, COMMON_PROTECTED_ROUTES)) {
-    return true;
-  }
-
-  // Check if it's in any role-specific routes
-  for (const routes of Object.values(ROLE_ROUTES)) {
-    if (matchesRoute(pathname, routes)) {
-      return true;
-    }
-  }
-
-  // Check if it's a shared route
-  for (const route of Object.keys(SHARED_ROUTES)) {
-    if (pathname === route || pathname.startsWith(route + "/")) {
-      return true;
-    }
-  }
-
-  return false;
+  return true;
 }
 
 // ============================================
-// MAIN PROXY FUNCTION (Next.js v16)
+// MAIN PROXY FUNCTION
 // ============================================
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for static files, API routes and PWA files
+  // Skip for static files and APIs
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/api/") ||
-    pathname.includes(".") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/manifest.json" ||
-    pathname === "/sw.js" ||
-    pathname === "/~offline"
+    pathname.includes(".")
   ) {
     return NextResponse.next();
   }
 
-  console.log("🔐 Middleware:", pathname);
-
-  // ============================================
-  // STEP 1 & 2: Extract and verify tokens (your existing code)
-  // ============================================
   const accessToken = request.cookies.get("accessToken")?.value;
-  let userRole = request.cookies.get("userRole")?.value;
+  const userRole = request.cookies.get("userRole")?.value;
 
-  let user = null;
-  let isAuthenticated = false;
+  const isAuthenticated = !!accessToken;
 
-  if (accessToken) {
-    if (accessToken === "dev-super_admin-token") {
-      user = { email: "superadmin@gmail.com", role: "super_admin" };
-      isAuthenticated = true;
-      userRole = userRole || "super_admin";
-    } else if (accessToken === "dev-seller_admin-token") {
-      user = { email: "selleradmin@gmail.com", role: "seller_admin" };
-      isAuthenticated = true;
-      userRole = userRole || "seller_admin";
-    } else if (accessToken === "dev-customer-token") {
-      user = { email: "customer@gmail.com", role: "customer" };
-      isAuthenticated = true;
-      userRole = userRole || "customer";
-    } else if (accessToken === "dev-user-token") {
-      user = { email: "", role: "user" };
-      isAuthenticated = true;
-      userRole = userRole || "user";
-    } else {
-      user = await verifyToken(accessToken);
-      isAuthenticated = !!user;
-      if (user && !userRole) {
-        userRole = (user.role as string) || (user.userRole as string);
-      }
-    }
+  // 1. Redirect authenticated users away from auth pages
+  if (isAuthenticated && (pathname === "/login" || pathname === "/signup" || pathname === "/verify-email")) {
+    const defaultPath = getRoleDefaultPath(userRole || "CUSTOMER");
+    return NextResponse.redirect(new URL(defaultPath, request.url));
   }
 
-  console.log("✅ Auth Status:", { isAuthenticated, userRole, user });
-
-  // ============================================
-  // STEP 3: Public routes handling
-  // ============================================
-  const isPublicRoute = matchesRoute(pathname, PUBLIC_ROUTES);
-
-  if (isPublicRoute) {
-    if (isAuthenticated && (pathname === "/login" || pathname === "/signup")) {
-      const defaultPath = getRoleDefaultPath(userRole || "customer");
-      return NextResponse.redirect(new URL(defaultPath, request.url));
-    }
-
-    const response = NextResponse.next();
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-XSS-Protection", "1; mode=block");
-    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-    return response;
-  }
-
-  // ============================================
-  // STEP 4: Protected routes handling
-  // ============================================
+  // 2. Protect routes
   const requiresAuth = isProtectedRoute(pathname);
-
   if (requiresAuth) {
     if (!isAuthenticated) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
-      console.log("❌ Unauthorized - Redirecting to login");
       return NextResponse.redirect(loginUrl);
     }
 
-    if (!hasRoleAccess(pathname, userRole || "")) {
-      console.log("❌ Forbidden - User role does not have access");
-      const defaultPath = getRoleDefaultPath(userRole || "customer");
+    if (userRole && !hasRoleAccess(pathname, userRole)) {
+      const defaultPath = getRoleDefaultPath(userRole);
       return NextResponse.redirect(new URL(defaultPath, request.url));
     }
-
-    console.log("✅ Authorized - Access granted");
-    const response = NextResponse.next();
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-XSS-Protection", "1; mode=block");
-    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-    return response;
   }
 
-  // ============================================
-  // STEP 5: Handle UNKNOWN ROUTES (FIXED)
-  // ============================================
-  console.log("⚠️  Unknown route - Redirecting based on auth status");
-
-  if (isAuthenticated) {
-    // Authenticated users: redirect to their dashboard
-    const defaultPath = getRoleDefaultPath(userRole || "customer");
-    return NextResponse.redirect(new URL(defaultPath, request.url));
-  } else {
-    // Unauthenticated users: redirect to home/landing page
-    return NextResponse.redirect(new URL("/track-parcel", request.url));
-  }
+  return NextResponse.next();
 }
 
-// ============================================
-// MIDDLEWARE CONFIGURATION
-// ============================================
-
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     * - public folder files
-     */
-    "/((?!_next/static|_next/image|favicon.ico|manifest\\.json|sw\\.js|web-app-manifest|apple-touch-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

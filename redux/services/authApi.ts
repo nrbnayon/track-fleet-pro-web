@@ -1,97 +1,128 @@
-// lib/redux/services/authApi.ts
+// redux/services/authApi.ts
 import { apiSlice } from './apiSlice';
-
-interface LoginRequest {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
-}
-
-interface LoginResponse {
-  user: {
-    email: string;
-    role: string;
-  };
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface SignupRequest {
-  accountType: 'business' | 'personal';
-  full_name: string;
-  business_name?: string;
-  email: string;
-  password: string;
-}
-
-interface SignupResponse {
-  message: string;
-  email: string;
-}
-
-interface VerifyOtpRequest {
-  email: string;
-  otp: string;
-}
-
-interface VerifyOtpResponse {
-  message: string;
-  verified: boolean;
-}
+import type {
+  ApiResponse,
+  SignupRequest,
+  SignupResponse,
+  LoginRequest,
+  LoginResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  VerifyResetCodeRequest,
+  VerifyResetCodeResponse,
+  ResetPasswordRequest,
+  ResendOtpRequest,
+  ResendOtpResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  ProfileResponse,
+} from '@/types/users';
 
 // Inject endpoints into the API slice
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Login endpoint
-    login: builder.mutation<LoginResponse, LoginRequest>({
-      query: (credentials) => ({
-        url: '/auth/login',
-        method: 'POST',
-        body: credentials,
-      }),
-      invalidatesTags: ['Auth'],
-    }),
-    
-    // Signup endpoint
-    signup: builder.mutation<SignupResponse, SignupRequest>({
+    // 1. Signup endpoint
+    signup: builder.mutation<ApiResponse<SignupResponse>, SignupRequest>({
       query: (userData) => ({
-        url: '/auth/signup',
+        url: '/api/auth/signup/',
         method: 'POST',
         body: userData,
       }),
+      invalidatesTags: ['Auth'],
     }),
-    
-    // Verify OTP endpoint
-    verifyOtp: builder.mutation<VerifyOtpResponse, VerifyOtpRequest>({
-      query: (otpData) => ({
-        url: '/auth/verify-otp',
+
+    // 2. Verify Email endpoint
+    verifyEmail: builder.mutation<ApiResponse<VerifyEmailResponse>, VerifyEmailRequest>({
+      query: (data) => ({
+        url: '/api/auth/verify-email/',
         method: 'POST',
-        body: otpData,
-      }),
-    }),
-    
-    // Logout endpoint
-    logout: builder.mutation<{ message: string }, void>({
-      query: () => ({
-        url: '/auth/logout',
-        method: 'POST',
+        body: data,
       }),
       invalidatesTags: ['Auth'],
     }),
-    
-    // Get current user
-    getCurrentUser: builder.query<LoginResponse['user'], void>({
-      query: () => '/auth/me',
-      providesTags: ['Auth'],
+
+    // 3. Forgot Password endpoint
+    forgotPassword: builder.mutation<ApiResponse<ForgotPasswordResponse>, ForgotPasswordRequest>({
+      query: (data) => ({
+        url: '/api/auth/forgot-password/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 4. Verify Reset Code endpoint
+    verifyResetCode: builder.mutation<ApiResponse<VerifyResetCodeResponse>, VerifyResetCodeRequest>({
+      query: (data) => ({
+        url: '/api/auth/verify-reset-code/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 5. Reset Password endpoint
+    resetPassword: builder.mutation<ApiResponse<void>, ResetPasswordRequest>({
+      query: (data) => ({
+        url: '/api/auth/reset-password/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 6. Resend OTP endpoint
+    resendOtp: builder.mutation<ApiResponse<ResendOtpResponse>, ResendOtpRequest>({
+      query: (data) => ({
+        url: '/api/auth/resent-otp/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 7. Login/Signin endpoint
+    login: builder.mutation<ApiResponse<LoginResponse>, LoginRequest>({
+      query: (credentials) => ({
+        url: '/api/auth/signin/',
+        method: 'POST',
+        body: credentials,
+      }),
+      invalidatesTags: ['Auth', 'Profile'],
+    }),
+
+    // 8. Refresh Token endpoint
+    refreshToken: builder.mutation<ApiResponse<RefreshTokenResponse>, RefreshTokenRequest>({
+      query: (data) => ({
+        url: '/api/auth/custom-refresh/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 9. Get Profile endpoint
+    getProfile: builder.query<ApiResponse<ProfileResponse>, void>({
+      query: () => '/api/auth/getme/',
+      providesTags: ['Profile'],
+    }),
+
+    // 10. Logout endpoint (optional - can be handled client-side)
+    logout: builder.mutation<void, void>({
+      queryFn: () => ({ data: undefined }),
+      invalidatesTags: ['Auth', 'Profile'],
     }),
   }),
 });
 
 // Export hooks for usage in functional components
 export const {
-  useLoginMutation,
   useSignupMutation,
-  useVerifyOtpMutation,
+  useVerifyEmailMutation,
+  useForgotPasswordMutation,
+  useVerifyResetCodeMutation,
+  useResetPasswordMutation,
+  useResendOtpMutation,
+  useLoginMutation,
+  useRefreshTokenMutation,
+  useGetProfileQuery,
+  useLazyGetProfileQuery,
   useLogoutMutation,
-  useGetCurrentUserQuery,
 } = authApi;

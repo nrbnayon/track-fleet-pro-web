@@ -11,6 +11,7 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { resetPasswordValidationSchema } from "@/lib/formDataValidation";
+import { useResetPasswordMutation } from "@/redux/services/authApi";
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordValidationSchema>;
 
@@ -83,40 +84,57 @@ export default function ResetPassword() {
     setValue("email", storedEmail);
   }, [router, setValue]);
 
+  // API Hook
+  const [resetPassword, { isLoading: isApiLoading }] = useResetPasswordMutation();
+
   const onSubmit = async (data: ResetPasswordFormData) => {
     setIsLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const secretKey = localStorage.getItem("resetSecretKey");
+      const userId = localStorage.getItem("userId");
 
-      // Log the form data to console (excluding password for security)
-      console.log("Reset Password Data:", {
-        email: data.email,
-        passwordLength: data.newPassword.length,
-        timestamp: new Date().toISOString(),
-      });
+      if (!secretKey || !userId) {
+          toast.error("Session expired", { description: "Please request a new password reset." });
+          router.push("/forgot-password");
+          return;
+      }
 
-      // Simulate successful password reset
-      toast.success("Password reset successful!", {
-        description: "Your password has been updated successfully.",
-        duration: 2000,
-      });
+      const response = await resetPassword({
+        user_id: userId,
+        secret_key: secretKey,
+        new_password: data.newPassword,
+        confirm_password: data.confirmPassword,
+      }).unwrap();
+      
+      if (response.success) {
+        toast.success("Password Reset Successful!", {
+            description: response.message || "You can now login with your new password.",
+            duration: 2000,
+        });
 
-      // Clear all reset-related data from localStorage
-      localStorage.removeItem("resetEmail");
-      localStorage.removeItem("otpVerified");
-      localStorage.removeItem("verificationTime");
-      localStorage.removeItem("otpSentTime");
+        // Clear all reset-related data from localStorage
+        localStorage.removeItem("resetEmail");
+        localStorage.removeItem("otpVerified");
+        localStorage.removeItem("verificationTime");
+        localStorage.removeItem("otpSentTime");
+        localStorage.removeItem("resetSecretKey");
+        localStorage.removeItem("userId");
 
-      // Redirect to success page after a short delay
-      setTimeout(() => {
-        router.push("/reset-success");
-      }, 1000);
-    } catch (error) {
+        // Redirect to login
+        setTimeout(() => {
+            router.push("/login");
+        }, 1000);
+      } else {
+         toast.error(response.message || "Failed to reset password");
+      }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Reset password error:", error);
-      toast.error("Password reset failed", {
-        description: "Please try again later.",
+      const errorMessage = error?.data?.message || "Password reset failed. Please try again.";
+      toast.error("Error", {
+        description: errorMessage,
         duration: 3000,
       });
     } finally {

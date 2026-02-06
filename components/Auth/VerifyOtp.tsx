@@ -15,6 +15,14 @@ import {
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { 
+  useVerifyEmailMutation, 
+  useVerifyResetCodeMutation, 
+  useResendOtpMutation 
+} from "@/redux/services/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { setCredentials } from "@/redux/features/authSlice";
+import { setCookie } from "@/redux/services/apiSlice";
 
 // Validation schema
 const otpSchema = z.object({
@@ -34,7 +42,13 @@ export default function VerifyOtp() {
   const [timeLeft, setTimeLeft] = useState(300);
   const [email, setEmail] = useState("");
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // API Hooks
+  const [verifyEmail, { isLoading: isVerifyEmailLoading }] = useVerifyEmailMutation();
+  const [verifyResetCode, { isLoading: isVerifyResetLoading }] = useVerifyResetCodeMutation();
+  const [resendOtp, { isLoading: isResendLoading }] = useResendOtpMutation();
 
   const {
     handleSubmit,
@@ -115,44 +129,98 @@ export default function VerifyOtp() {
     setIsLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Log the form data to console
-      console.log("OTP Verification Data:", {
-        email,
-        otp: data.otp,
-        timestamp: new Date().toISOString(),
-      });
-
-      // Simulate successful OTP verification
-      toast.success("OTP verified successfully!", {
-        description: "Redirecting...",
-        duration: 2000,
-      });
-
-      // Store verification status
-      localStorage.setItem("otpVerified", "otpVerified");
-      localStorage.setItem("verificationTime", Date.now().toString());
-
-      // Clear timer from localStorage
-      const timerKey = `otpTimer_${email}`;
-      localStorage.removeItem(timerKey);
-
-      // Check if it's signup or password reset flow
       const isSignupFlow = localStorage.getItem("signupEmail");
+      const userId = localStorage.getItem("userId");
+      
+      if (!userId) {
+         toast.error("Session expired. Please try again.");
+         router.push(isSignupFlow ? "/signup" : "/forgot-password");
+         return;
+      }
 
-      setTimeout(() => {
-        if (isSignupFlow) {
-          router.push("/success");
-        } else {
-          router.push("/reset-password");
+      if (isSignupFlow) {
+        // Handle Email Verification (Signup Flow)
+        const response = await verifyEmail({
+          user_id: userId,
+          code: data.otp
+        }).unwrap();
+
+        if (response.success && response.data) {
+          const { access_token, refresh_token, user_id, role } = response.data;
+          
+          // Store tokens and auth state
+          setCookie("accessToken", access_token, 7);
+          setCookie("refreshToken", refresh_token, 7);
+          setCookie("userRole", role, 7);
+          setCookie("userId", user_id, 7);
+          
+          dispatch(setCredentials({
+              user: {
+                  user_id,
+                  email_address: email,
+                  role,
+              },
+              token: access_token,
+              refreshToken: refresh_token
+          }));
+
+          toast.success("Email verified successfully!", {
+            description: "Logging you in...",
+            duration: 2000,
+          });
+
+          // Cleanup localStorage
+          localStorage.removeItem("signupEmail");
+          localStorage.removeItem("otpTimer_" + email);
+          localStorage.removeItem("otpSentTime");
+           // Keep userId if needed or can rely on cookie? 
+           // For dashboard, we rely on cookies/redux. 
+           // Better to clear temp storage.
+           localStorage.removeItem("userId");
+
+          // Redirect to dashboard
+          setTimeout(() => {
+             // Simple role based redirect or default
+             if (role === 'SUPER_ADMIN') router.push('/super-admin/dashboard');
+             else if (role === 'SELLER') router.push('/seller-admin/dashboard');
+             else router.push('/track-parcel'); 
+          }, 1000);
         }
-      }, 1000);
-    } catch (error) {
+      } else {
+        // Handle Reset Code Verification (Forgot Password Flow)
+        const response = await verifyResetCode({
+            user_id: userId,
+            code: data.otp
+        }).unwrap();
+
+        if (response.success && response.data) {
+           const { secret_key } = response.data;
+           
+           // Store secret key for password reset step
+           localStorage.setItem("resetSecretKey", secret_key);
+           localStorage.setItem("otpVerified", "true");
+           localStorage.setItem("verificationTime", Date.now().toString());
+
+           toast.success("Code verified successfully!", {
+              description: "Please set your new password.",
+              duration: 2000,
+           });
+           
+           // Cleanup timer
+           localStorage.removeItem("otpTimer_" + email);
+
+           setTimeout(() => {
+               router.push("/reset-password");
+           }, 1000);
+        }
+      }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("OTP verification error:", error);
-      toast.error("Invalid OTP", {
-        description: "Please check the code and try again.",
+      const errorMessage = error?.data?.message || "Invalid OTP or expired.";
+      toast.error("Verification failed", {
+        description: errorMessage,
         duration: 3000,
       });
       setError("otp", { message: "Invalid OTP code" });
@@ -165,24 +233,29 @@ export default function VerifyOtp() {
     setIsResending(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await resendOtp({
+         email_address: email
+      }).unwrap();
 
-      // Reset timer
-      setTimeLeft(180);
-      const newSentTime = Date.now();
-      localStorage.setItem("otpSentTime", newSentTime.toString());
-      const timerKey = `otpTimer_${email}`;
-      localStorage.setItem(timerKey, "180");
+      if (response.success) {
+         // Reset timer
+        setTimeLeft(180);
+        const newSentTime = Date.now();
+        localStorage.setItem("otpSentTime", newSentTime.toString());
+        const timerKey = `otpTimer_${email}`;
+        localStorage.setItem(timerKey, "180");
+        
+        toast.success("OTP resent successfully!", {
+            description: `New verification code sent to ${email}`,
+            duration: 2000,
+        });
+      }
 
-      toast.success("OTP resent successfully!", {
-        description: `New verification code sent to ${email}`,
-        duration: 2000,
-      });
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Resend OTP error:", error);
       toast.error("Failed to resend OTP", {
-        description: "Please try again later.",
+        description: error?.data?.message || "Please try again later.",
         duration: 3000,
       });
     } finally {

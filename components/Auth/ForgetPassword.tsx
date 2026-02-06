@@ -12,6 +12,7 @@ import { Mail, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { emailValidationSchema } from "@/lib/formDataValidation";
+import { useForgotPasswordMutation } from "@/redux/services/authApi";
 
 type ForgetPasswordFormData = z.infer<typeof emailValidationSchema>;
 
@@ -30,37 +31,41 @@ export default function ForgetPassword() {
     },
   });
 
+  // API Hook
+  const [forgotPassword, { isLoading: isApiLoading }] = useForgotPasswordMutation();
+
   const onSubmit = async (data: ForgetPasswordFormData) => {
     setIsLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await forgotPassword({
+        email_address: data.email,
+      }).unwrap();
 
-      // Log the form data to console
-      console.log("Forget Password Form Data:", {
-        email: data.email,
-        timestamp: new Date().toISOString(),
-      });
+      if (response.success && response.data) {
+         // Store data for OTP verification
+        localStorage.setItem("resetEmail", data.email);
+        localStorage.setItem("userId", response.data.user_id);
+        localStorage.setItem("otpSentTime", Date.now().toString());
 
-      // Simulate successful OTP send
-      toast.success("OTP sent successfully!", {
-        description: `Verification code sent to ${data.email}`,
-        duration: 2000,
-      });
+         toast.success("Resest password code sent successfully!", {
+          description: response.message || `Verification code sent to ${data.email}`,
+          duration: 2000,
+        });
 
-      // Store email in localStorage for OTP verification
-      localStorage.setItem("resetEmail", data.email);
-      localStorage.setItem("otpSentTime", Date.now().toString());
-
-      // Redirect to OTP verification after a short delay
-      setTimeout(() => {
-        router.push("/verify-otp");
-      }, 1000);
-    } catch (error) {
+        // Redirect to OTP verification after a short delay
+        setTimeout(() => {
+          router.push("/verify-otp");
+        }, 1000);
+      } else {
+        toast.error(response.message || "Failed to send OTP");
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Forget password error:", error);
-      toast.error("Failed to send OTP", {
-        description: "Please check your email and try again.",
+      const errorMessage = error?.data?.message || "Failed to send OTP. Please check your email and try again.";
+      toast.error("Error", {
+        description: errorMessage,
         duration: 3000,
       });
     } finally {

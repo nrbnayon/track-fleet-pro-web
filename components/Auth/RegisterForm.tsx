@@ -11,6 +11,7 @@ import { CardHeader } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2, Mail, User, Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSignupMutation } from "@/redux/services/authApi";
 
 // Updated validation schema for signup with account type
 const signupValidationSchema = z.object({
@@ -58,43 +59,56 @@ export default function RegisterForm() {
     setValue("accountType", type);
   };
 
+  // API Hooks
+  const [signup, { isLoading: isSignupLoading }] = useSignupMutation();
+
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Store email for OTP verification
-      localStorage.setItem("signupEmail", data.email);
-      localStorage.setItem("otpSentTime", Date.now().toString());
-
-      // Log the form data to console
-      console.log("Registration Form Data:", {
-        accountType: data.accountType,
+      const response = await signup({
         full_name: data.full_name,
-        business_name: data.business_name,
-        email: data.email,
+        email_address: data.email,
         password: data.password,
-        timestamp: new Date().toISOString(),
-      });
+        business_name: data.accountType === "business" ? data.business_name : "",
+        account_type: data.accountType,
+        role: data.accountType === "business" ? "SELLER" : "CUSTOMER",
+      }).unwrap();
 
-      // Simulate successful registration
-      toast.success("Registration initiated!", {
-        description: `Please verify your email to complete registration.`,
-        duration: 2000,
-      });
+      if (response.success && response.data) {
+        // Store data for OTP verification
+        localStorage.setItem("signupEmail", data.email);
+        localStorage.setItem("userId", response.data.user_id);
+        localStorage.setItem("otpSentTime", Date.now().toString());
 
-      // Redirect to OTP verification
-      setTimeout(() => {
-        router.push("/verify-otp");
-      }, 1000);
-    } catch (error) {
+        // Log the success
+        console.log("Registration Success:", response);
+
+        toast.success("Registration initiated!", {
+          description: response.message || "Please verify your email to complete registration.",
+          duration: 2000,
+        });
+
+        // Redirect to OTP verification
+        setTimeout(() => {
+          router.push("/verify-otp");
+        }, 1000);
+      } else {
+        toast.error(response.message || "Registration failed");
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Registration error:", error);
+      const errorMessage = error?.data?.errors?.email_address || error?.data?.message || "Something went wrong. Please try again.";
       toast.error("Registration failed", {
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         duration: 3000,
       });
+      
+       if (error?.data?.errors?.email_address) {
+          // You might want to set form error manually if needed
+          // setError("email", { message: error.data.errors.email_address });
+       }
     } finally {
       setIsLoading(false);
     }

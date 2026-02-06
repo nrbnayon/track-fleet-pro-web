@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getCookie } from "@/redux/services/apiSlice";
+import { UserRole } from "@/types/users";
 
 export interface UserInfo {
-  role: string | null;
+  userId: string | null;
+  role: UserRole | null;
   email: string | null;
   accessToken: string | null;
   isAuthenticated: boolean;
@@ -12,6 +15,7 @@ export interface UserInfo {
 
 export function useUser() {
   const [user, setUser] = useState<UserInfo>({
+    userId: null,
     role: null,
     email: null,
     accessToken: null,
@@ -20,20 +24,14 @@ export function useUser() {
   });
 
   useEffect(() => {
-    const getCookie = (name: string) => {
-      if (typeof document === "undefined") return null;
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-      return null;
-    };
-
-    const role = getCookie("userRole");
+    const role = getCookie("userRole") as UserRole | null;
     const rawEmail = getCookie("userEmail");
     const email = rawEmail ? decodeURIComponent(rawEmail) : null;
     const accessToken = getCookie("accessToken");
+    const userId = getCookie("userId");
 
     setUser({
+      userId: userId || null,
       role: role || null,
       email: email || null,
       accessToken: accessToken || null,
@@ -42,7 +40,7 @@ export function useUser() {
     });
   }, []);
 
-  const hasRole = (role: string) => user.role === role;
+  const hasRole = (role: UserRole) => user.role === role;
   
   return {
     ...user,

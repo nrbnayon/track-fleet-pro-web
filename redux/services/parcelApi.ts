@@ -1,4 +1,4 @@
-// lib/redux/services/parcelApi.ts
+// redux/services/parcelApi.ts
 import { apiSlice } from './apiSlice';
 
 interface TrackingUpdate {
