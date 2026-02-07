@@ -176,12 +176,6 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                                                 <Phone className="h-3 w-3" />
                                                 Call
                                             </Button>
-                                            <Button
-                                                size="sm"
-                                                className="flex-1 h-8 text-xs"
-                                            >
-                                                Message
-                                            </Button>
                                         </div>
                                     </div>
                                 ) : (

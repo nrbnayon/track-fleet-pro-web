@@ -5,11 +5,11 @@ import { StatsCard } from "@/components/Shared/StatsCard";
 import { getStatsData } from "@/data/statsData";
 import RecentParcels from "@/components/SuperAdmin/Dashboard/RecentParcels";
 import ActiveDrivers from "@/components/SuperAdmin/Dashboard/ActiveDrivers";
-import { useGetDashboardStatsQuery } from "@/redux/services/dashboardApi";
+import { useGetAdminDashboardStatsQuery } from "@/redux/services/dashboardApi";
 import DashboardSkeleton from "@/components/SuperAdmin/Dashboard/DashboardSkeleton";
 
 export default function DashboardClient() {
-  const { data, isLoading, error } = useGetDashboardStatsQuery();
+  const { data, isLoading, error } = useGetAdminDashboardStatsQuery();
 
   if (isLoading) {
     return <DashboardSkeleton />;

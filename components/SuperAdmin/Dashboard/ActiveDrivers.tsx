@@ -12,18 +12,17 @@ interface ActiveDriversProps {
 
 export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
 
-    console.log("Drivers: ", drivers);
     const activeDrivers = useMemo(() => {
         return drivers
             .map(driver => {
                 let status = 'offline';
-                if (driver.active_delivery > 0) status = 'busy';
+                if (driver.active_delivery > 2) status = 'busy';
                 else if (driver.is_available) status = 'available'; // Assuming is_available implies online and ready
 
                  // Or strictly follow is_online logic if needed, but 'available' usually means ready for tasks
                  // API has is_available and is_online.
                  // Let's deduce:
-                 // if active_delivery > 0 -> busy
+                 // if active_delivery > 2 -> busy
                  // else if is_available -> available
                  // else if is_online -> online (but maybe not available?) -> treat as available or idle?
                  // Let's stick to simplest mapping.
@@ -74,7 +73,7 @@ export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
                             <div className="relative h-10 w-10 mr-4 shrink-0">
                                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                    src={driver.profile_image?.startsWith('/') ? driver.profile_image : "/drivers/driver.jpg"}
+                                    src={driver.profile_image || "/drivers/driver.jpg"}
                                     alt={driver.full_name}
                                     fill
                                     className="object-cover"
