@@ -1,6 +1,6 @@
 
 import DashboardHeader from "@/components/Shared/DashboardHeader";
-import AnalysisDashboardClient from "@/components/SupperAdmin/Analysis/AnalysisDashboardClient";
+import AnalysisDashboardClient from "@/components/SuperAdmin/Analysis/AnalysisDashboardClient";
 
 export default function AnalysisPage() {
     return (

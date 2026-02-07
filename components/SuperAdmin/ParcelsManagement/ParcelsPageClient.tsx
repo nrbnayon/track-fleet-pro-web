@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
-import ParcelsTable from "@/components/SupperAdmin/ParcelsManagement/ParcelsTable";
+import ParcelsTable from "@/components/SuperAdmin/ParcelsManagement/ParcelsTable";
 import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {

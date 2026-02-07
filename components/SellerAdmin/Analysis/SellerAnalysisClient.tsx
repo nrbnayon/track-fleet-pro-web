@@ -23,8 +23,6 @@ export default function SellerAnalysisClient() {
         {
             title: "Total Revenue",
             value: `$${(stats?.total_revenue || 12450).toLocaleString()}`,
-            percentage: "8.5%",
-            subtitle: "Up from last month",
             isUp: true,
             icon: DollarSign,
             iconColor: "#AD46FF",
@@ -33,8 +31,6 @@ export default function SellerAnalysisClient() {
         {
             title: "Total Deliveries",
             value: (stats?.total_parcels || 331).toString(),
-            percentage: "8.5%",
-            subtitle: "Up from last month",
             isUp: true,
             icon: Package,
             iconColor: "#2BA24C",
@@ -43,8 +39,6 @@ export default function SellerAnalysisClient() {
         {
             title: "Active Drivers",
             value: "12",
-            percentage: "8.5%",
-            subtitle: "Up from last month",
             isUp: true,
             icon: Truck,
             iconColor: "#615FFF",
@@ -63,7 +57,6 @@ export default function SellerAnalysisClient() {
                         icon={stat.icon}
                         iconColor={stat.iconColor}
                         iconBgColor={stat.iconBg}
-                        subtitle={`${stat.percentage} ${stat.subtitle}`}
                         isUp={stat.isUp}
                     />
                 ))}

@@ -18,7 +18,6 @@ export default function SellerStats() {
             {
                 title: "Parcels Created",
                 value: totalCreated,
-                subtitle: "8.5% Up from last month",
                 icon: Package,
                 iconColor: "#1D92ED",
                 iconBgColor: "#DFF0FF",
@@ -26,7 +25,6 @@ export default function SellerStats() {
             {
                 title: "Pending Parcels",
                 value: pending,
-                subtitle: "8.5% Up from last month",
                 icon: Clock,
                 iconColor: "#F0B100",
                 iconBgColor: "#FFF6E5",
@@ -34,7 +32,6 @@ export default function SellerStats() {
             {
                 title: "Ongoing",
                 value: ongoing,
-                subtitle: "8.5% Up from last month",
                 icon: Truck,
                 iconColor: "#AD46FF",
                 iconBgColor: "#F5EDFF",
@@ -42,7 +39,6 @@ export default function SellerStats() {
             {
                 title: "Delivered Today",
                 value: delivered,
-                subtitle: "8.5% Up from yesterday",
                 icon: CheckCircle,
                 iconColor: "#00C950",
                 iconBgColor: "#E6F9EF",
@@ -60,7 +56,6 @@ export default function SellerStats() {
                     icon={stat.icon}
                     iconColor={stat.iconColor}
                     iconBgColor={stat.iconBgColor}
-                    subtitle={stat.subtitle}
                 />
             ))}
         </div>

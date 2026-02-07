@@ -13,9 +13,6 @@ export default function AnalysisDashboardClient() {
         {
             title: "Total Revenue",
             value: "$12,450",
-            percentage: "8.5%",
-            subtitle: "Up from last month",
-            isUp: true,
             icon: DollarSign,
             iconColor: "#AD46FF",
             iconBg: "#AD46FF33",
@@ -23,9 +20,6 @@ export default function AnalysisDashboardClient() {
         {
             title: "Total Deliveries",
             value: "331",
-            percentage: "8.5%",
-            subtitle: "Up from last month",
-            isUp: true,
             icon: Package,
             iconColor: "#2BA24C",
             iconBg: "#2BA24C33",
@@ -33,9 +27,6 @@ export default function AnalysisDashboardClient() {
         {
             title: "Active Drivers",
             value: "12",
-            percentage: "8.5%",
-            subtitle: "Up from last month",
-            isUp: true,
             icon: Truck,
             iconColor: "#615FFF",
             iconBg: "#615FFF33",
@@ -52,8 +43,6 @@ export default function AnalysisDashboardClient() {
                         icon={stat.icon}
                         iconColor={stat.iconColor}
                         iconBgColor={stat.iconBg}
-                        subtitle={`${stat.percentage} ${stat.subtitle}`}
-                        isUp={stat.isUp}
                     />
                 ))}
             </div>

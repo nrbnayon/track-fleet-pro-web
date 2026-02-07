@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
 // Dynamically import the map component to avoid SSR issues
-const MapComponent = dynamic(() => import("@/components/SupperAdmin/ParcelsManagement/ParcelMap"), {
+const MapComponent = dynamic(() => import("@/components/SuperAdmin/ParcelsManagement/ParcelMap"), {
     ssr: false,
     loading: () => (
         <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl">

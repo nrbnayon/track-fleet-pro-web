@@ -15,8 +15,8 @@ import { Car, MapPin } from "lucide-react";
 import { Parcel } from "@/types/parcel";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/Shared/Pagination";
-import { AssignDriverModal } from "@/components/SupperAdmin/ParcelsManagement/AssignDriverModal";
-import { TrackParcelModal } from "@/components/SupperAdmin/ParcelsManagement/TrackParcelModal";
+import { AssignDriverModal } from "@/components/SuperAdmin/ParcelsManagement/AssignDriverModal";
+import { TrackParcelModal } from "@/components/SuperAdmin/ParcelsManagement/TrackParcelModal";
 
 import { Skeleton } from "@/components/ui/skeleton";
 

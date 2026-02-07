@@ -1,6 +1,6 @@
 // app/(roles)/admin/users/page.tsx
 import DashboardHeader from "@/components/Shared/DashboardHeader";
-import DriverManagementClient from "@/components/SupperAdmin/DriversManagement/DriverManagementClient";
+import DriverManagementClient from "@/components/SuperAdmin/DriversManagement/DriverManagementClient";
 
 export default function DriverManagementPage() {
   return (

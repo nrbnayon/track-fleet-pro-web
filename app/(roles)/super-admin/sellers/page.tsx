@@ -1,6 +1,6 @@
 
 import DashboardHeader from "@/components/Shared/DashboardHeader";
-import SellerManagementClient from "@/components/SupperAdmin/SellersManagement/SellerManagementClient";
+import SellerManagementClient from "@/components/SuperAdmin/SellersManagement/SellerManagementClient";
 
 export default function SellerManagementPage() {
     return (
