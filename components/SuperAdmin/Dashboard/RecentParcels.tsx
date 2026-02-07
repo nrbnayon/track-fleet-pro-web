@@ -2,38 +2,36 @@
 
 import { useState, useMemo } from "react";
 import { Package } from "lucide-react";
-import { allParcelsData } from "@/data/allParcelsData";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { RecentParcel } from "@/types/dashboard";
 
-export default function RecentParcels() {
+interface RecentParcelsProps {
+    parcels?: RecentParcel[];
+}
+
+export default function RecentParcels({ parcels = [] }: RecentParcelsProps) {
     const [filter, setFilter] = useState("all");
 
     const filteredParcels = useMemo(() => {
-        let data = [...allParcelsData];
-
-        // Sort by date (newest first)
-        data.sort((a, b) => {
-            const dateA = new Date(a.createdAt || '').getTime();
-            const dateB = new Date(b.createdAt || '').getTime();
-            return dateB - dateA;
-        });
-
+        let data = [...parcels];
+        
         // Filter by status
         if (filter !== "all") {
             data = data.filter(
-                (parcel) => parcel.parcel_status?.toLowerCase() === filter.toLowerCase()
+                (parcel) => parcel.status_display?.toLowerCase() === filter.toLowerCase()
             );
         }
 
-        return data.slice(0, 5);
-    }, [filter]);
+        return data.slice(0, 5); // Just in case
+    }, [filter, parcels]);
 
     const getStatusColor = (status: string | undefined) => {
         switch (status?.toLowerCase()) {
             case "ongoing":
                 return "bg-blue-100 text-blue-600";
             case "pending":
+            case "assigned": 
                 return "bg-amber-100 text-amber-600";
             case "delivered":
                 return "bg-emerald-100 text-emerald-600";
@@ -42,6 +40,7 @@ export default function RecentParcels() {
             case "cancelled":
                 return "bg-gray-100 text-secondary";
             default:
+                 if (status?.toLowerCase() === 'assigned') return "bg-purple-100 text-purple-600";
                 return "bg-gray-100 text-secondary";
         }
     };
@@ -70,42 +69,46 @@ export default function RecentParcels() {
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-4">
-                {filteredParcels.map((parcel) => (
-                    <div
-                        key={parcel.id}
-                        className="flex items-center p-3 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] hover:border-blue-100 hover:bg-blue-50/30 transition-all group"
-                    >
-                        {/* Icon */}
-                        <div className="h-10 w-10 rounded-lg bg-blue-100/50 flex items-center justify-center text-blue-500 mr-4 shrink-0 group-hover:bg-blue-200/50 transition-colors">
-                            <Package className="h-5 w-5" />
-                        </div>
+                {filteredParcels.length === 0 ? (
+                    <div className="text-center text-gray-500 py-4">No parcels found</div>
+                ) : (
+                    filteredParcels.map((parcel) => (
+                        <div
+                            key={parcel.id}
+                            className="flex items-center p-3 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] hover:border-blue-100 hover:bg-blue-50/30 transition-all group"
+                        >
+                            {/* Icon */}
+                            <div className="h-10 w-10 rounded-lg bg-blue-100/50 flex items-center justify-center text-blue-500 mr-4 shrink-0 group-hover:bg-blue-200/50 transition-colors">
+                                <Package className="h-5 w-5" />
+                            </div>
 
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-foreground truncate">
-                                {parcel.tracking_no}
-                            </h3>
-                            <p className="text-xs text-gray-500 truncate mt-0.5">
-                                {parcel.senderInfo?.name || "Unknown Sender"}
-                            </p>
-                            <p className="text-xs text-gray-400 truncate mt-0.5">
-                                {parcel.pickup_location || "Unknown Location"}
-                            </p>
-                        </div>
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-sm font-semibold text-foreground truncate">
+                                    {parcel.tracking_id}
+                                </h3>
+                                <p className="text-xs text-gray-500 truncate mt-0.5">
+                                    {parcel.seller_name || "Unknown Sender"}
+                                </p>
+                                <p className="text-xs text-gray-400 truncate mt-0.5">
+                                    {parcel.pickup_location || "Unknown Location"}
+                                </p>
+                            </div>
 
-                        {/* Status */}
-                        <div className="ml-4 shrink-0">
-                            <span
-                                className={cn(
-                                    "px-2.5 py-1 rounded-full text-xs font-medium capitalize",
-                                    getStatusColor(parcel.parcel_status)
-                                )}
-                            >
-                                {parcel.parcel_status || "Unknown"}
-                            </span>
+                            {/* Status */}
+                            <div className="ml-4 shrink-0">
+                                <span
+                                    className={cn(
+                                        "px-2.5 py-1 rounded-full text-xs font-medium capitalize",
+                                        getStatusColor(parcel.status_display)
+                                    )}
+                                >
+                                    {parcel.status_display || "Unknown"}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
 
             <div className="mt-6 pt-2 border-t border-gray-100 flex justify-center">
@@ -119,3 +122,4 @@ export default function RecentParcels() {
         </div>
     );
 }
+

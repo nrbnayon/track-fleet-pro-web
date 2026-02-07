@@ -2,31 +2,52 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { allDriversData } from "@/data/allDriversData";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { ActiveDriver } from "@/types/dashboard";
 
-export default function ActiveDrivers() {
+interface ActiveDriversProps {
+    drivers?: ActiveDriver[];
+}
+
+export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
+
+    console.log("Drivers: ", drivers);
     const activeDrivers = useMemo(() => {
-        return allDriversData
-            .filter((driver) => driver.isActive)
-            .sort((a, b) => {
-                // Prioritize "busy" (on delivery) then "available", then "offline"
-                const statusPriority = { busy: 0, available: 1, offline: 2 };
-                const statusA = (a.driver_status || 'offline') as keyof typeof statusPriority;
-                const statusB = (b.driver_status || 'offline') as keyof typeof statusPriority;
+        return drivers
+            .map(driver => {
+                let status = 'offline';
+                if (driver.active_delivery > 0) status = 'busy';
+                else if (driver.is_available) status = 'available'; // Assuming is_available implies online and ready
 
-                return (statusPriority[statusA] ?? 2) - (statusPriority[statusB] ?? 2);
+                 // Or strictly follow is_online logic if needed, but 'available' usually means ready for tasks
+                 // API has is_available and is_online.
+                 // Let's deduce:
+                 // if active_delivery > 0 -> busy
+                 // else if is_available -> available
+                 // else if is_online -> online (but maybe not available?) -> treat as available or idle?
+                 // Let's stick to simplest mapping.
+                 
+                return {
+                    ...driver,
+                    derivedStatus: status
+                };
             })
-            .slice(0, 5);
-    }, []);
+            // Sort or filter if needed? The API "active_drivers" list likely already filters for active ones.
+            // But if we want to sort:
+            .sort((a, b) => {
+                 const statusPriority: Record<string, number> = { busy: 0, available: 1, offline: 2 };
+                 return (statusPriority[a.derivedStatus] ?? 2) - (statusPriority[b.derivedStatus] ?? 2);
+            })
+            .slice(0, 8); 
+    }, [drivers]);
 
-    const getStatusColor = (status: string | undefined) => {
-        switch (status?.toLowerCase()) {
+    const getStatusColor = (status: string) => {
+        switch (status) {
             case "available":
-                return "bg-emerald-100 text-emerald-600"; // Green
+                return "bg-emerald-100 text-emerald-600"; 
             case "busy":
-                return "bg-purple-100 text-purple-600"; // Light purple/pinkish
+                return "bg-purple-100 text-purple-600"; 
             case "offline":
                 return "bg-gray-100 text-secondary";
             default:
@@ -41,51 +62,55 @@ export default function ActiveDrivers() {
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-4">
-                {activeDrivers.map((driver) => (
-                    <div
-                        key={driver.id}
-                        className="flex items-center p-3 rounded-lg border border-transparent hover:bg-gray-50 transition-colors shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)]"
-                    >
-                        {/* Avatar */}
-                        <div className="relative h-10 w-10 mr-4 shrink-0">
-                            <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
+                {activeDrivers.length === 0 ? (
+                     <div className="text-center text-gray-500 py-4">No active drivers</div>
+                ) : (
+                    activeDrivers.map((driver, index) => (
+                        <div
+                            key={index}
+                            className="flex items-center p-3 rounded-lg border border-transparent hover:bg-gray-50 transition-colors shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)]"
+                        >
+                            {/* Avatar */}
+                            <div className="relative h-10 w-10 mr-4 shrink-0">
+                                <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                    src={driver.driver_image?.startsWith('/') ? driver.driver_image : "/drivers/driver.jpg"}
-                                    alt={driver.driver_name}
+                                    src={driver.profile_image?.startsWith('/') ? driver.profile_image : "/drivers/driver.jpg"}
+                                    alt={driver.full_name}
                                     fill
                                     className="object-cover"
                                 />
                             </div>
-                            <span className={cn(
-                                "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white",
-                                driver.driver_status === 'available' ? 'bg-emerald-500' :
-                                    driver.driver_status === 'busy' ? 'bg-purple-500' : 'bg-gray-400'
-                            )}></span>
-                        </div>
+                                <span className={cn(
+                                    "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white",
+                                    driver.derivedStatus === 'available' ? 'bg-emerald-500' :
+                                        driver.derivedStatus === 'busy' ? 'bg-purple-500' : 'bg-gray-400'
+                                )}></span>
+                            </div>
 
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-foreground truncate">
-                                {driver.driver_name}
-                            </h3>
-                            <p className="text-xs text-gray-500 truncate mt-0.5">
-                                {driver.stats?.active_deliveries ?? 0} Ongoing deliveries
-                            </p>
-                        </div>
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-sm font-semibold text-foreground truncate">
+                                    {driver.full_name}
+                                </h3>
+                                <p className="text-xs text-gray-500 truncate mt-0.5">
+                                    {driver.active_delivery} Ongoing deliveries
+                                </p>
+                            </div>
 
-                        {/* Status */}
-                        <div className="ml-4 shrink-0">
-                            <span
-                                className={cn(
-                                    "px-2.5 py-1 rounded-full text-xs font-medium capitalize",
-                                    getStatusColor(driver.driver_status)
-                                )}
-                            >
-                                {driver.driver_status || "Unknown"}
-                            </span>
+                            {/* Status */}
+                            <div className="ml-4 shrink-0">
+                                <span
+                                    className={cn(
+                                        "px-2.5 py-1 rounded-full text-xs font-medium capitalize",
+                                        getStatusColor(driver.derivedStatus)
+                                    )}
+                                >
+                                    {driver.derivedStatus}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
 
             <div className="mt-6 pt-2 border-t border-gray-100 flex justify-center">
@@ -99,3 +124,4 @@ export default function ActiveDrivers() {
         </div>
     );
 }
+

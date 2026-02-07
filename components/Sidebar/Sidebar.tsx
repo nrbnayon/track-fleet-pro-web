@@ -64,12 +64,12 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // User Data via Hook
-  const { role, profile, email, isAuthenticated } = useUser();
+  const { role, email, isAuthenticated, fullName, profileImage } = useUser();
   const userRole = role || "CUSTOMER";
-  const userEmail = profile?.email_address || email || "";
-  const userName = profile?.full_name || "User";
-
-  console.log("Sidebar logged in userEmail:: ", userEmail);
+  const userEmail = email || "";
+  const userName = fullName || "User";
+  const avatarSrc = profileImage || "/images/user.webp";
+  // console.log("Sidebar logged in userEmail:: ", userEmail);
 
   const minWidth = 80;
   const maxWidth = 400;
@@ -510,12 +510,13 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                     }}
                     className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
                   >
-                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center overflow-hidden shrink-0">
                       <Image
-                        src="/images/avatar.png"
+                        src={avatarSrc}
                         alt="User"
                         width={40}
                         height={40}
+                        className="object-cover"
                       />
                     </div>
                     <motion.div

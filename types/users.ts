@@ -8,17 +8,21 @@ export interface User {
   role: UserRole;
   business_name?: string;
   account_type?: "business" | "personal";
+  profile_image?: string;
+  is_verified?: boolean;
   seller_profile?: {
     first_name: string | null;
     last_name: string | null;
     vehicle_number: string | null;
     phone_number: string;
+    profile_image?: string;
   };
 
   customer_profile?: {
     first_name: string | null;
     last_name: string | null;
     phone_number: string;
+    profile_image?: string;
   };
 }
 
@@ -123,15 +127,18 @@ export interface RefreshTokenResponse {
 export interface ProfileResponse {
   full_name: string;
   email_address: string;
+  profile_image?: string;
   seller_profile?: {
     first_name: string | null;
     last_name: string | null;
     vehicle_number: string | null;
     phone_number: string;
+    profile_image?: string;
   };
   customer_profile?: {
     first_name: string | null;
     last_name: string | null;
     phone_number: string;
+    profile_image?: string;
   };
 }

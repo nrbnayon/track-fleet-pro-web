@@ -9,6 +9,9 @@ export interface UserInfo {
   userId: string | null;
   role: UserRole | null;
   email: string | null;
+  fullName?: string | null;
+  profileImage?: string | null;
+  isVerified?: boolean | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -20,12 +23,18 @@ export function useUser() {
     userId: string | null;
     role: UserRole | null;
     email: string | null;
+    fullName?: string | null;
+    profileImage?: string | null;
+    isVerified?: boolean | null;
     accessToken: string | null;
     isAuthenticated: boolean;
   }>({
     userId: null,
     role: null,
     email: null,
+    fullName: null,
+    profileImage: null,
+    isVerified: null,
     accessToken: null,
     isAuthenticated: false,
   });
@@ -51,11 +60,21 @@ export function useUser() {
     skip: !localState.isAuthenticated,
   });
 
+  // console.log("Profile Data in hook: ", profileData);
+
   const hasRole = (role: UserRole) => localState.role === role;
   
+  const userProfile = profileData?.data || null;
+
+  // console.log("Profile Data in hook userProfile: ", userProfile);
+
+
   return {
     ...localState,
-    profile: profileData?.data || null,
+    fullName: userProfile?.full_name || localState.fullName,
+    email: userProfile?.email_address || localState.email,
+    profileImage: userProfile?.profile_image || localState.profileImage,
+    profile: userProfile,
     isLoading: isProfileLoading, 
     hasRole,
   };

@@ -12,11 +12,14 @@ export default function DashboardHeader({
   title: string;
   description?: string;
 }) {
-  const { role, profile } = useUser();
+  const { role, fullName, profileImage } = useUser();
 
   // Fallback display values
-  const displayName = profile?.full_name || "User";
+  const displayName = fullName || "User";
   const displayRole = role ? role.replace('_', ' ') : "User";
+  const avatarSrc = profileImage || "/images/user.webp";
+
+  // console.log("Profile Data: ", fullName, avatarSrc, role);
 
   return (
     <div className="bg-white flex justify-between items-center border-b border-border">
@@ -50,7 +53,7 @@ export default function DashboardHeader({
         >
           <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
             <Image
-              src="/images/avatar.png"
+              src={avatarSrc}
               alt={displayName}
               width={40}
               height={40}

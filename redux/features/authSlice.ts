@@ -18,6 +18,7 @@ interface AuthState {
     email_address: string;
     role: UserRole;
     full_name?: string;
+    profile_image?: string;
   } | null;
   token: string | null;
   refreshToken: string | null;
@@ -55,6 +56,7 @@ export const authSlice = createSlice({
           email_address: string;
           role: UserRole;
           full_name?: string;
+          profile_image?: string;
         };
         token: string;
         refreshToken: string;
