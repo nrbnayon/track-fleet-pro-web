@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
 
 export default function DashboardHeader({
   title,
@@ -9,6 +12,12 @@ export default function DashboardHeader({
   title: string;
   description?: string;
 }) {
+  const { role, profile } = useUser();
+
+  // Fallback display values
+  const displayName = profile?.full_name || "User";
+  const displayRole = role ? role.replace('_', ' ') : "User";
+
   return (
     <div className="bg-white flex justify-between items-center border-b border-border">
       <div className="flex flex-col items-start justify-between p-4 md:px-8">
@@ -42,22 +51,22 @@ export default function DashboardHeader({
           <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
             <Image
               src="/images/avatar.png"
-              alt="Admin User"
+              alt={displayName}
               width={40}
               height={40}
               className="object-cover"
             />
           </div>
           <div className="hidden md:flex flex-col">
-            <p className="text-sm font-medium text-foreground">
-              Admin
+            <p className="text-sm font-medium text-foreground capitalize">
+              {displayName}
             </p>
-            <p className="text-xs text-gray-500">
-              Super Admin
+            <p className="text-xs text-gray-500 capitalize">
+              {displayRole.toLowerCase()}
             </p>
           </div>
         </Link>
       </div>
     </div>
-  )
+  );
 }

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { getCookie } from "@/redux/services/apiSlice";
-import { UserRole } from "@/types/users";
+import { UserRole, ProfileResponse } from "@/types/users";
+import { useGetProfileQuery } from "@/redux/services/authApi";
 
 export interface UserInfo {
   userId: string | null;
@@ -11,16 +12,22 @@ export interface UserInfo {
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  profile: ProfileResponse | null;
 }
 
 export function useUser() {
-  const [user, setUser] = useState<UserInfo>({
+  const [localState, setLocalState] = useState<{
+    userId: string | null;
+    role: UserRole | null;
+    email: string | null;
+    accessToken: string | null;
+    isAuthenticated: boolean;
+  }>({
     userId: null,
     role: null,
     email: null,
     accessToken: null,
     isAuthenticated: false,
-    isLoading: true,
   });
 
   useEffect(() => {
@@ -30,20 +37,26 @@ export function useUser() {
     const accessToken = getCookie("accessToken");
     const userId = getCookie("userId");
 
-    setUser({
+    setLocalState({
       userId: userId || null,
       role: role || null,
       email: email || null,
       accessToken: accessToken || null,
       isAuthenticated: !!accessToken,
-      isLoading: false,
     });
   }, []);
 
-  const hasRole = (role: UserRole) => user.role === role;
+  // Fetch profile if authenticated
+  const { data: profileData, isLoading: isProfileLoading } = useGetProfileQuery(undefined, {
+    skip: !localState.isAuthenticated,
+  });
+
+  const hasRole = (role: UserRole) => localState.role === role;
   
   return {
-    ...user,
+    ...localState,
+    profile: profileData?.data || null,
+    isLoading: isProfileLoading, 
     hasRole,
   };
 }

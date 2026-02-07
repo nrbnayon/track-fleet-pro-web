@@ -87,7 +87,7 @@ export default function VerifyOtp() {
       const timePassed = Math.floor(
         (Date.now() - parseInt(otpSentTime)) / 1000
       );
-      const remainingTime = Math.max(0, 180 - timePassed);
+      const remainingTime = Math.max(0, 300 - timePassed);
       setTimeLeft(remainingTime);
       localStorage.setItem(timerKey, remainingTime.toString());
     }
@@ -239,11 +239,11 @@ export default function VerifyOtp() {
 
       if (response.success) {
          // Reset timer
-        setTimeLeft(180);
+        setTimeLeft(300);
         const newSentTime = Date.now();
         localStorage.setItem("otpSentTime", newSentTime.toString());
         const timerKey = `otpTimer_${email}`;
-        localStorage.setItem(timerKey, "180");
+        localStorage.setItem(timerKey, "300");
         
         toast.success("OTP resent successfully!", {
             description: `New verification code sent to ${email}`,
@@ -399,19 +399,25 @@ export default function VerifyOtp() {
                   Didn&lsquo;t receive the code?
                 </p>
                 <button
+                  type="button"
                   onClick={handleResendOtp}
-                  className="text-red text-xs sm:text-sm hover:text-red hover:underline transition-colors text-center sm:text-right cursor-pointer"
+                  disabled={timeLeft > 0 || isResending}
+                  className={
+                    timeLeft > 0 || isResending
+                      ? "text-gray-400 text-xs sm:text-sm cursor-not-allowed text-center sm:text-right"
+                      : "text-primary text-xs sm:text-sm hover:text-primary/80 hover:underline transition-colors text-center sm:text-right cursor-pointer"
+                  }
                 >
                   {isResending ? (
                     <>
                       <p className="flex items-center"><Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        <span className="hidden sm:inline text-primary">Resending...</span>
-                        <span className="sm:hidden text-primary">Resending...</span></p>
+                        <span className="hidden sm:inline">Resending...</span>
+                        <span className="sm:hidden">Resending...</span></p>
                     </>
                   ) : (
                     <>
-                      <span className="hidden sm:inline text-primary">Resend Code</span>
-                      <span className="sm:hidden text-primary">Resend</span>
+                      <span className="hidden sm:inline">Resend Code</span>
+                      <span className="sm:hidden">Resend</span>
                     </>
                   )}
                 </button>

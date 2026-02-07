@@ -13,6 +13,8 @@ export const useLogout = () => {
       "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie =
       "userEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     console.log("User logged out successfully");
 

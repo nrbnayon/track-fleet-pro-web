@@ -6,7 +6,7 @@ import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   LogOut,
   PanelLeftOpen,
@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { useLogout } from "@/hooks/useLogout";
 import LogoutModal from "../Shared/LogoutModal";
+import { useUser } from "@/hooks/useUser";
 
 interface SubLink {
   label: string;
@@ -48,7 +49,6 @@ interface DashboardWrapperProps {
 
 export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { logout } = useLogout();
 
   // State management
@@ -63,63 +63,16 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // User state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<string>("customer");
-  const [userName, setUserName] = useState<string>("User");
-  const [userEmail, setUserEmail] = useState<string>("");
+  // User Data via Hook
+  const { role, profile, email, isAuthenticated } = useUser();
+  const userRole = role || "CUSTOMER";
+  const userEmail = profile?.email_address || email || "";
+  const userName = profile?.full_name || "User";
+
+  console.log("Sidebar logged in userEmail:: ", userEmail);
 
   const minWidth = 80;
   const maxWidth = 400;
-
-  // MERGED useEffect - Get user data and check authentication
-  useEffect(() => {
-    const cookies = document.cookie.split(";");
-
-    // Get access token
-    const accessTokenCookie = cookies.find((cookie) =>
-      cookie.trim().startsWith("accessToken=")
-    );
-    const accessToken = accessTokenCookie
-      ? accessTokenCookie.split("=")[1]
-      : null;
-
-    // Get user role
-    const roleCookie = cookies.find((cookie) =>
-      cookie.trim().startsWith("userRole=")
-    );
-    const role = roleCookie ? roleCookie.split("=")[1] : "customer";
-
-    // Get user email
-    const emailCookie = cookies.find((cookie) =>
-      cookie.trim().startsWith("userEmail=")
-    );
-    const email = emailCookie
-      ? decodeURIComponent(emailCookie.split("=")[1])
-      : "";
-
-    // Set authentication status
-    setIsAuthenticated(!!accessToken);
-
-    // Set user data
-    setUserRole(role);
-    setUserEmail(email);
-
-    // Set user name based on role
-    if (role === "super_admin") {
-      setUserName("Super Admin");
-    } else if (role === "seller_admin") {
-      setUserName("Seller Admin");
-    } else {
-      setUserName("Customer");
-    }
-
-    // Redirect if not authenticated (optional - middleware should handle this)
-    if (!accessToken) {
-      // You can optionally redirect here, but middleware should already handle it
-      // router.push('/login');
-    }
-  }, [router]);
 
   // Navigation links configuration
   const links: LinkType[] = useMemo(
@@ -129,31 +82,31 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Dashboard Overview",
         href: "/super-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["super_admin"],
+        roles: ["SUPER_ADMIN"],
       },
       {
         label: "Parcels Management",
         href: "/super-admin/parcels",
         icon: PackageIcon,
-        roles: ["super_admin"],
+        roles: ["SUPER_ADMIN"],
       },
       {
         label: "Drivers Management",
         href: "/super-admin/drivers",
         icon: DeliveryTruck01Icon,
-        roles: ["super_admin"],
+        roles: ["SUPER_ADMIN"],
       },
       {
         label: "Sellers Management",
         href: "/super-admin/sellers",
         icon: Store02Icon,
-        roles: ["super_admin"],
+        roles: ["SUPER_ADMIN"],
       },
       {
         label: "Analysis",
         href: "/super-admin/analysis",
         icon: Analytics01Icon,
-        roles: ["super_admin"],
+        roles: ["SUPER_ADMIN"],
       },
 
       // Seller Admin Routes
@@ -161,19 +114,19 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Dashboard Overview",
         href: "/seller-admin/dashboard",
         icon: DashboardSquare02Icon,
-        roles: ["seller_admin"],
+        roles: ["SELLER"],
       },
       {
         label: "Parcels Management",
         href: "/seller-admin/parcels",
         icon: PackageIcon,
-        roles: ["seller_admin"],
+        roles: ["SELLER"],
       },
       {
         label: "Analysis",
         href: "/seller-admin/analysis",
         icon: Analytics01Icon,
-        roles: ["seller_admin"],
+        roles: ["SELLER"],
       },
 
       // Shared Routes
@@ -181,13 +134,13 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
         label: "Settings",
         href: "/settings",
         icon: Settings01Icon,
-        roles: ["super_admin", "seller_admin", "customer"],
+        roles: ["SUPER_ADMIN", "SELLER", "CUSTOMER"],
       },
       {
         label: "Track Parcel",
         href: "/track-parcel",
         icon: PackageIcon,
-        roles: ["super_admin", "seller_admin", "customer"],
+        roles: ["SUPER_ADMIN", "SELLER", "CUSTOMER"],
       },
     ],
     []
@@ -349,27 +302,14 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "super_admin":
+      case "SUPER_ADMIN":
         return "text-primary";
-      case "seller_admin":
+      case "SELLER":
         return "text-secondary";
-      case "customer":
+      case "CUSTOMER":
         return "text-primary";
       default:
         return "text-secondary";
-    }
-  };
-
-  const getRoleDisplayName = (role: string) => {
-    switch (role) {
-      case "super_admin":
-        return "Super Admin";
-      case "seller_admin":
-        return "Seller Admin";
-      case "customer":
-        return "Customer";
-      default:
-        return "Customer";
     }
   };
 
@@ -594,7 +534,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                           getRoleBadgeColor(userRole)
                         )}
                       >
-                        {getRoleDisplayName(userRole)}
+                        {userRole}
                       </p>
                     </motion.div>
                   </Link>
