@@ -5,7 +5,7 @@ import LandingFooter from "@/components/Landing/Footer";
 
 export const metadata: Metadata = {
     title: {
-        default: "Track Your Parcel | TrackFleet Pro",
+        default: "Track Your Parcel | TrackFleet Pro | Track your parcel in real-time with TrackFleet Pro",
         template: "%s | TrackFleet Pro",
     },
     description:

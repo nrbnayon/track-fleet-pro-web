@@ -2,11 +2,12 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Phone, MessageCircle, MessageCircleWarning, Home, Truck, MapPin, Clock } from "lucide-react";
+import { Package, Phone,  MessageCircleWarning, Home, Truck, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import FeedbackModal from "./FeedbackModal";
 import ReportModal from "./ReportModal";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface TrackingResultsProps {
     trackingNumber: string;
@@ -103,17 +104,37 @@ export default function TrackingResults({
     };
 
     return (
-        <div className="space-y-6 mt-16">
+        <motion.div 
+            className="space-y-6 mt-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+        >
             {/* Header Info */}
-            <div className="bg-white rounded-xl p-3 md:p-6 border border-border shadow-xs">
+            <motion.div 
+                className="bg-white rounded-xl p-3 md:p-6 border border-border shadow-xs"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+            >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                    <div className="text-sm text-secondary space-y-4">
+                    <motion.div 
+                        className="text-sm text-secondary space-y-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                    >
                         <p>{trackingData.date}</p>
                         <p>Parcel Id : {trackingData.parcelId}</p>
                         <p>Invoice : {trackingData.invoice}</p>
                         <p>Tracking Code : {trackingData.trackingCode}</p>
-                    </div>
-                    <div className="text-sm text-right space-y-4">
+                    </motion.div>
+                    <motion.div 
+                        className="text-sm text-right space-y-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                    >
                         <p></p>
                         <p className="text-secondary">Weight (KG) : {trackingData.weight}</p>
                         <p className="text-xl font-bold text-foreground mt-1">
@@ -122,11 +143,16 @@ export default function TrackingResults({
                         <Badge className="mt-2 bg-green-100 text-green-800 hover:bg-green-100">
                             {trackingData.status}
                         </Badge>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Customer Info */}
-                <div className="rounded-lg my-8 gap-4 md:gap-8">
+                <motion.div 
+                    className="rounded-lg my-8 gap-4 md:gap-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                >
                     <div className="w-full bg-[#DDEFFC] p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Customer Info
@@ -145,10 +171,15 @@ export default function TrackingResults({
                             {trackingData.customer.phone}
                         </p>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Sender Info */}
-                <div className="rounded-lg my-8 gap-4 md:gap-8">
+                <motion.div 
+                    className="rounded-lg my-8 gap-4 md:gap-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                >
                     <div className="w-full bg-purple-200 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Sender Info
@@ -167,10 +198,15 @@ export default function TrackingResults({
                             {trackingData.sender.phone}
                         </p>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Assigned To */}
-                <div className="rounded-lg mt-8 gap-4 md:gap-8">
+                <motion.div 
+                    className="rounded-lg mt-8 gap-4 md:gap-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                >
                     <div className="w-full bg-primary/30 p-2 rounded-lg mb-6">
                         <h3 className="text-center font-semibold text-foreground">
                             Assigned to
@@ -191,54 +227,103 @@ export default function TrackingResults({
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button
+                            <motion.button
                                 onClick={() => setIsReportOpen(true)}
                                 className="p-3 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-1 border border-red-300 cursor-pointer"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 <MessageCircleWarning className="h-4 w-4" />
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
                                 onClick={() => setIsFeedbackOpen(true)}
                                 className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-400 transition-colors cursor-pointer"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 Review
-                            </button>
+                            </motion.button>
                         </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
             {/* Tracking Updates */}
-            <div className="mt-8 md:mt-16">
-                <h2 className="text-2xl font-bold text-center mb-6 md:mb-10">
+            <motion.div 
+                className="mt-8 md:mt-16"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+            >
+                <motion.h2 
+                    className="text-2xl font-bold text-center mb-6 md:mb-10"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.8 }}
+                >
                     Tracking Updates
-                </h2>
-                <div className="bg-white rounded-2xl shadow-xs p-4 md:p-10 border border-border">
+                </motion.h2>
+                <motion.div 
+                    className="bg-white rounded-2xl shadow-xs p-4 md:p-10 border border-border"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.9 }}
+                >
                     <div className="w-full mx-auto">
                         {trackingData.updates.map((update, index) => {
                             const isFirst = index === 0;
                             const isLast = index === trackingData.updates.length - 1;
                             return (
-                                <div key={index} className="relative flex gap-3 md:gap-6 pb-10 md:pb-12 last:pb-0">
+                                <motion.div 
+                                    key={index} 
+                                    className="relative flex gap-3 md:gap-6 pb-10 md:pb-12 last:pb-0"
+                                    initial={{ opacity: 0, x: -30 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ 
+                                        duration: 0.5, 
+                                        delay: 1 + index * 0.1,
+                                        ease: "easeOut" 
+                                    }}
+                                >
                                     {/* Timeline with Icon */}
                                     <div className="flex flex-col items-center relative">
-                                        <div
+                                        <motion.div
                                             className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${isFirst
                                                 ? 'bg-primary shadow-lg shadow-primary/50 scale-105 md:scale-110'
                                                 : 'bg-white border-2 border-primary'
                                                 }`}
+                                            initial={{ scale: 0, rotate: -180 }}
+                                            animate={{ scale: isFirst ? [1, 1.1, 1] : 1, rotate: 0 }}
+                                            transition={{ 
+                                                duration: 0.6, 
+                                                delay: 1 + index * 0.1 + 0.2,
+                                                scale: isFirst ? {
+                                                    repeat: Infinity,
+                                                    repeatDelay: 2,
+                                                    duration: 1
+                                                } : {}
+                                            }}
+                                            whileHover={{ scale: 1.15, rotate: 360, transition: { duration: 0.5 } }}
                                         >
                                             <div className="scale-75 md:scale-100">
                                                 {getStatusIcon(update.icon, isFirst)}
                                             </div>
-                                        </div>
+                                        </motion.div>
                                         {!isLast && (
-                                            <div className="absolute top-10 md:top-12 bottom-0 w-0.5 bg-linear-to-b from-primary to-blue-300" />
+                                            <motion.div 
+                                                className="absolute top-10 md:top-12 bottom-0 w-0.5 bg-linear-to-b from-primary to-blue-300"
+                                                initial={{ scaleY: 0, originY: 0 }}
+                                                animate={{ scaleY: 1 }}
+                                                transition={{ duration: 0.5, delay: 1 + index * 0.1 + 0.3 }}
+                                            />
                                         )}
                                     </div>
 
                                     {/* Content Card */}
-                                    <div className={`flex-1 transition-all duration-300 ${isFirst ? 'transform md:scale-[1.02]' : ''}`}>
+                                    <motion.div 
+                                        className={`flex-1 transition-all duration-300 ${isFirst ? 'transform md:scale-[1.02]' : ''}`}
+                                        whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                                    >
                                         <div className={`rounded-xl p-4 md:p-5 border-2 transition-all duration-300 ${isFirst
                                             ? 'bg-blue-50 border-blue-300 shadow-md'
                                             : 'bg-gray-50 border-gray-200 hover:border-blue-200 hover:shadow-sm'
@@ -248,9 +333,15 @@ export default function TrackingResults({
                                                     {update.date}
                                                 </p>
                                                 {isFirst && (
-                                                    <Badge className="bg-green-500 text-white px-2 md:px-3 py-0.5 md:py-1 text-[10px] md:text-xs w-fit">
-                                                        Latest
-                                                    </Badge>
+                                                    <motion.div
+                                                        initial={{ scale: 0 }}
+                                                        animate={{ scale: 1 }}
+                                                        transition={{ duration: 0.3, delay: 1 + index * 0.1 + 0.4 }}
+                                                    >
+                                                        <Badge className="bg-green-500 text-white px-2 md:px-3 py-0.5 md:py-1 text-[10px] md:text-xs w-fit">
+                                                            Latest
+                                                        </Badge>
+                                                    </motion.div>
                                                 )}
                                             </div>
                                             <p className="text-xs md:text-sm text-secondary mb-2 md:mb-3 flex items-center gap-2">
@@ -261,13 +352,13 @@ export default function TrackingResults({
                                                 {update.status}
                                             </p>
                                         </div>
-                                    </div>
-                                </div>
+                                    </motion.div>
+                                </motion.div>
                             );
                         })}
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
             {/* Modals */}
             <FeedbackModal
@@ -279,7 +370,7 @@ export default function TrackingResults({
                 onClose={() => setIsReportOpen(false)}
                 riderName={trackingData.assignedTo.name}
             />
-        </div>
+        </motion.div>
     );
 }
 

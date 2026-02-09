@@ -1,16 +1,31 @@
 // components/landing/Footer.tsx
+"use client";
+
 import Link from "next/link";
 import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function LandingFooter() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-[#E8F4FD] text-foreground w-full">
+        <motion.footer 
+            className="bg-[#E8F4FD] text-foreground w-full"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+        >
             <div className="mx-auto py-16 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Company Info */}
-                    <div className="col-span-1 md:col-span-2">
+                    <motion.div 
+                        className="col-span-1 md:col-span-2"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                    >
                         <div className="flex items-center space-x-2 mb-4">
                             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-xl">TF</span>
@@ -24,10 +39,15 @@ export default function LandingFooter() {
                         </p>
                         <p className="text-sm mb-2">E-mail: example@gmail.com</p>
                         <p className="text-sm">Hotline: 000-0000-000</p>
-                    </div>
+                    </motion.div>
 
                     {/* Quick Links */}
-                    <div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                    >
                         <h3 className="text-foreground font-semibold mb-4">Links</h3>
                         <ul className="space-y-2">
                             <li>
@@ -55,59 +75,57 @@ export default function LandingFooter() {
                                 </Link>
                             </li>
                         </ul>
-                    </div>
+                    </motion.div>
 
                     {/* Social Media */}
-                    <div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                    >
                         <h3 className="text-foreground font-semibold mb-4">Follow Us</h3>
                         <div className="flex space-x-4">
-                            <a
-                                href="https://facebook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-primary transition-colors"
-                                aria-label="Facebook"
-                            >
-                                <Facebook className="h-5 w-5" />
-                            </a>
-                            <a
-                                href="https://twitter.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-primary transition-colors"
-                                aria-label="Twitter"
-                            >
-                                <Twitter className="h-5 w-5" />
-                            </a>
-                            <a
-                                href="https://youtube.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-primary transition-colors"
-                                aria-label="YouTube"
-                            >
-                                <Youtube className="h-5 w-5" />
-                            </a>
-                            <a
-                                href="https://instagram.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-primary transition-colors"
-                                aria-label="Instagram"
-                            >
-                                <Instagram className="h-5 w-5" />
-                            </a>
+                            {[
+                                { Icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+                                { Icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+                                { Icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+                                { Icon: Instagram, href: "https://instagram.com", label: "Instagram" }
+                            ].map((social, index) => (
+                                <motion.a
+                                    key={social.label}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-primary transition-colors"
+                                    aria-label={social.label}
+                                    whileHover={{ scale: 1.2, rotate: 5 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                                >
+                                    <social.Icon className="h-5 w-5" />
+                                </motion.a>
+                            ))}
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                <motion.div 
+                    className="border-t border-gray-800 mt-8 pt-8 text-center text-sm"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                >
                     <p className="text-secondary">
                         {currentYear}, Track Fleet. All rights reserved.
                     </p>
-                </div>
+                </motion.div>
             </div>
-        </footer>
+        </motion.footer>
     );
 }

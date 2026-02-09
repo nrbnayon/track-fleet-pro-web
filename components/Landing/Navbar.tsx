@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { ConfirmationModal } from "@/components/Shared/ConfirmationModal";
 import { deleteCookie } from "@/redux/services/apiSlice";
+import { motion } from "framer-motion";
 
 export default function LandingNavbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,8 +19,6 @@ export default function LandingNavbar() {
     const pathname = usePathname();
     const router = useRouter();
     const { isAuthenticated, fullName, email, role, profileImage, isLoading } = useUser();
-
-    console.log("Profile Data: ", fullName, email, role, profileImage, isLoading);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -74,7 +73,12 @@ export default function LandingNavbar() {
 
     return (
         <>
-            <nav className="bg-white shadow-[6px_6px_54px_#0000000d] sticky top-0 z-50">
+            <motion.nav 
+                className="bg-white shadow-[6px_6px_54px_#0000000d] sticky top-0 z-50"
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         {/* Logo */}
@@ -306,7 +310,7 @@ export default function LandingNavbar() {
                         </div>
                     </div>
                 )}
-            </nav>
+            </motion.nav>
 
             {/* Logout Confirmation Modal */}
             <ConfirmationModal
