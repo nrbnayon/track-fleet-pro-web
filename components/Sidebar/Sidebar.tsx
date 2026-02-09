@@ -68,8 +68,18 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
   const userRole = role || "CUSTOMER";
   const userEmail = email || "";
   const userName = fullName || "User";
-  const avatarSrc = profileImage || "/images/user.webp";
+  // const avatarSrc = profileImage || "/images/user.webp";
   // console.log("Sidebar logged in userEmail:: ", userEmail);
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   const minWidth = 80;
   const maxWidth = 400;
@@ -510,14 +520,16 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                     }}
                     className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
                   >
-                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center overflow-hidden shrink-0">
-                      <Image
-                        src={avatarSrc}
-                        alt="User"
-                        width={40}
-                        height={40}
-                        className="object-cover"
-                      />
+                    <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold overflow-hidden shrink-0">
+                      {profileImage ? (
+                        <img
+                          src={profileImage}
+                          alt={userName}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs">{getInitials(userName)}</span>
+                      )}
                     </div>
                     <motion.div
                       animate={{

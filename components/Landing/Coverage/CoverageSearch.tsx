@@ -1,4 +1,4 @@
-// components/Landing/CoverageSearch.tsx
+// components/Landing/Coverage/CoverageSearch.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 interface CoverageSearchProps {
     onSearch?: (query: string) => void;
@@ -48,18 +49,23 @@ export default function CoverageSearch({ onSearch }: CoverageSearchProps) {
                         placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-12 pr-4 h-12 rounded-l-lg rounded-r-none text-base"
+                        className="pl-12 pr-4 h-12 rounded-l-lg rounded-r-none text-base border-r-0 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-1 transition-all"
                         disabled={isSearching}
                     />
                 </div>
-                <Button
-                    type="submit"
-                    size="lg"
-                    className="h-12 px-8 rounded-r-lg rounded-l-none"
-                    disabled={isSearching || !searchQuery.trim()}
+                <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                 >
-                    {isSearching ? "Searching..." : "Search"}
-                </Button>
+                    <Button
+                        type="submit"
+                        size="lg"
+                        className="h-12 px-8 rounded-r-lg rounded-l-none bg-primary hover:bg-primary/90 transition-colors"
+                        disabled={isSearching || !searchQuery.trim()}
+                    >
+                        {isSearching ? "Searching..." : "Search"}
+                    </Button>
+                </motion.div>
             </form>
         </div>
     );

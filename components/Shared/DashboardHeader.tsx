@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
@@ -17,7 +16,17 @@ export default function DashboardHeader({
   // Fallback display values
   const displayName = fullName || "User";
   const displayRole = role ? role.replace('_', ' ') : "User";
-  const avatarSrc = profileImage || "/images/user.webp";
+  // const avatarSrc = profileImage || "/images/user.webp";
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   // console.log("Profile Data: ", fullName, avatarSrc, role);
 
@@ -51,14 +60,16 @@ export default function DashboardHeader({
           href="/profile"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-            <Image
-              src={avatarSrc}
-              alt={displayName}
-              width={40}
-              height={40}
-              className="object-cover"
-            />
+          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold overflow-hidden shrink-0">
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt={displayName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs">{getInitials(displayName)}</span>
+            )}
           </div>
           <div className="hidden md:flex flex-col">
             <p className="text-sm font-medium text-foreground capitalize">

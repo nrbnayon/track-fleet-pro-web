@@ -133,6 +133,16 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8002",
+        pathname: "/**",
+      },
+    ],
+  },
   // Add empty turbopack config to silence the warning
   turbopack: {},
   // Your other config options here
