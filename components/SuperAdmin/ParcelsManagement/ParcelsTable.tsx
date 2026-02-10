@@ -171,7 +171,7 @@ export default function ParcelsTable({
         </>
     );
 
-    const showPagination = !isLoading && data.length > itemsPerPage;
+    const showPagination = !isLoading && (isServerSide ? (totalPages || 0) > 1 : data.length > itemsPerPage);
 
     return (
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)]">
