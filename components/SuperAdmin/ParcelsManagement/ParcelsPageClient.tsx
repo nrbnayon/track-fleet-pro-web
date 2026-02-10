@@ -1,7 +1,7 @@
 // components/SupperAdmin/ParcelsPageClient.tsx
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useState } from "react";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
 import ParcelsTable from "@/components/SuperAdmin/ParcelsManagement/ParcelsTable";
 import { Search, Filter } from "lucide-react";
@@ -13,37 +13,41 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Parcel } from "@/types/parcel";
+import { useGetParcelsQuery } from "@/redux/services/parcelApi";
 
-interface ParcelsPageClientProps {
-    data: Parcel[];
-}
-
-export default function ParcelsPageClient({ data }: ParcelsPageClientProps) {
+export default function ParcelsPageClient() {
     const [search, setSearch] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
-    const [isLoading, setIsLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 10;
 
-    // Simulate initial data loading
+    // Use debounce for search to avoid too many API calls
+    // For now, I'll just pass search directly, but ideally it should be debounced.
+    // Implementing a simple debounce effect or just passing it directly if user hits enter (but UI is instant search)
+    // Let's implement a simple debounce state.
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    
+    // Use debounce effect for search
     useEffect(() => {
         const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 500);
         return () => clearTimeout(timer);
-    }, []);
+    }, [search]);
 
-    const filteredData = useMemo(() => {
-        return data.filter(parcel => {
-            const matchesSearch =
-                parcel.tracking_no.toLowerCase().includes(search.toLowerCase()) ||
-                parcel.senderInfo?.name?.toLowerCase().includes(search.toLowerCase()) ||
-                parcel.receiverInfo?.name?.toLowerCase().includes(search.toLowerCase());
+    // Handle status change
+    const handleStatusChange = (value: string) => {
+        setFilterStatus(value);
+        setPage(1); // Reset to page 1 on status change
+    };
 
-            const matchesStatus = filterStatus === "all" || parcel.parcel_status.toLowerCase() === filterStatus.toLowerCase();
-
-            return matchesSearch && matchesStatus;
-        });
-    }, [data, search, filterStatus]);
+    const { data: parcelsData, isLoading, isFetching } = useGetParcelsQuery({
+        page,
+        limit: itemsPerPage,
+        status: filterStatus === "all" ? undefined : filterStatus,
+        search: debouncedSearch || undefined,
+    });
 
     return (
         <div className="min-h-screen space-y-6">
@@ -66,7 +70,7 @@ export default function ParcelsPageClient({ data }: ParcelsPageClientProps) {
                     </div>
 
                     <div className="w-full md:w-auto">
-                        <Select value={filterStatus} onValueChange={setFilterStatus}>
+                        <Select value={filterStatus} onValueChange={handleStatusChange}>
                             <SelectTrigger className="w-full md:w-40 h-11 bg-white border-gray-200 shadow-sm rounded-md focus:ring-2 focus:ring-primary/20 cursor-pointer hover:bg-gray-50">
                                 <div className="flex items-center gap-2 text-secondary">
                                     <Filter className="h-4 w-4" />
@@ -85,16 +89,20 @@ export default function ParcelsPageClient({ data }: ParcelsPageClientProps) {
                 </div>
 
                 {/* Results Summary */}
-                {!isLoading && search.length > 0 && <div className="mt-4 text-sm text-secondary">
-                    Showing {filteredData.length} of {data.length} parcels
+                {!isLoading && parcelsData && <div className="mt-4 text-sm text-secondary">
+                    Showing {parcelsData.data.length} of {parcelsData.meta.count} parcels
                 </div>}
             </div>
 
             <div className="px-4 md:px-8 pb-8">
                 <ParcelsTable
-                    data={filteredData}
-                    itemsPerPage={7}
-                    isLoading={isLoading}
+                    data={parcelsData?.data || []}
+                    itemsPerPage={itemsPerPage}
+                    isLoading={isLoading || isFetching}
+                    currentPage={page}
+                    totalPages={parcelsData?.meta.total_pages || 1}
+                    totalItems={parcelsData?.meta.count || 0}
+                    onPageChange={setPage}
                 />
             </div>
         </div>

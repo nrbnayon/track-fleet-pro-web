@@ -3,7 +3,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import {
-    Table,
     TableBody,
     TableCell,
     TableHead,
@@ -24,28 +23,59 @@ interface ParcelsTableProps {
     data: Parcel[];
     itemsPerPage?: number;
     isLoading?: boolean;
+    // Server-side pagination props
+    currentPage?: number;
+    totalPages?: number;
+    totalItems?: number;
+    onPageChange?: (page: number) => void;
 }
 
-export default function ParcelsTable({ data, itemsPerPage = 10, isLoading = false }: ParcelsTableProps) {
-    const [currentPage, setCurrentPage] = useState(1);
+export default function ParcelsTable({ 
+    data, 
+    itemsPerPage = 10, 
+    isLoading = false,
+    currentPage: propCurrentPage,
+    totalPages: propTotalPages,
+    totalItems,
+    onPageChange
+}: ParcelsTableProps) {
+    const [localCurrentPage, setLocalCurrentPage] = useState(1);
     const [selectedParcelForAssign, setSelectedParcelForAssign] = useState<Parcel | null>(null);
     const [selectedParcelForTrack, setSelectedParcelForTrack] = useState<Parcel | null>(null);
 
-    const totalPages = Math.ceil(data.length / itemsPerPage);
+    // Determine correct pagination values based on props vs local state
+    const isServerSide = propCurrentPage !== undefined && propTotalPages !== undefined;
+    const currentPage = isServerSide ? propCurrentPage : localCurrentPage;
+    
+    // For server-side, totalPages is from props. For client-side, calculate from data length.
+    const totalPages = isServerSide ? propTotalPages : Math.ceil(data.length / itemsPerPage);
 
     const currentData = useMemo(() => {
+        if (isServerSide) return data; // Data is already paginated server-side
         const start = (currentPage - 1) * itemsPerPage;
         return data.slice(start, start + itemsPerPage);
-    }, [data, currentPage, itemsPerPage]);
+    }, [data, currentPage, itemsPerPage, isServerSide]);
 
-    // Reset to page 1 when data changes (from filtering)
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        if (isServerSide && onPageChange) {
+            onPageChange(page);
+        } else {
+            setLocalCurrentPage(page);
+        }
+    };
+
+    // Reset to page 1 when data changes (from filtering) - only relevant for client-side
     useEffect(() => {
-        setCurrentPage(1);
-    }, [data]);
+        if (!isServerSide) {
+            setLocalCurrentPage(1);
+        }
+    }, [data, isServerSide]);
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
-            case "ongoing": return "bg-blue-100 text-blue-700";
+            case "ongoing": 
+            case "assigned": return "bg-blue-100 text-blue-700";
             case "delivered": return "bg-emerald-100 text-emerald-700";
             case "pending": return "bg-amber-100 text-amber-700";
             case "cancelled": return "bg-red-100 text-red-700";
@@ -321,8 +351,8 @@ export default function ParcelsTable({ data, itemsPerPage = 10, isLoading = fals
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                        totalItems={data.length}
+                        onPageChange={handlePageChange}
+                        totalItems={isServerSide ? (totalItems || 0) : data.length}
                         itemsPerPage={itemsPerPage}
                         currentItemsCount={currentData.length}
                     />

@@ -1,13 +1,16 @@
 // types/parcel.ts
 export type ParcelStatus = 
   | "pending" 
-  | "ongoing" 
+  | "ONGOING" // Added based on API response
   | "delivered" 
   | "cancelled" 
-  | "return";
+  | "return" 
+  | "ASSIGNED" // Added based on API response
+  | "DELIVERED" // Added based on API response
+  | "PENDING"; // Added based on API response
 
 export interface ParcelTracking {
-  status?: ParcelStatus;
+  status?: string;
   location?: string;
   timestamp?: string;
   description?: string;
@@ -26,8 +29,8 @@ export interface Parcel {
   parcel_id: string;
   tracking_no: string;
   parcel_name: string;
-  parcel_status: ParcelStatus;
-  parcel_type: "document" | "package" | "fragile" | "electronics" | "food";
+  parcel_status: string; // Relaxed from ParcelStatus to allow API values directly if needed
+  parcel_type: string; // Relaxed to allow "Docs" etc
   parcel_weight?: number; // in kg
   parcel_dimensions?: {
     length?: number;
@@ -69,4 +72,41 @@ export interface Parcel {
   createdAt?: string;
   updatedAt?: string;
   [key: string]: any;
+}
+
+// API Types
+export interface ApiSeller {
+  Full_name: string;
+  phone_number: string;
+}
+
+export interface ApiParcel {
+    id: number;
+    tracking_id: string;
+    title: string;
+    parcel_type: string;
+    customer_name: string;
+    customer_phone: string;
+    pickup_location: string;
+    delivery_location: string;
+    estimated_delivary_date?: string;
+    weight: number;
+    special_instructions: string;
+    appoximate_distance: string;
+    status: string;
+    Driver_name: string;
+    Driver_phone: string;
+    seller: ApiSeller;
+}
+
+export interface ApiParcelResponse {
+    success: boolean;
+    status: number;
+    message: string;
+    count: number;
+    total_pages: number;
+    current_page: number;
+    next: string | null;
+    previous: string | null;
+    data: ApiParcel[];
 }
