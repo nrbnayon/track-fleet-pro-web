@@ -2,7 +2,6 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useState, useEffect } from "react";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Parcel } from "@/types/parcel";
 
 interface ParcelsByZoneChartProps {
@@ -29,7 +28,7 @@ export default function ParcelsByZoneChart({ parcels }: ParcelsByZoneChartProps)
     return (
         <div className="bg-white p-8 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
             <h2 className="text-xl font-bold text-foreground mb-8">
-                <TranslatedText text="Parcels by Zone" />
+                Parcels by Zone
             </h2>
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="h-[280px] w-full md:w-1/2">

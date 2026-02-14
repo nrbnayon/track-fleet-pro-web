@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Driver } from "@/types/driver";
 
 interface DriverModalProps {
@@ -108,16 +107,14 @@ export default function DriverModal({
       <div className="bg-white rounded-[24px] w-full max-w-[650px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100">
           <h2 className="text-[20px] font-bold text-[#111827]">
-            <TranslatedText
-              text={
+            {
                 mode === "create"
                   ? "Add New Driver"
                   : mode === "edit"
                     ? "Edit Driver"
                     : "Driver Details"
               }
-            />
-          </h2>
+            </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-secondary transition-colors bg-gray-50 p-1 rounded-full"
@@ -131,7 +128,7 @@ export default function DriverModal({
             {/* Driver Name */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                <TranslatedText text="Driver Name" />
+                Driver Name
               </label>
               <Input
                 type="text"
@@ -151,7 +148,7 @@ export default function DriverModal({
             {/* Vehicle Number */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                <TranslatedText text="Vehicle Number" />
+                Vehicle Number
               </label>
               <Input
                 type="text"
@@ -171,7 +168,7 @@ export default function DriverModal({
             {/* Email Address */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                <TranslatedText text="Email Address" />
+                Email Address
               </label>
               <Input
                 type="email"
@@ -191,7 +188,7 @@ export default function DriverModal({
             {/* Phone */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                <TranslatedText text="Phone" />
+                Phone
               </label>
               <Input
                 type="text"
@@ -213,7 +210,7 @@ export default function DriverModal({
               <>
                 <div>
                   <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                    <TranslatedText text="Total Delivery" />
+                    Total Delivery
                   </label>
                   <Input
                     type="text"
@@ -224,7 +221,7 @@ export default function DriverModal({
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                    <TranslatedText text="Active Delivery" />
+                    Active Delivery
                   </label>
                   <Input
                     type="text"
@@ -242,15 +239,13 @@ export default function DriverModal({
               type="submit"
               className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all"
             >
-              <TranslatedText
-                text={
+              {
                   mode === "create"
                     ? "Add Driver"
                     : mode === "edit"
                       ? "Update Driver"
                       : "Done"
                 }
-              />
             </Button>
           </div>
         </form>

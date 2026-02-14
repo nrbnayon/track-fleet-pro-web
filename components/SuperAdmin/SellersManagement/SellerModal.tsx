@@ -6,7 +6,6 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Seller } from "@/types/seller";
 
 interface SellerModalProps {
@@ -116,15 +115,13 @@ export default function SellerModal({
             <div className="bg-white rounded-[24px] w-full max-w-[650px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100">
                     <h2 className="text-[20px] font-bold text-[#111827]">
-                        <TranslatedText
-                            text={
-                                mode === "create"
-                                    ? "Add New Seller"
-                                    : mode === "edit"
-                                        ? "Edit Seller"
-                                        : "Seller Details"
-                            }
-                        />
+                        {
+                            mode === "create"
+                                ? "Add New Seller"
+                                : mode === "edit"
+                                    ? "Edit Seller"
+                                    : "Seller Details"
+                        }
                     </h2>
                     <button
                         onClick={onClose}
@@ -139,7 +136,7 @@ export default function SellerModal({
                         {/* Seller Name */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                <TranslatedText text="Seller Name" />
+                                Seller Name
                             </label>
                             <Input
                                 type="text"
@@ -159,7 +156,7 @@ export default function SellerModal({
                         {/* Address */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                <TranslatedText text="Address" />
+                                Address
                             </label>
                             <Input
                                 type="text"
@@ -179,7 +176,7 @@ export default function SellerModal({
                         {/* Email Address */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                <TranslatedText text="Email Address" />
+                                Email Address
                             </label>
                             <Input
                                 type="email"
@@ -199,7 +196,7 @@ export default function SellerModal({
                         {/* Phone Number */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                <TranslatedText text="Phone Number" />
+                                Phone Number
                             </label>
                             <Input
                                 type="text"
@@ -219,7 +216,7 @@ export default function SellerModal({
                         {/* Business Name */}
                         <div className={mode === "view" ? "" : "md:col-span-2"}>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                <TranslatedText text="Business Name" />
+                                Business Name
                             </label>
                             <Input
                                 type="text"
@@ -240,7 +237,7 @@ export default function SellerModal({
                         {mode === "view" && (
                             <div>
                                 <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                    <TranslatedText text="Total Delivery" />
+                                    Total Delivery
                                 </label>
                                 <Input
                                     type="text"
@@ -257,15 +254,13 @@ export default function SellerModal({
                             type="submit"
                             className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all"
                         >
-                            <TranslatedText
-                                text={
-                                    mode === "create"
-                                        ? "Add Seller"
-                                        : mode === "edit"
-                                            ? "Update Seller"
-                                            : "Done"
-                                }
-                            />
+                            {
+                                mode === "create"
+                                    ? "Add Seller"
+                                    : mode === "edit"
+                                        ? "Update Seller"
+                                        : "Done"
+                            }
                         </Button>
                     </div>
                 </form>

@@ -2,7 +2,6 @@
 "use client";
 import { Trash2, Eye, Pencil } from "lucide-react";
 import { Pagination } from "@/components/Shared/Pagination";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Seller } from "@/types/seller";
 
@@ -41,25 +40,25 @@ export default function SellerTable({
                     <thead>
                         <tr className="bg-[#E8F4FD] border-none">
                             <th className="px-6 py-4 text-left text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Seller's Name" />
+                                Seller's Name
                             </th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Business Name" />
+                                Business Name
                             </th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Email" />
+                                Email
                             </th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Phone" />
+                                Phone
                             </th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Address" />
+                                Address
                             </th>
                             <th className="px-6 py-4 text-center text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Total Delivery" />
+                                Total Delivery
                             </th>
                             <th className="px-6 py-4 text-center text-sm font-semibold text-foreground whitespace-nowrap">
-                                <TranslatedText text="Action" />
+                                Action
                             </th>
                         </tr>
                     </thead>
@@ -146,7 +145,7 @@ export default function SellerTable({
                                     className="px-6 py-12 text-center text-secondary"
                                 >
                                     <div className="flex flex-col items-center gap-2">
-                                        <TranslatedText text="No sellers found" />
+                                        No sellers found
                                     </div>
                                 </td>
                             </tr>

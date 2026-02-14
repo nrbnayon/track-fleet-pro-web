@@ -2,7 +2,8 @@
 export type DriverStatus = 
   | "available" 
   | "busy" 
-  | "offline";
+  | "offline"
+  | "ongoing";
 
 export interface DriverLocation {
   latitude?: number;
@@ -77,4 +78,61 @@ export interface ApiAssignDriverResponse {
       parcel: number;
       driver: string;
   }
+}
+
+// API Types for Driver Management
+export interface ApiDriver {
+  id: string;
+  vehicle_number: string | null;
+  Driver_name: string;
+  phone_number: string;
+  Emails: string;
+  profile_image: string;
+  is_available: boolean;
+  total_delivery: number;
+  active_delivery: number;
+}
+
+export interface ApiDriverListResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  count: number;
+  total_pages: number;
+  current_page: number;
+  next: string | null;
+  previous: string | null;
+  data: ApiDriver[];
+}
+
+export interface ApiDriverDetailResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: ApiDriver;
+}
+
+export interface CreateDriverRequest {
+  full_name: string;
+  vehicle_number: string;
+  phone_number: string;
+  email_address: string;
+}
+
+export interface UpdateDriverRequest extends CreateDriverRequest {}
+
+export interface CreateDriverResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data?: {
+    email: string;
+  };
+  errors?: {
+    vehicle_number?: string[];
+    phone_number?: string[];
+    email_address?: string[];
+    fullname?: string[];
+    [key: string]: string[] | undefined;
+  };
 }

@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { Search, ChevronDown, Plus, Check } from "lucide-react";
 import { toast } from "sonner";
-import { allDriversData } from "@/data/allDriversData";
-import TranslatedText from "@/components/Shared/TranslatedText";
+
+import { Driver } from "@/types/driver";
+import { useGetDriversQuery, useCreateDriverMutation, useUpdateDriverMutation, useDeleteDriverMutation } from "@/redux/services/driverApi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Driver } from "@/types/driver";
 import DriverTable from "./DriverTable";
 import DriverModal from "./DriverModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
@@ -26,31 +26,30 @@ export default function DriverManagementClient({
   itemsPerPage = 10,
 }: DriverManagementClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const [drivers, setDrivers] = useState<Driver[]>(allDriversData);
-  const [filteredData, setFilteredData] = useState<Driver[]>(allDriversData);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All Drivers");
+  
+  // Use API - Fetch all drivers for client-side filtering
+  const { data: driversData, isLoading: isDriversLoading, refetch } = useGetDriversQuery({ 
+      page: 1, 
+      limit: 1000, 
+  });
+  
+  const [createDriver] = useCreateDriverMutation();
+  const [updateDriver] = useUpdateDriverMutation();
+  const [deleteDriver] = useDeleteDriverMutation();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "view" | "edit">("create");
-  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
-  const [driverToDelete, setDriverToDelete] = useState<Driver | null>(null);
-
-  const statuses = ["All Drivers", "Available", "Assigned", "Busy", "Ongoing", "Delivered", "Offline"];
+  const drivers = driversData?.data || [];
+  const [filteredData, setFilteredData] = useState<Driver[]>([]);
 
   useEffect(() => {
-    let filtered = drivers;
+    let result = drivers;
 
     // Filter by Status
     if (selectedStatus !== "All Drivers") {
-      filtered = filtered.filter((driver) => {
+      result = result.filter((driver) => {
         const status = driver.driver_status.toLowerCase();
         const target = selectedStatus.toLowerCase();
-        if (target === "assigned" || target === "busy") {
-          return status === "busy" || status === "assigned";
-        }
         return status === target;
       });
     }
@@ -58,31 +57,31 @@ export default function DriverManagementClient({
     // Filter by Search Query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
+      result = result.filter(
         (driver) =>
           driver.driver_name.toLowerCase().includes(query) ||
           driver.driver_email.toLowerCase().includes(query) ||
-          driver.driver_id.toLowerCase().includes(query) ||
-          (driver.vehicle_number && driver.vehicle_number.toLowerCase().includes(query)) ||
-          driver.driver_phone.includes(query)
+          driver.driver_phone.includes(query) ||
+          (driver.vehicle_number && driver.vehicle_number.toLowerCase().includes(query))
       );
     }
 
-    setFilteredData(filtered);
-    setCurrentPage(1);
+    setFilteredData(result);
+    setCurrentPage(1); 
+  }, [drivers, searchQuery, selectedStatus]);
 
-    // Trigger loading state for visual feedback
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [searchQuery, selectedStatus, drivers]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "view" | "edit">("create");
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+  const [driverToDelete, setDriverToDelete] = useState<Driver | null>(null);
+
+  const statuses = ["All Drivers", "Available", "Assigned", "Busy", "Ongoing", "Offline"];
+
+  // Debounce search could be added, but hook handles refetch on state change automatically.
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 400);
   };
 
   const handleAddDriver = () => {
@@ -103,32 +102,47 @@ export default function DriverManagementClient({
     setIsModalOpen(true);
   };
 
-  const handleSaveDriver = (data: Partial<Driver>) => {
+  const handleSaveDriver = async (data: Partial<Driver>) => {
     if (modalMode === "create") {
-      const newDriver: Driver = {
-        id: `${drivers.length + 1}`,
-        driver_id: `DRV${2024000 + drivers.length + 1}`,
-        driver_name: data.driver_name || "",
-        driver_email: data.driver_email || "",
-        driver_phone: data.driver_phone || "",
-        driver_status: "available",
-        vehicle_type: "bike",
-        vehicle_number: data.vehicle_number || "",
-        isActive: true,
-        stats: {
-          total_deliveries: 0,
-          active_deliveries: 0,
-        },
-        createdAt: new Date().toISOString(),
-      };
-      setDrivers([newDriver, ...drivers]);
-      toast.success("Driver added successfully");
+      try {
+          await createDriver({
+               full_name: data.driver_name || "",
+               vehicle_number: data.vehicle_number || "",
+               phone_number: data.driver_phone || "",
+               email_address: data.driver_email || ""
+          }).unwrap();
+          toast.success("Driver added successfully");
+          setIsModalOpen(false);
+          refetch(); // Refresh list
+      } catch (error: any) {
+          console.error("Failed to create driver:", error);
+           if (error?.data?.errors) {
+              const validationErrors = error.data.errors;
+              const firstError = Object.values(validationErrors).flat()[0];
+              toast.error(firstError as string || "Failed to create driver");
+          } else {
+            toast.error(error?.data?.message || "Failed to create driver");
+          }
+      }
     } else if (modalMode === "edit" && selectedDriver) {
-      const updatedDrivers = drivers.map((driver) =>
-        driver.id === selectedDriver.id ? { ...driver, ...data } : driver
-      );
-      setDrivers(updatedDrivers);
-      toast.success("Driver updated successfully");
+      try {
+          await updateDriver({
+              id: selectedDriver.id,
+              data: {
+                  full_name: data.driver_name || selectedDriver.driver_name,
+                  vehicle_number: data.vehicle_number || selectedDriver.vehicle_number || "",
+                  phone_number: data.driver_phone || selectedDriver.driver_phone,
+                  email_address: data.driver_email || selectedDriver.driver_email,
+              }
+          }).unwrap();
+          toast.success("Driver updated successfully");
+          setIsModalOpen(false);
+          refetch();
+      } catch (error: any) {
+            console.error("Failed to update driver:", error);
+            const msg = error?.data?.message || "Failed to update driver";
+            toast.error(msg);
+      }
     }
   };
 
@@ -137,13 +151,18 @@ export default function DriverManagementClient({
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (driverToDelete) {
-      const updatedDrivers = drivers.filter((d) => d.id !== driverToDelete.id);
-      setDrivers(updatedDrivers);
-      setIsDeleteModalOpen(false);
-      setDriverToDelete(null);
-      toast.success("Driver deleted successfully");
+      try {
+          await deleteDriver(driverToDelete.id).unwrap();
+          setIsDeleteModalOpen(false);
+          setDriverToDelete(null);
+          toast.success("Driver deleted successfully");
+          refetch();
+      } catch (error: any) {
+          console.error("Failed to delete driver:", error);
+          toast.error("Failed to delete driver");
+      }
     }
   };
 
@@ -165,7 +184,7 @@ export default function DriverManagementClient({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center justify-between px-4 h-[52px] min-w-[140px] bg-white border border-border rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
-                <TranslatedText text={selectedStatus} />
+                {selectedStatus}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </button>
             </DropdownMenuTrigger>
@@ -176,7 +195,7 @@ export default function DriverManagementClient({
                   onClick={() => setSelectedStatus(status)}
                   className="flex items-center justify-between cursor-pointer"
                 >
-                  <TranslatedText text={status} />
+                  {status}
                   {selectedStatus === status && <Check className="w-4 h-4" />}
                 </DropdownMenuItem>
               ))}
@@ -188,7 +207,7 @@ export default function DriverManagementClient({
             onClick={handleAddDriver}
           >
             <Plus className="w-5 h-5" />
-            <TranslatedText text="Add Driver" />
+            Add Driver
           </Button>
         </div>
       </div>
@@ -196,12 +215,12 @@ export default function DriverManagementClient({
       {/* Drivers Table Section */}
       <div className="bg-white p-4 md:p-6 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)]">
         <h2 className="pb-4 text-xl font-bold text-foreground">
-          <TranslatedText text="Drivers List" />
+          Drivers List
         </h2>
         <DriverTable
           data={filteredData}
           itemsPerPage={itemsPerPage}
-          isLoading={isLoading}
+          isLoading={isDriversLoading}
           currentPage={currentPage}
           onPageChange={handlePageChange}
           onView={handleViewDriver}

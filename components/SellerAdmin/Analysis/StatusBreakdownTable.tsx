@@ -1,7 +1,6 @@
 "use client";
 
 import { Parcel } from "@/types/parcel";
-import TranslatedText from "@/components/Shared/TranslatedText";
 
 interface StatusBreakdownTableProps {
     parcels: Parcel[];
@@ -20,7 +19,7 @@ export default function StatusBreakdownTable({ parcels }: StatusBreakdownTablePr
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
             <h2 className="text-xl font-bold text-foreground mb-6">
-                <TranslatedText text="Status Breakdown" />
+                Status Breakdown
             </h2>
             <div className="overflow-hidden rounded-none border border-gray-100">
                 <table className="w-full text-left">

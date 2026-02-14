@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { useLanguage } from "@/context/LanguageContext";
 import NotificationsClient from "@/components/Notifications/NotificationsClient";
 
@@ -329,15 +328,6 @@ export default function ProfileClient() {
             >
               Notifications
             </button>
-            {/* <button
-              onClick={() => setActiveSection("language")}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all ${activeSection === "language"
-                ? "bg-green-50 text-primary border-l-4 border-primary"
-                : "text-secondary hover:bg-blue-50"
-                }`}
-            >
-              <TranslatedText text="Language" />
-            </button> */}
           </div>
 
           {/* Form Fields */}
@@ -361,7 +351,7 @@ export default function ProfileClient() {
 
                           <div className="space-y-2">
                             <label className="text-xs font-medium text-secondary">
-                              <TranslatedText text="Full name" />
+                              Full name
                             </label>
                             <Input
                               value={editNameValue}
@@ -371,7 +361,7 @@ export default function ProfileClient() {
                               maxLength={32}
                             />
                             <div className="text-right text-xs text-gray-400">
-                              <TranslatedText text="text limit" />{" "}
+                              text limit
                               {editNameValue.length}/32
                             </div>
                           </div>
@@ -383,14 +373,14 @@ export default function ProfileClient() {
                               onClick={handleCancelName}
                               className="bg-gray-100 text-foreground hover:bg-gray-200"
                             >
-                              <TranslatedText text="Cancel" />
+                              Cancel
                             </Button>
                             <Button
                               type="button"
                               onClick={handleSaveName}
                               className="text-white hover:bg-foreground"
                             >
-                              <TranslatedText text="Save" />
+                              Save
                             </Button>
                           </div>
                         </div>
@@ -417,7 +407,7 @@ export default function ProfileClient() {
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
                       <label className="block text-sm font-medium text-foreground mb-1.5">
-                        <TranslatedText text="Phone Number" />
+                        Phone Number
                       </label>
 
                       {isEditingPhone ? (
@@ -437,14 +427,14 @@ export default function ProfileClient() {
                               onClick={handleCancelPhone}
                               className="bg-gray-100 text-foreground hover:bg-gray-200"
                             >
-                              <TranslatedText text="Cancel" />
+                              Cancel
                             </Button>
                             <Button
                               type="button"
                               onClick={handleSavePhone}
                               className="text-white hover:bg-foreground"
                             >
-                              <TranslatedText text="Save" />
+                              Save
                             </Button>
                           </div>
                         </div>
@@ -471,7 +461,7 @@ export default function ProfileClient() {
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
                       <label className="block text-sm font-medium text-foreground mb-1.5">
-                        <TranslatedText text="Address" />
+                        Address
                       </label>
 
                       {isEditingAddress ? (
@@ -491,14 +481,14 @@ export default function ProfileClient() {
                               onClick={handleCancelAddress}
                               className="bg-gray-100 text-foreground hover:bg-gray-200"
                             >
-                              <TranslatedText text="Cancel" />
+                              Cancel
                             </Button>
                             <Button
                               type="button"
                               onClick={handleSaveAddress}
                               className="text-white hover:bg-foreground"
                             >
-                              <TranslatedText text="Save" />
+                              Save
                             </Button>
                           </div>
                         </div>
@@ -673,75 +663,6 @@ export default function ProfileClient() {
                 <NotificationsClient />
               </div>
             )}
-
-            {/* Language Section */}
-            {/* {activeSection === "language" && (
-              <div className="py-6">
-                <div className="w-full">
-                  <label className="block text-sm font-medium text-foreground mb-4">
-                    <TranslatedText text="Language" />
-                  </label>
-
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => {
-                        setSelectedLanguage("English");
-                        setHasChanges(true);
-                      }}
-                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">🇬🇧</span>
-                        <span className="text-sm text-foreground font-medium">
-                          <TranslatedText text="English" />
-                        </span>
-                      </div>
-                      {selectedLanguage === "English" && (
-                        <svg
-                          className="w-5 h-5 text-primary"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setSelectedLanguage("Oromo");
-                        setHasChanges(true);
-                      }}
-                      className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">🇪🇹</span>
-                        <span className="text-sm text-foreground font-medium">
-                          <TranslatedText text="Oromo" />
-                        </span>
-                      </div>
-                      {selectedLanguage === "Oromo" && (
-                        <svg
-                          className="w-5 h-5 text-primary"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )} */}
           </div>
         </div>
       </div>

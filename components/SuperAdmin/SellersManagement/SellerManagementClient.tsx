@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { Search, ChevronDown, Plus, Check } from "lucide-react";
 import { toast } from "sonner";
 import { allSellersData } from "@/data/allSellersData";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Seller } from "@/types/seller";
@@ -165,7 +164,7 @@ export default function SellerManagementClient({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button className="flex items-center justify-between px-4 h-[52px] min-w-[140px] bg-white border border-border rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
-                                <TranslatedText text={selectedStatus} />
+                                {selectedStatus}
                                 <ChevronDown className="w-4 h-4 ml-2" />
                             </button>
                         </DropdownMenuTrigger>
@@ -176,7 +175,7 @@ export default function SellerManagementClient({
                                     onClick={() => setSelectedStatus(status)}
                                     className="flex items-center justify-between cursor-pointer"
                                 >
-                                    <TranslatedText text={status} />
+                                    {status}
                                     {selectedStatus === status && <Check className="w-4 h-4" />}
                                 </DropdownMenuItem>
                             ))}
@@ -188,7 +187,7 @@ export default function SellerManagementClient({
                         onClick={handleAddSeller}
                     >
                         <Plus className="w-5 h-5" />
-                        <TranslatedText text="Add Seller" />
+                        Add Seller
                     </Button>
                 </div>
             </div>
@@ -196,7 +195,7 @@ export default function SellerManagementClient({
             {/* Sellers Table Section */}
             <div className="bg-white p-4 md:p-6 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)]">
                 <h2 className="pb-4 text-xl font-bold text-foreground">
-                    <TranslatedText text="Sellers List" />
+                    Sellers List
                 </h2>
                 <SellerTable
                     data={filteredData}

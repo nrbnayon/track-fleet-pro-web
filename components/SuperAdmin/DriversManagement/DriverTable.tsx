@@ -2,7 +2,6 @@
 "use client";
 import { Trash2, Eye, Pencil } from "lucide-react";
 import { Pagination } from "@/components/Shared/Pagination";
-import TranslatedText from "@/components/Shared/TranslatedText";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Driver } from "@/types/driver";
 
@@ -11,6 +10,7 @@ interface DriverTableProps {
   itemsPerPage?: number;
   isLoading?: boolean;
   currentPage: number;
+  totalItems?: number;
   onPageChange: (page: number) => void;
   onView?: (driver: Driver) => void;
   onEdit?: (driver: Driver) => void;
@@ -22,17 +22,17 @@ export default function DriverTable({
   itemsPerPage = 10,
   isLoading = false,
   currentPage,
+  totalItems: propTotalItems,
   onPageChange,
   onView,
   onEdit,
   onDelete,
 }: DriverTableProps) {
-  const totalItems = data.length;
+  const isServerSide = typeof propTotalItems === 'number';
+  const totalItems = isServerSide ? propTotalItems : data.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = data.slice(startIndex, endIndex);
+  const currentItems = isServerSide ? data : data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const getStatusStyle = (status: string) => {
     switch (status.toLowerCase()) {
@@ -70,28 +70,28 @@ export default function DriverTable({
           <thead>
             <tr className="bg-[#E8F4FD] border-none">
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                <TranslatedText text="Vehicle Number" />
+                Vehicle Number
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                <TranslatedText text="Driver's Name" />
+                Driver's Name
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                <TranslatedText text="Email" />
+                Email
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                <TranslatedText text="Phone" />
+                Phone
               </th>
               <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
-                <TranslatedText text="Total Delivery" />
+                Total Delivery
               </th>
               <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
-                <TranslatedText text="Active Delivery" />
+                Active Delivery
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                <TranslatedText text="Status" />
+                Status
               </th>
               <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">
-                <TranslatedText text="Action" />
+                Action
               </th>
             </tr>
           </thead>
@@ -144,7 +144,7 @@ export default function DriverTable({
                         driver.driver_status
                       )}`}
                     >
-                      <TranslatedText text={getStatusText(driver.driver_status)} />
+                      {getStatusText(driver.driver_status)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -187,7 +187,7 @@ export default function DriverTable({
                   className="px-6 py-12 text-center text-secondary"
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <TranslatedText text="No drivers found" />
+                    No drivers found
                   </div>
                 </td>
               </tr>

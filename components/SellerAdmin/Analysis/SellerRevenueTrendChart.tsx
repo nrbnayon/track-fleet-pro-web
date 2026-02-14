@@ -10,7 +10,6 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { useState, useEffect } from "react";
-import TranslatedText from "@/components/Shared/TranslatedText";
 
 const data = [
     { name: "Mon", value: 1350 },
@@ -34,7 +33,7 @@ export default function SellerRevenueTrendChart() {
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)]">
             <h2 className="text-lg font-bold text-foreground mb-8">
-                <TranslatedText text="Revenue Trend" />
+                Revenue Trend
             </h2>
             <div className="h-[300px] w-full text-[#337DF3]">
                 <ResponsiveContainer width="100%" height="100%">

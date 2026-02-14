@@ -2,7 +2,6 @@
 "use client";
 import React from "react";
 import { X, AlertTriangle } from "lucide-react";
-import TranslatedText from "@/components/Shared/TranslatedText";
 
 interface DeleteConfirmModalProps {
     isOpen: boolean;
@@ -37,12 +36,12 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
                     </div>
 
                     <h3 className="text-[22px] font-bold text-[#111827] mb-3">
-                        <TranslatedText text="Delete Seller" />
+                        Delete Seller
                     </h3>
                     <p className="text-gray-500 text-[15px] leading-relaxed mb-8">
-                        <TranslatedText text="Are you sure you want to delete" />{" "}
+                        Are you sure you want to delete{" "}
                         <span className="font-semibold text-foreground">"{sellerName}"</span>?{" "}
-                        <TranslatedText text="This action cannot be undone." />
+                        This action cannot be undone.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-3">
@@ -50,13 +49,13 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
                             onClick={onClose}
                             className="flex-1 h-[52px] rounded-[12px] border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-all"
                         >
-                            <TranslatedText text="No, Keep It" />
+                            No, Keep It
                         </button>
                         <button
                             onClick={onConfirm}
                             className="flex-1 h-[52px] rounded-[12px] bg-red-500 text-white font-semibold hover:bg-red-600 transition-all shadow-md shadow-red-200"
                         >
-                            <TranslatedText text="Yes, Delete" />
+                            Yes, Delete
                         </button>
                     </div>
                 </div>
