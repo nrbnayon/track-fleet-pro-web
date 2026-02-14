@@ -11,23 +11,29 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { useState, useEffect } from "react";
+import type { WeeklyDeliveries } from "@/types/analytics";
 
-const data = [
-    { name: "Mon", value: 45 },
-    { name: "Tue", value: 52 },
-    { name: "Wed", value: 48 },
-    { name: "Thu", value: 65 },
-    { name: "Fri", value: 58 },
-    { name: "Sat", value: 38 },
-    { name: "Sun", value: 32 },
-];
+interface WeeklyDeliveriesBarChartProps {
+    weeklyData: WeeklyDeliveries;
+}
 
-export default function WeeklyDeliveriesBarChart() {
+export default function WeeklyDeliveriesBarChart({ weeklyData }: WeeklyDeliveriesBarChartProps) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    // Transform API data to chart format
+    const data = [
+        { name: "Mon", value: weeklyData.Mon },
+        { name: "Tue", value: weeklyData.Tue },
+        { name: "Wed", value: weeklyData.Wed },
+        { name: "Thu", value: weeklyData.Thu },
+        { name: "Fri", value: weeklyData.Fri },
+        { name: "Sat", value: weeklyData.Sat },
+        { name: "Sun", value: weeklyData.Sun },
+    ];
 
     if (!isMounted) return <div className="h-[350px] w-full bg-gray-50 rounded-2xl animate-pulse" />;
 

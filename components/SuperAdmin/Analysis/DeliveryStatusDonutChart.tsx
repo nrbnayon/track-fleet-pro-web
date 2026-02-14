@@ -2,20 +2,33 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useState, useEffect } from "react";
+import type { StatusBreakdownItem } from "@/types/analytics";
 
-const data = [
-    { name: "Delivered", value: 43, color: "#10B981" },
-    { name: "Ongoing", value: 37, color: "#B37EFF" },
-    { name: "Assigned", value: 22, color: "#3B82F6" },
-    { name: "Pending", value: 6, color: "#F59E0B" },
-];
+interface DeliveryStatusDonutChartProps {
+    statusData: StatusBreakdownItem[];
+}
 
-export default function DeliveryStatusDonutChart() {
+const STATUS_COLORS: Record<string, string> = {
+    DELIVERED: "#10B981",
+    ONGOING: "#B37EFF",
+    ASSIGNED: "#3B82F6",
+    PENDING: "#F59E0B",
+};
+
+export default function DeliveryStatusDonutChart({ statusData }: DeliveryStatusDonutChartProps) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    // Transform API data to chart format
+    const data = statusData.map((item) => ({
+        name: item.status.charAt(0) + item.status.slice(1).toLowerCase(),
+        value: item.percentage,
+        count: item.count,
+        color: STATUS_COLORS[item.status] || "#64748B",
+    }));
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full flex flex-col">
@@ -53,7 +66,7 @@ export default function DeliveryStatusDonutChart() {
                                                         {payload[0].name}
                                                     </p>
                                                     <p className="text-sm text-secondary">
-                                                        {payload[0].value}%
+                                                        {payload[0].payload.count} ({payload[0].value?.toFixed(2)}%)
                                                     </p>
                                                 </div>
                                             );
@@ -81,7 +94,7 @@ export default function DeliveryStatusDonutChart() {
                                     {item.name}
                                 </span>
                                 <span className="text-sm font-bold text-foreground">
-                                    {item.value}%
+                                    {item.value.toFixed(2)}%
                                 </span>
                             </div>
                         </div>

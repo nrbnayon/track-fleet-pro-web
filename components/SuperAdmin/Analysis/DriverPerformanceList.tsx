@@ -1,15 +1,13 @@
 
 "use client";
 
+import type { TopDriver } from "@/types/analytics";
 
-const drivers = [
-    { name: "Michael Chen", deliveries: 89, rank: "01" },
-    { name: "Sarah Johnson", deliveries: 76, rank: "02" },
-    { name: "David Martinez", deliveries: 62, rank: "03" },
-    { name: "Emily Rodriguez", deliveries: 71, rank: "04" },
-];
+interface DriverPerformanceListProps {
+    drivers: TopDriver[];
+}
 
-export default function DriverPerformanceList() {
+export default function DriverPerformanceList({ drivers }: DriverPerformanceListProps) {
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
             <h2 className="text-lg font-bold text-foreground mb-6">
@@ -31,7 +29,7 @@ export default function DriverPerformanceList() {
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-base">
-                            {driver.rank}
+                            {driver.rank.toString().padStart(2, '0')}
                         </div>
                     </div>
                 ))}
