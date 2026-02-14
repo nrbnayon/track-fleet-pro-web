@@ -43,3 +43,38 @@ export interface Driver {
   updatedAt?: string;
   [key: string]: any;
 }
+
+// API Types for Available Drivers
+export interface ApiAvailableDriver {
+  id: string;
+  full_name: string;
+  vehicle_number: string | null;
+  total_delivery: number;
+  is_available: boolean;
+  is_online: boolean;
+  phone_number: string;
+  current_location: string | null;
+  profile_image: string;
+  lat: number | null;
+  lng: number | null;
+}
+
+export interface ApiAvailableDriversResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: ApiAvailableDriver[];
+}
+
+export interface ApiAssignDriverResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: {
+      id: number;
+      status: string;
+      created_at: string;
+      parcel: number;
+      driver: string;
+  }
+}

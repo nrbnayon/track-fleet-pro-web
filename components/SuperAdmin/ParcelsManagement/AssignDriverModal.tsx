@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
-import { allDriversData } from "@/data/allDriversData";
+import { useGetAvailableDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Search, MapPin, Package, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface AssignDriverModalProps {
     isOpen: boolean;
@@ -21,17 +22,35 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
     const [searchDriver, setSearchDriver] = useState("");
     const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
-    const activeDrivers = allDriversData.filter(d => d.isActive);
+    const { data: drivers = [], isLoading } = useGetAvailableDriversQuery();
+    const [assignDriver, { isLoading: isAssigning }] = useAssignDriverMutation();
 
-    const filteredDrivers = activeDrivers.filter(driver =>
+    const filteredDrivers = drivers.filter(driver =>
         driver.driver_name.toLowerCase().includes(searchDriver.toLowerCase()) ||
         driver.current_location?.address?.toLowerCase().includes(searchDriver.toLowerCase())
     );
 
-    const handleAssign = () => {
-        // Logic to assign driver would go here
-        console.log(`Assigning driver ${selectedDriverId} to parcel ${parcel.id}`);
-        onClose();
+    const handleAssign = async () => {
+        if (!selectedDriverId) return;
+        try {
+            await assignDriver({ parcelId: parcel.id, driverId: selectedDriverId }).unwrap();
+            toast.success("Driver assigned successfully");
+            onClose();
+        } catch (error: any) {
+            console.error("Failed to assign driver:", error);
+            
+            if (error?.data?.errors?.non_field_errors) {
+                const nonFieldErrors = error.data.errors.non_field_errors;
+                if (Array.isArray(nonFieldErrors) && nonFieldErrors.some(msg => typeof msg === 'string' && msg.includes("unique set"))) {
+                    toast.error("This driver is already assigned to this parcel.");
+                    return;
+                }
+                 toast.error(nonFieldErrors[0] || "Failed to assign driver");
+                 return;
+            }
+
+            toast.error(error?.data?.message || "Failed to assign driver");
+        }
     };
 
     return (
@@ -70,7 +89,12 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                         </div>
 
                         <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-                            {filteredDrivers.map(driver => (
+                            {isLoading ? (
+                                <div className="text-center py-8 text-gray-400">Loading drivers...</div>
+                            ) : filteredDrivers.length === 0 ? (
+                                <div className="text-center py-8 text-gray-400">No active drivers found matching your search.</div>
+                            ) : (
+                                filteredDrivers.map(driver => (
                                 <div
                                     key={driver.id}
                                     onClick={() => setSelectedDriverId(driver.id)}
@@ -112,19 +136,19 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )))}
                         </div>
                     </div>
                 </div>
 
                 <div className="p-6 pt-2 border-t border-gray-100 flex justify-end gap-3">
-                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button variant="outline" onClick={onClose} disabled={isAssigning}>Cancel</Button>
                     <Button
                         className="bg-primary hover:bg-primary/90 text-white"
-                        disabled={!selectedDriverId}
+                        disabled={!selectedDriverId || isAssigning}
                         onClick={handleAssign}
                     >
-                        Assign Driver
+                        {isAssigning ? "Assigning..." : "Assign Driver"}
                     </Button>
                 </div>
             </DialogContent>

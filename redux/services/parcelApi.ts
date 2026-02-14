@@ -1,6 +1,7 @@
 // redux/services/parcelApi.ts
 import { apiSlice } from './apiSlice';
 import { Parcel, ApiParcelResponse } from '@/types/parcel';
+import { ApiAvailableDriversResponse, ApiAssignDriverResponse, Driver } from '@/types/driver';
 
 // Inject parcel endpoints into the API slice
 export const parcelApi = apiSlice.injectEndpoints({
@@ -106,6 +107,53 @@ export const parcelApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Parcel'],
     }),
+
+    // Get available drivers
+    getAvailableDrivers: builder.query<Driver[], void>({
+      query: () => '/api/admin/available-drivers/',
+      transformResponse: (response: ApiAvailableDriversResponse) => {
+        return response.data.map((apiDriver) => ({
+          id: apiDriver.id,
+          driver_id: apiDriver.id.substring(0, 8),
+          driver_name: apiDriver.full_name,
+          driver_email: "N/A",
+          driver_phone: apiDriver.phone_number,
+          driver_status: apiDriver.is_available ? 'available' : (apiDriver.is_online ? 'busy' : 'offline'),
+          vehicle_number: apiDriver.vehicle_number || "N/A",
+          current_location: {
+             latitude: apiDriver.lat || 0,
+             longitude: apiDriver.lng || 0,
+             address: apiDriver.current_location || "Unknown Location",
+          },
+          driver_image: apiDriver.profile_image,
+          stats: {
+             total_deliveries: apiDriver.total_delivery,
+             active_deliveries: 0 
+          },
+          isActive: apiDriver.is_online,
+          isAvailable: apiDriver.is_available,
+          vehicle_type: "bike",
+        }));
+      },
+      providesTags: ['Dashboard'], // Using Dashboard for now as it seems generic enough or could add Driver tag
+    }),
+
+    // Assign driver to parcel
+    assignDriver: builder.mutation<ApiAssignDriverResponse, { parcelId: string | number; driverId: string }>({
+      query: ({ parcelId, driverId }) => ({
+        url: '/api/parcel/request-delivery/',
+        method: 'POST',
+        body: {
+          parcel: typeof parcelId === 'string' ? parseInt(parcelId) : parcelId,
+          driver: driverId,
+        },
+      }),
+      invalidatesTags: (result, error, { parcelId }) => [
+        { type: 'Parcel', id: parcelId.toString() }, // Update specific parcel
+        'Parcel', // Update list
+        'Dashboard' // Update available drivers list
+      ],
+    }),
   }),
 });
 
@@ -117,4 +165,6 @@ export const {
   useCreateParcelMutation,
   useUpdateParcelMutation,
   useDeleteParcelMutation,
+  useGetAvailableDriversQuery,
+  useAssignDriverMutation,
 } = parcelApi;
