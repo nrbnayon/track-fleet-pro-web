@@ -103,7 +103,7 @@ export default function SellerTable({
                                         {seller.seller_address || "N/A"}
                                     </td>
                                     <td className="px-6 py-4 text-center text-secondary">
-                                        {seller.stats?.total_parcels || 0}
+                                        {seller.stats?.total_parcels_delivery || 0}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-center gap-3">

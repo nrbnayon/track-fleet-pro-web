@@ -11,9 +11,10 @@ import { Seller } from "@/types/seller";
 interface SellerModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (data: Partial<Seller>) => void;
+    onSave: (data: Partial<Seller>) => Promise<void>;
     seller: Seller | null;
     mode: "create" | "view" | "edit";
+    isLoading?: boolean;
 }
 
 export default function SellerModal({
@@ -22,6 +23,7 @@ export default function SellerModal({
     onSave,
     seller,
     mode,
+    isLoading = false,
 }: SellerModalProps) {
     const [formData, setFormData] = useState<Partial<Seller>>({
         seller_name: "",
@@ -84,15 +86,15 @@ export default function SellerModal({
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (mode === "view") {
             onClose();
             return;
         }
         if (validateForm()) {
-            onSave(formData);
-            onClose();
+            await onSave(formData);
+            // Modal close and state reset will be handled by parent after successful save
         } else {
             toast.error("Please fill in all required fields correctly");
         }
@@ -136,7 +138,7 @@ export default function SellerModal({
                         {/* Seller Name */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                Seller Name
+                                Seller Name <span className="text-red-500">*</span>
                             </label>
                             <Input
                                 type="text"
@@ -156,7 +158,7 @@ export default function SellerModal({
                         {/* Address */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                Address
+                                Address <span className="text-red-500">*</span>
                             </label>
                             <Input
                                 type="text"
@@ -176,7 +178,7 @@ export default function SellerModal({
                         {/* Email Address */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                Email Address
+                                Email Address <span className="text-red-500">*</span>
                             </label>
                             <Input
                                 type="email"
@@ -196,7 +198,7 @@ export default function SellerModal({
                         {/* Phone Number */}
                         <div>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                Phone Number
+                                Phone Number <span className="text-red-500">*</span>
                             </label>
                             <Input
                                 type="text"
@@ -216,7 +218,7 @@ export default function SellerModal({
                         {/* Business Name */}
                         <div className={mode === "view" ? "" : "md:col-span-2"}>
                             <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                                Business Name
+                                Business Name <span className="text-red-500">*</span>
                             </label>
                             <Input
                                 type="text"
@@ -241,7 +243,7 @@ export default function SellerModal({
                                 </label>
                                 <Input
                                     type="text"
-                                    value={formData.stats?.total_parcels || 0}
+                                    value={formData.stats?.total_parcels_delivery || 0}
                                     disabled
                                     className="h-[52px] rounded-[12px] border-[#E5E7EB] bg-white px-4 opacity-100"
                                 />
@@ -252,15 +254,21 @@ export default function SellerModal({
                     <div className="flex justify-end pt-4">
                         <Button
                             type="submit"
-                            className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all"
+                            disabled={isLoading}
+                            className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all flex items-center justify-center gap-2"
                         >
-                            {
+                            {isLoading ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    <span>Saving...</span>
+                                </>
+                            ) : (
                                 mode === "create"
                                     ? "Add Seller"
                                     : mode === "edit"
                                         ? "Update Seller"
                                         : "Done"
-                            }
+                            )}
                         </Button>
                     </div>
                 </form>

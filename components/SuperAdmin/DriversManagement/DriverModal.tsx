@@ -10,9 +10,10 @@ import { Driver } from "@/types/driver";
 interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Partial<Driver>) => void;
+  onSave: (data: Partial<Driver>) => Promise<void>;
   driver: Driver | null;
   mode: "create" | "view" | "edit";
+  isLoading?: boolean;
 }
 
 export default function DriverModal({
@@ -21,6 +22,7 @@ export default function DriverModal({
   onSave,
   driver,
   mode,
+  isLoading = false,
 }: DriverModalProps) {
   const [formData, setFormData] = useState<Partial<Driver>>({
     driver_name: "",
@@ -76,15 +78,14 @@ export default function DriverModal({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "view") {
       onClose();
       return;
     }
     if (validateForm()) {
-      onSave(formData);
-      onClose();
+      await onSave(formData);
     } else {
       toast.error("Please fill in all required fields correctly");
     }
@@ -128,7 +129,7 @@ export default function DriverModal({
             {/* Driver Name */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                Driver Name
+                Driver Name <span className="text-red-500">*</span>
               </label>
               <Input
                 type="text"
@@ -148,7 +149,7 @@ export default function DriverModal({
             {/* Vehicle Number */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                Vehicle Number
+                Vehicle Number <span className="text-red-500">*</span>
               </label>
               <Input
                 type="text"
@@ -168,7 +169,7 @@ export default function DriverModal({
             {/* Email Address */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                Email Address
+                Email Address <span className="text-red-500">*</span>
               </label>
               <Input
                 type="email"
@@ -188,7 +189,7 @@ export default function DriverModal({
             {/* Phone */}
             <div>
               <label className="block text-sm font-semibold text-[#374151] mb-2.5">
-                Phone
+                Phone <span className="text-red-500">*</span>
               </label>
               <Input
                 type="text"
@@ -237,15 +238,21 @@ export default function DriverModal({
           <div className="flex justify-end pt-4">
             <Button
               type="submit"
-              className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all"
+              disabled={isLoading}
+              className="h-[48px] px-8 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-[10px] font-semibold text-[15px] transition-all flex items-center justify-center gap-2"
             >
-              {
+              {isLoading ? (
+                  <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Saving...</span>
+                  </>
+              ) : (
                   mode === "create"
                     ? "Add Driver"
                     : mode === "edit"
                       ? "Update Driver"
                       : "Done"
-                }
+                )}
             </Button>
           </div>
         </form>

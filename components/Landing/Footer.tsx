@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function LandingFooter() {
     const currentYear = new Date().getFullYear();
@@ -16,7 +17,7 @@ export default function LandingFooter() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
         >
-            <div className="mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-0">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Company Info */}
                     <motion.div 
@@ -27,8 +28,8 @@ export default function LandingFooter() {
                         transition={{ duration: 0.6, delay: 0.1 }}
                     >
                         <div className="flex items-center space-x-2 mb-4">
-                            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-xl">TF</span>
+                            <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                                <Image src="/icons/logo.png" alt="Logo" width={40} height={40} />
                             </div>
                             <span className="font-bold text-xl text-foreground">
                                 TrackFleet Pro

@@ -2,149 +2,151 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, ChevronDown, Plus, Check } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { allSellersData } from "@/data/allSellersData";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Seller } from "@/types/seller";
+import { Seller, CreateSellerRequest, UpdateSellerRequest } from "@/types/seller";
 import SellerTable from "./SellerTable";
 import SellerModal from "./SellerModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  useGetSellersQuery,
+  useCreateSellerMutation,
+  useUpdateSellerMutation,
+  useDeleteSellerMutation,
+} from "@/redux/services/sellerApi";
 
 interface SellerManagementClientProps {
-    itemsPerPage?: number;
+  itemsPerPage?: number;
 }
 
 export default function SellerManagementClient({
-    itemsPerPage = 10,
+  itemsPerPage = 10,
 }: SellerManagementClientProps) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
-    const [sellers, setSellers] = useState<Seller[]>(allSellersData);
-    const [filteredData, setFilteredData] = useState<Seller[]>(allSellersData);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedStatus, setSelectedStatus] = useState("All Sellers");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState<"create" | "view" | "edit">("create");
-    const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
-    const [sellerToDelete, setSellerToDelete] = useState<Seller | null>(null);
+  // API Hooks
+  const { data: sellersData, isLoading, refetch } = useGetSellersQuery({
+    page: 1,
+    limit: 1000,
+  });
 
-    const statuses = ["All Sellers", "Active", "Inactive", "Suspended", "Pending Verification"];
+  const [createSeller, { isLoading: isCreating }] = useCreateSellerMutation();
+  const [updateSeller, { isLoading: isUpdating }] = useUpdateSellerMutation();
+  const [deleteSeller] = useDeleteSellerMutation();
 
-    useEffect(() => {
-        let filtered = sellers;
+  const sellers = sellersData?.data || [];
+  const [filteredData, setFilteredData] = useState<Seller[]>([]);
 
-        // Filter by Status
-        if (selectedStatus !== "All Sellers") {
-            filtered = filtered.filter((seller) => {
-                const status = seller.seller_status.toLowerCase();
-                const target = selectedStatus.toLowerCase().replace(" ", "_");
-                return status === target;
-            });
-        }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "view" | "edit">("create");
+  const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
+  const [sellerToDelete, setSellerToDelete] = useState<Seller | null>(null);
 
-        // Filter by Search Query
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(
-                (seller) =>
-                    seller.seller_name.toLowerCase().includes(query) ||
-                    seller.business_name.toLowerCase().includes(query) ||
-                    seller.seller_email.toLowerCase().includes(query) ||
-                    seller.seller_id.toLowerCase().includes(query) ||
-                    seller.seller_phone.includes(query)
-            );
-        }
+  useEffect(() => {
+    let filtered = sellers;
 
-        setFilteredData(filtered);
-        setCurrentPage(1);
+    // Filter by Search Query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (seller) =>
+          seller.seller_name.toLowerCase().includes(query) ||
+          seller.business_name.toLowerCase().includes(query) ||
+          seller.seller_email.toLowerCase().includes(query) ||
+          seller.seller_id.toLowerCase().includes(query) ||
+          seller.seller_phone.includes(query)
+      );
+    }
 
-        // Trigger loading state for visual feedback
-        setIsLoading(true);
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [searchQuery, selectedStatus, sellers]);
+    setFilteredData(filtered);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery, sellers]); 
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 400);
-    };
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
-    const handleAddSeller = () => {
-        setModalMode("create");
-        setSelectedSeller(null);
-        setIsModalOpen(true);
-    };
+  const handleAddSeller = () => {
+    setModalMode("create");
+    setSelectedSeller(null);
+    setIsModalOpen(true);
+  };
 
-    const handleViewSeller = (seller: Seller) => {
-        setModalMode("view");
-        setSelectedSeller(seller);
-        setIsModalOpen(true);
-    };
+  const handleViewSeller = (seller: Seller) => {
+    setModalMode("view");
+    setSelectedSeller(seller);
+    setIsModalOpen(true);
+  };
 
-    const handleEditSeller = (seller: Seller) => {
-        setModalMode("edit");
-        setSelectedSeller(seller);
-        setIsModalOpen(true);
-    };
+  const handleEditSeller = (seller: Seller) => {
+    setModalMode("edit");
+    setSelectedSeller(seller);
+    setIsModalOpen(true);
+  };
 
-    const handleSaveSeller = (data: Partial<Seller>) => {
-        if (modalMode === "create") {
-            const newSeller: Seller = {
-                id: `${sellers.length + 1}`,
-                seller_id: `SLR${Math.floor(Math.random() * 900) + 100}`,
-                seller_name: data.seller_name || "",
-                business_name: data.business_name || "",
-                seller_email: data.seller_email || "",
-                seller_phone: data.seller_phone || "",
-                seller_address: data.seller_address || "",
-                seller_status: "active",
-                stats: {
-                    total_parcels: 0,
-                    pending_parcels: 0,
-                    completed_parcels: 0,
-                    cancelled_parcels: 0,
-                    total_revenue: 0,
-                },
-                createdAt: new Date().toISOString(),
-            };
-            setSellers([newSeller, ...sellers]);
-            toast.success("Seller added successfully");
-        } else if (modalMode === "edit" && selectedSeller) {
-            const updatedSellers = sellers.map((seller) =>
-                seller.id === selectedSeller.id ? { ...seller, ...data } : seller
-            );
-            setSellers(updatedSellers);
-            toast.success("Seller updated successfully");
-        }
-    };
+  const handleSaveSeller = async (data: Partial<Seller>) => {
+    try {
+      if (modalMode === "create") {
+        const createPayload: CreateSellerRequest = {
+          full_name: data.seller_name!,
+          email_address: data.seller_email!,
+          address: data.seller_address!,
+          phone_number: data.seller_phone!,
+          business_name: data.business_name!,
+        };
+        await createSeller(createPayload).unwrap();
 
-    const handleDeleteClick = (seller: Seller) => {
-        setSellerToDelete(seller);
-        setIsDeleteModalOpen(true);
-    };
+        toast.success("Seller added successfully! Password sent to email.");
+      } else if (modalMode === "edit" && selectedSeller) {
+        const updatePayload: UpdateSellerRequest = {
+          full_name: data.seller_name!,
+          email_address: data.seller_email!,
+          address: data.seller_address!,
+          phone_number: data.seller_phone!,
+          business_name: data.business_name!,
+        };
+        await updateSeller({ id: selectedSeller.id, data: updatePayload }).unwrap();
+        toast.success("Seller updated successfully");
+      }
+      setIsModalOpen(false);
+      refetch();
+    } catch (error: any) {
+      console.error("Failed to save seller:", error);
+      if (error?.data?.errors) {
+         // Display specific validation errors
+         Object.values(error.data.errors).forEach((err: any) => {
+             toast.error(Array.isArray(err) ? err[0] : err);
+         });
+      } else {
+        toast.error(error?.data?.message || "Failed to save seller");
+      }
+    }
+  };
 
-    const handleConfirmDelete = () => {
-        if (sellerToDelete) {
-            const updatedSellers = sellers.filter((s) => s.id !== sellerToDelete.id);
-            setSellers(updatedSellers);
-            setIsDeleteModalOpen(false);
-            setSellerToDelete(null);
-            toast.success("Seller deleted successfully");
-        }
-    };
+  const handleDeleteClick = (seller: Seller) => {
+    setSellerToDelete(seller);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (sellerToDelete) {
+      try {
+        await deleteSeller(sellerToDelete.id).unwrap();
+        toast.success("Seller deleted successfully");
+        setIsDeleteModalOpen(false);
+        setSellerToDelete(null);
+        refetch();
+      } catch (error: any) {
+        toast.error(error?.data?.message || "Failed to delete seller");
+      }
+    }
+  };
 
     return (
         <div className="space-y-8">
@@ -161,27 +163,6 @@ export default function SellerManagementClient({
                     />
                 </div>
                 <div className="flex items-center gap-4 w-full md:w-auto">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button className="flex items-center justify-between px-4 h-[52px] min-w-[140px] bg-white border border-border rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
-                                {selectedStatus}
-                                <ChevronDown className="w-4 h-4 ml-2" />
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[180px]">
-                            {statuses.map((status) => (
-                                <DropdownMenuItem
-                                    key={status}
-                                    onClick={() => setSelectedStatus(status)}
-                                    className="flex items-center justify-between cursor-pointer"
-                                >
-                                    {status}
-                                    {selectedStatus === status && <Check className="w-4 h-4" />}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
                     <Button
                         className="bg-primary text-white hover:bg-primary/80 h-[52px] px-6 rounded-lg flex items-center gap-2 font-semibold transition-all shadow-sm"
                         onClick={handleAddSeller}
@@ -216,6 +197,7 @@ export default function SellerManagementClient({
                 onSave={handleSaveSeller}
                 seller={selectedSeller}
                 mode={modalMode}
+                isLoading={isCreating || isUpdating}
             />
 
             {/* Delete Confirmation Modal */}

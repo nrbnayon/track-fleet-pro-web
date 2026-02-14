@@ -35,8 +35,8 @@ export default function DriverManagementClient({
       limit: 1000, 
   });
   
-  const [createDriver] = useCreateDriverMutation();
-  const [updateDriver] = useUpdateDriverMutation();
+  const [createDriver, { isLoading: isCreating }] = useCreateDriverMutation();
+  const [updateDriver, { isLoading: isUpdating }] = useUpdateDriverMutation();
   const [deleteDriver] = useDeleteDriverMutation();
 
   const drivers = driversData?.data || [];
@@ -103,46 +103,42 @@ export default function DriverManagementClient({
   };
 
   const handleSaveDriver = async (data: Partial<Driver>) => {
-    if (modalMode === "create") {
-      try {
-          await createDriver({
-               full_name: data.driver_name || "",
-               vehicle_number: data.vehicle_number || "",
-               phone_number: data.driver_phone || "",
-               email_address: data.driver_email || ""
-          }).unwrap();
-          toast.success("Driver added successfully");
-          setIsModalOpen(false);
-          refetch(); // Refresh list
-      } catch (error: any) {
-          console.error("Failed to create driver:", error);
-           if (error?.data?.errors) {
-              const validationErrors = error.data.errors;
-              const firstError = Object.values(validationErrors).flat()[0];
-              toast.error(firstError as string || "Failed to create driver");
-          } else {
-            toast.error(error?.data?.message || "Failed to create driver");
-          }
+    try {
+      if (modalMode === "create") {
+         await createDriver({
+             full_name: data.driver_name || "",
+             vehicle_number: data.vehicle_number || "",
+             phone_number: data.driver_phone || "",
+             email_address: data.driver_email || ""
+         }).unwrap();
+         toast.success("Driver added successfully");
+      } else if (modalMode === "edit" && selectedDriver) {
+         await updateDriver({
+             id: selectedDriver.id,
+             data: {
+                 full_name: data.driver_name || selectedDriver.driver_name,
+                 vehicle_number: data.vehicle_number || selectedDriver.vehicle_number || "",
+                 phone_number: data.driver_phone || selectedDriver.driver_phone,
+                 email_address: data.driver_email || selectedDriver.driver_email,
+             }
+         }).unwrap();
+         toast.success("Driver updated successfully");
       }
-    } else if (modalMode === "edit" && selectedDriver) {
-      try {
-          await updateDriver({
-              id: selectedDriver.id,
-              data: {
-                  full_name: data.driver_name || selectedDriver.driver_name,
-                  vehicle_number: data.vehicle_number || selectedDriver.vehicle_number || "",
-                  phone_number: data.driver_phone || selectedDriver.driver_phone,
-                  email_address: data.driver_email || selectedDriver.driver_email,
-              }
-          }).unwrap();
-          toast.success("Driver updated successfully");
-          setIsModalOpen(false);
-          refetch();
-      } catch (error: any) {
-            console.error("Failed to update driver:", error);
-            const msg = error?.data?.message || "Failed to update driver";
-            toast.error(msg);
-      }
+      setIsModalOpen(false);
+      refetch(); 
+    } catch (error: any) {
+        console.error("Failed to save driver:", error);
+         if (error?.data?.errors) {
+            const validationErrors = error.data.errors;
+            const messages = Object.values(validationErrors).flat();
+            if (messages.length > 0) {
+                 toast.error(messages[0] as string);
+            } else {
+                 toast.error("Validation failed");
+            }
+        } else {
+            toast.error(error?.data?.message || "Operation failed");
+        }
     }
   };
 
@@ -155,13 +151,13 @@ export default function DriverManagementClient({
     if (driverToDelete) {
       try {
           await deleteDriver(driverToDelete.id).unwrap();
+          toast.success("Driver deleted successfully");
           setIsDeleteModalOpen(false);
           setDriverToDelete(null);
-          toast.success("Driver deleted successfully");
           refetch();
       } catch (error: any) {
           console.error("Failed to delete driver:", error);
-          toast.error("Failed to delete driver");
+          toast.error(error?.data?.message || "Failed to delete driver");
       }
     }
   };
@@ -236,6 +232,7 @@ export default function DriverManagementClient({
         onSave={handleSaveDriver}
         driver={selectedDriver}
         mode={modalMode}
+        isLoading={isCreating || isUpdating}
       />
 
       {/* Delete Confirmation Modal */}
