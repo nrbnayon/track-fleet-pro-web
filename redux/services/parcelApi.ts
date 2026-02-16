@@ -85,7 +85,7 @@ export const parcelApi = apiSlice.injectEndpoints({
     // Create new parcel
     createParcel: builder.mutation<Parcel, Partial<Parcel>>({
       query: (parcelData) => ({
-        url: '/api/parcel/parcels/',
+        url: '/api/parcel/create/',
         method: 'POST',
         body: parcelData,
       }),
@@ -95,12 +95,13 @@ export const parcelApi = apiSlice.injectEndpoints({
     // Update parcel
     updateParcel: builder.mutation<Parcel, { id: string; data: Partial<Parcel> }>({
       query: ({ id, data }) => ({
-        url: `/api/parcel/${id}`,
+        url: `/api/parcel/parcels/${id}/`,
         method: 'PATCH',
         body: data,
       }),
       invalidatesTags: (result, error, { id }) => [
         { type: 'Parcel', id },
+        { type: 'Parcel', id: 'LIST' }
       ],
     }),
     

@@ -1,39 +1,37 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
-import { Search, PackagePlus } from "lucide-react";
+import { Search, PackagePlus, RefreshCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SellerParcelsTable from "./SellerParcelsTable";
 import { AddParcelModal } from "./AddParcelModal";
-import { useSellerData } from "@/hooks/useSellerData";
+import { useGetParcelsQuery } from "@/redux/services/parcelApi"; 
 
 export default function ParcelsPageClient() {
-    const { parcels, isLoading: userDataLoading } = useSellerData();
     const [search, setSearch] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+    const [page, setPage] = useState(1);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    
+    // Fetch data from API
+    // User requested frontend search, so we don't pass search param to API
+    const { data: parcelsData, isLoading, isError, refetch } = useGetParcelsQuery({ 
+        page, 
+        limit: 10,
+    });
 
-    // Simulate initial data loading delay for aesthetic skeleton effect
-    useEffect(() => {
-        if (!userDataLoading) {
-            const timer = setTimeout(() => {
-                setIsLoading(false);
-            }, 800);
-            return () => clearTimeout(timer);
-        }
-    }, [userDataLoading]);
+    const parcels = parcelsData?.data || [];
+    const meta = parcelsData?.meta;
 
-    const filteredData = useMemo(() => {
-        return parcels.filter(parcel => {
-            const searchLower = search.toLowerCase();
-            return (
-                parcel.tracking_no.toLowerCase().includes(searchLower) ||
-                parcel.receiverInfo?.name?.toLowerCase().includes(searchLower) ||
-                parcel.delivery_location?.toLowerCase().includes(searchLower)
-            );
-        });
+    // Filter parcels client-side based on search term
+    const filteredParcels = useMemo(() => {
+        if (!search.trim()) return parcels;
+        const lowerSearch = search.toLowerCase();
+        return parcels.filter(parcel => 
+            parcel.tracking_no?.toLowerCase().includes(lowerSearch) ||
+            parcel.receiverInfo?.name?.toLowerCase().includes(lowerSearch)
+        );
     }, [parcels, search]);
 
     return (
@@ -49,30 +47,50 @@ export default function ParcelsPageClient() {
                     <div className="relative w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 font-bold" />
                         <Input
-                            placeholder="Search"
+                            placeholder="Search by Tracking ID, Receiver Name..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                            }}
                             className="pl-9 bg-gray-50 border-gray-200 rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary"
                         />
                     </div>
 
-                    <Button
-                        onClick={() => setIsAddModalOpen(true)}
-                        className="w-full md:w-auto h-11 bg-primary hover:bg-primary/80 text-white font-bold p-3 rounded-lg flex items-center shadow-lg shadow-primary/25 transition-all active:scale-95"
-                    >
-                        <div className="rounded-md">
-                            <PackagePlus className="h-4 w-4" />
-                        </div>
-                        Add New Parcel
-                    </Button>
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <Button
+                           variant="outline"
+                           onClick={() => refetch()}
+                           className="h-11 border-gray-200 text-secondary hover:text-white hover:bg-primary px-3 rounded-lg"
+                        >
+                            <RefreshCcw className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="w-full md:w-auto h-11 bg-primary hover:bg-primary/80 text-white font-bold p-3 rounded-lg flex items-center shadow-lg shadow-primary/25 transition-all active:scale-95"
+                        >
+                             <div className="rounded-md">
+                                <PackagePlus className="h-4 w-4" />
+                            </div>
+                            Add New Parcel
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Table Section */}
-                <SellerParcelsTable
-                    data={filteredData}
-                    isLoading={isLoading}
-                    itemsPerPage={5}
-                />
+                {isError ? (
+                    <div className="text-center py-10 text-red-500">
+                        Failed to load parcels. Please try again.
+                    </div>
+                ) : (
+                    <SellerParcelsTable
+                        data={filteredParcels}
+                        isLoading={isLoading}
+                        itemsPerPage={10}
+                        currentPage={meta?.current_page || page}
+                        totalPages={meta?.total_pages || 1}
+                        onPageChange={setPage}
+                    />
+                )}
             </div>
 
             <AddParcelModal

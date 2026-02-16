@@ -1,4 +1,3 @@
-"use client";
 import {
     Dialog,
     DialogContent,
@@ -11,13 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { LocationPicker } from "@/components/Shared/LocationPicker";
 import { useState, useEffect } from "react";
+import { useCreateParcelMutation, useUpdateParcelMutation } from "@/redux/services/parcelApi";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { Parcel } from "@/types/parcel"; 
 
 interface AddParcelModalProps {
     isOpen: boolean;
     onClose: () => void;
+    initialData?: Parcel | null; // Optional initial data for editing
 }
 
-export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
+export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalProps) {
+    const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
+    const [updateParcel, { isLoading: isUpdating }] = useUpdateParcelMutation();
+
     const [pickupLocation, setPickupLocation] = useState<{ address: string; lat?: number; lng?: number } | undefined>(undefined);
     const [deliveryLocation, setDeliveryLocation] = useState<{ address: string; lat?: number; lng?: number } | undefined>(undefined);
     const [recipientName, setRecipientName] = useState("");
@@ -25,13 +32,73 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
     const [parcelType, setParcelType] = useState("");
     const [parcelWeight, setParcelWeight] = useState("");
     const [notes, setNotes] = useState("");
+    const [estimatedDate, setEstimatedDate] = useState("");
     const [approximateDistance, setApproximateDistance] = useState<string>("");
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+    // Reset or Populate form when modal opens or initialData changes
+    useEffect(() => {
+        if (isOpen) {
+            if (initialData) {
+                // Edit Mode: Pre-fill data
+                setRecipientName(initialData.receiverInfo?.name || "");
+                setRecipientNumber(initialData.receiverInfo?.phone || "");
+                setParcelType(initialData.parcel_type || "");
+                setParcelWeight(initialData.parcel_weight?.toString() || "");
+                setNotes(initialData.special_instructions || "");
+                
+                // Format date for input type="date" (YYYY-MM-DD)
+                if (initialData.estimated_delivary_date) {
+                    const date = new Date(initialData.estimated_delivary_date);
+                    setEstimatedDate(date.toISOString().split('T')[0]);
+                } else {
+                    setEstimatedDate("");
+                }
+
+                // Set Locations
+                if (initialData.pickup_location) {
+                    setPickupLocation({
+                        address: initialData.pickup_location,
+                        lat: initialData.pickup_coordinates?.lat,
+                        lng: initialData.pickup_coordinates?.lng
+                    });
+                }
+                if (initialData.delivery_location) {
+                    setDeliveryLocation({
+                        address: initialData.delivery_location,
+                        lat: initialData.delivery_coordinates?.lat,
+                        lng: initialData.delivery_coordinates?.lng
+                    });
+                }
+                setApproximateDistance(initialData.appoximate_distance || "");
+
+            } else {
+                // Add Mode: Clear form
+                resetForm();
+            }
+            setErrors({});
+        }
+    }, [isOpen, initialData]);
+
+    const resetForm = () => {
+        setPickupLocation(undefined);
+        setDeliveryLocation(undefined);
+        setRecipientName("");
+        setRecipientNumber("");
+        setParcelType("");
+        setParcelWeight("");
+        setNotes("");
+        setEstimatedDate("");
+        setApproximateDistance("");
+    };
+
     // Calculate distance when both locations are set
     useEffect(() => {
+         // Only calculate if locations changed and both exist
         if (pickupLocation?.lat && pickupLocation?.lng && deliveryLocation?.lat && deliveryLocation?.lng) {
+             // Avoid recalculating if we just loaded initialData which might already have distance
+             // But usually safe to recalculate to ensure accuracy
             calculateDistance(
                 { lat: pickupLocation.lat, lng: pickupLocation.lng },
                 { lat: deliveryLocation.lat, lng: deliveryLocation.lng }
@@ -58,7 +125,6 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                 const route = result.routes[0].legs[0];
                 if (route.distance?.text) {
                     setApproximateDistance(route.distance.text);
-                    console.log("Calculated Distance:", route.distance.text);
                 }
             }
         } catch (error) {
@@ -87,15 +153,19 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
         if (!parcelWeight.trim()) {
             newErrors.parcelWeight = "Parcel weight is required.";
         }
+        if (!estimatedDate.trim()) {
+            newErrors.estimatedDate = "Estimated delivery date is required.";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateForm()) return;
 
-        // Construct the full parcel object
+        // Construct the full parcel object matching API requirements
+        // We can safely assert non-null values here because validateForm checked them
         const fullParcelData: any = { 
             receiverInfo: {
                 name: recipientName,
@@ -103,30 +173,49 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                 address: deliveryLocation?.address
             },
             pickup_location: pickupLocation?.address,
-            pickup_coordinates: pickupLocation?.lat && pickupLocation?.lng ? {
-                lat: pickupLocation.lat,
-                lng: pickupLocation.lng
-            } : undefined,
+            pickup_coordinates: {
+                lat: pickupLocation!.lat!,
+                lng: pickupLocation!.lng!
+            },
             delivery_location: deliveryLocation?.address,
-            delivery_coordinates: deliveryLocation?.lat && deliveryLocation?.lng ? {
-                lat: deliveryLocation.lat,
-                lng: deliveryLocation.lng
-            } : undefined,
+            delivery_coordinates: {
+                lat: deliveryLocation!.lat!,
+                lng: deliveryLocation!.lng!
+            },
             parcel_type: parcelType,
             parcel_weight: parseFloat(parcelWeight) || 0,
+            estimated_delivary_date: estimatedDate,
             special_instructions: notes,
             appoximate_distance: approximateDistance,
         };
         
-        console.log("Full Submitable Data:", fullParcelData);
-        onClose();
+        try {
+            if (initialData) {
+                 // Update existing parcel
+                 await updateParcel({ id: initialData._id, data: fullParcelData }).unwrap();
+                 toast.success("Parcel updated successfully");
+            } else {
+                // Create new parcel
+                await createParcel(fullParcelData).unwrap();
+                toast.success("Parcel created successfully");
+            }
+            onClose();
+            if (!initialData) resetForm(); // Only reset if adding new, otherwise useEffect handles it
+        } catch (error) {
+            console.error("Failed to save parcel:", error);
+            toast.error("Failed to save parcel. Please try again.");
+        }
     };
+
+    const isSubmitting = isCreating || isUpdating;
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[700px] p-6 rounded-2xl border-none max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-foreground mb-4">Add New Parcel</DialogTitle>
+                    <DialogTitle className="text-xl font-bold text-foreground mb-4">
+                        {initialData ? "Edit Parcel" : "Add New Parcel"}
+                    </DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
@@ -201,6 +290,24 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                         </div>
                     </div>
 
+                    {/* Estimated Date */}
+                    <div className="space-y-2">
+                        <Label htmlFor="estimatedDate" className="text-sm font-semibold text-gray-700">
+                            Estimated Delivery Date <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="estimatedDate"
+                            type="date"
+                            value={estimatedDate}
+                            onChange={(e) => {
+                                setEstimatedDate(e.target.value);
+                                if (e.target.value) setErrors({ ...errors, estimatedDate: "" });
+                            }}
+                            className={`bg-gray-50 border-gray-100 rounded-lg h-11 ${errors.estimatedDate ? "border-red-500" : ""}`}
+                        />
+                        {errors.estimatedDate && <p className="text-xs text-red-500">{errors.estimatedDate}</p>}
+                    </div>
+
                      {/* Location Section - Mandatory */}
                     <div className="space-y-6 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
                         <div className="flex justify-between items-center border-b border-blue-200 pb-2 mb-2">
@@ -253,9 +360,11 @@ export function AddParcelModal({ isOpen, onClose }: AddParcelModalProps) {
                 <div className="flex justify-end mt-4">
                     <Button
                         onClick={handleSubmit}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg h-11 transition-all shadow-lg shadow-blue-500/25"
+                        disabled={isSubmitting}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg h-11 transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2"
                     >
-                        Add Parcel
+                        {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                        {isSubmitting ? "Saving..." : (initialData ? "Save Changes" : "Add Parcel")}
                     </Button>
                 </div>
             </DialogContent>

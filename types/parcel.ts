@@ -51,6 +51,7 @@ export interface Parcel {
   };
   appoximate_distance?: string;
   estimated_delivery?: string;
+  estimated_delivary_date?: string; // Matching API payload
   actual_delivery?: string;
   senderInfo?: ContactInfo;
   receiverInfo?: ContactInfo;

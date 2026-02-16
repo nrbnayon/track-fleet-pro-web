@@ -2,9 +2,8 @@
 
 import { useSellerData } from "@/hooks/useSellerData";
 import { StatsCard } from "@/components/Shared/StatsCard";
-import { DollarSign, Package, Truck, Loader2 } from "lucide-react";
+import { Package, Truck, Loader2 } from "lucide-react";
 import StatusBarChart from "./StatusBarChart";
-import SellerRevenueTrendChart from "./SellerRevenueTrendChart";
 import ParcelsByZoneChart from "./ParcelsByZoneChart";
 import StatusBreakdownTable from "./StatusBreakdownTable";
 
@@ -20,14 +19,6 @@ export default function SellerAnalysisClient() {
     }
 
     const dashboardStats = [
-        {
-            title: "Total Revenue",
-            value: `$${(stats?.total_revenue || 12450).toLocaleString()}`,
-            isUp: true,
-            icon: DollarSign,
-            iconColor: "#AD46FF",
-            iconBg: "#AD46FF33",
-        },
         {
             title: "Total Deliveries",
             value: (stats?.total_parcels || 331).toString(),
@@ -48,7 +39,7 @@ export default function SellerAnalysisClient() {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {dashboardStats.map((stat, index) => (
                     <StatsCard
                         key={index}
@@ -62,9 +53,8 @@ export default function SellerAnalysisClient() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full mx-auto">
                 <StatusBarChart parcels={parcels} />
-                <SellerRevenueTrendChart />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

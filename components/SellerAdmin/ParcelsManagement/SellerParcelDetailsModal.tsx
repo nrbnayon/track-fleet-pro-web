@@ -1,18 +1,19 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { User, MapPin, Package, Phone, Mail, Clock, ShieldCheck, Info, Car } from "lucide-react";
+import { User, MapPin, Package, Phone, Clock, ShieldCheck, Info, Car } from "lucide-react";
 
 interface SellerParcelDetailsModalProps {
     isOpen: boolean;
     onClose: () => void;
     parcel: Parcel | null;
+    onEdit?: () => void;
 }
 
-export function SellerParcelDetailsModal({ isOpen, onClose, parcel }: SellerParcelDetailsModalProps) {
+export function SellerParcelDetailsModal({ isOpen, onClose, parcel, onEdit }: SellerParcelDetailsModalProps) {
     if (!parcel) return null;
 
     const getStatusColor = (status: string | undefined) => {
@@ -53,7 +54,9 @@ export function SellerParcelDetailsModal({ isOpen, onClose, parcel }: SellerParc
                                         {parcel.parcel_status}
                                     </span>
                                 </div>
-                                <p className="text-sm font-bold text-gray-500">Tracking Number: <span className="text-primary">#{parcel.tracking_no}</span></p>
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-sm font-bold text-gray-500">Tracking Number: <span className="text-primary">#{parcel.tracking_no}</span></p>
+                                </div>
                             </div>
                             <div className="text-right">
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Created At</p>
@@ -96,12 +99,19 @@ export function SellerParcelDetailsModal({ isOpen, onClose, parcel }: SellerParc
                                     <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Courier & Status</h3>
                                 </div>
                                 <div className="space-y-4">
-                                    <DetailItem
-                                        icon={Car}
-                                        label="Assigned Rider"
+                                    <DetailItem 
+                                        icon={Car} 
+                                        label="Assigned Rider" 
                                         value={parcel.riderInfo?.rider_name || "Pending Assignment"}
                                         subValue={parcel.riderInfo?.rider_vehicle}
                                     />
+                                    {parcel.riderInfo?.rider_phone && (
+                                        <DetailItem 
+                                            icon={Phone} 
+                                            label="Rider Phone" 
+                                            value={parcel.riderInfo.rider_phone} 
+                                        />
+                                    )}
                                     {parcel.actual_delivery && (
                                         <DetailItem
                                             icon={Clock}
@@ -109,24 +119,6 @@ export function SellerParcelDetailsModal({ isOpen, onClose, parcel }: SellerParc
                                             value={new Date(parcel.actual_delivery).toLocaleString()}
                                         />
                                     )}
-                                    <div className="p-6 rounded-3xl bg-primary text-white space-y-4 shadow-xl shadow-primary/90/20">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <p className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-1">Total Fee</p>
-                                                <p className="text-3xl font-black">{parcel.delivery_fee || 120} BDT</p>
-                                            </div>
-                                            <div className="bg-white/20 p-2 rounded-xl">
-                                                <Package className="w-6 h-6" />
-                                            </div>
-                                        </div>
-                                        <div className="pt-4 border-t border-white/20">
-                                            <p className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-1">Payment Status</p>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                                <p className="text-sm font-bold uppercase tracking-wider">{parcel.payment_status || "Pending"}</p>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 {parcel.special_instructions && (
@@ -148,6 +140,15 @@ export function SellerParcelDetailsModal({ isOpen, onClose, parcel }: SellerParc
                     <div className="p-8 border-t border-gray-100 bg-gray-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
                         <p className="text-xs font-bold text-gray-400">TrackFleet Pro Premium Service</p>
                         <div className="flex gap-3 w-full md:w-auto">
+                            {onEdit && (
+                                <Button
+                                    onClick={onEdit}
+                                    variant="outline"
+                                    className="flex-1 md:flex-none h-12 px-8 rounded-xl border-gray-200 text-gray-700 font-bold hover:bg-gray-100 transition-all hover:text-primary"
+                                >
+                                    Edit Parcel
+                                </Button>
+                            )}
                             <Button
                                 onClick={onClose}
                                 className="flex-1 md:flex-none h-12 px-10 rounded-xl bg-foreground text-white font-black hover:bg-gray-800 transition-all active:scale-95"

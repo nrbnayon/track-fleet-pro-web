@@ -9,25 +9,54 @@ import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/Shared/Pagination";
 import { SellerTrackParcelModal } from "./SellerTrackParcelModal";
 import { SellerParcelDetailsModal } from "./SellerParcelDetailsModal";
+import { AddParcelModal } from "./AddParcelModal";
 
 interface SellerParcelsTableProps {
     data: Parcel[];
     itemsPerPage?: number;
     isLoading?: boolean;
+    currentPage?: number;
+    totalPages?: number;
+    onPageChange?: (page: number) => void;
 }
 
-export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading = false }: SellerParcelsTableProps) {
-    const [currentPage, setCurrentPage] = useState(1);
+export default function SellerParcelsTable({ 
+    data, 
+    itemsPerPage = 10, 
+    isLoading = false,
+    currentPage: externalPage,
+    totalPages: externalTotalPages,
+    onPageChange: externalOnPageChange
+}: SellerParcelsTableProps) {
+    const [internalPage, setInternalPage] = useState(1);
     const [selectedParcelForTrack, setSelectedParcelForTrack] = useState<Parcel | null>(null);
     const [selectedParcelForView, setSelectedParcelForView] = useState<Parcel | null>(null);
+    const [editingParcel, setEditingParcel] = useState<Parcel | null>(null);
 
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentData = data.slice(startIndex, startIndex + itemsPerPage);
+    console.log("all data:: ", data);
+    
+    // Determine if using server-side or client-side pagination
+    const isServerSide = externalPage !== undefined && externalTotalPages !== undefined;
+    
+    // Use external props if available, otherwise internal state
+    const currentPage = isServerSide ? externalPage : internalPage;
+    const totalPages = isServerSide ? externalTotalPages : Math.ceil(data.length / itemsPerPage);
+    
+    const handlePageChange = (page: number) => {
+        if (isServerSide && externalOnPageChange) {
+            externalOnPageChange(page);
+        } else {
+            setInternalPage(page);
+        }
+    };
+
+    // If server-side, data is already sliced. If client-side, slice it.
+    const currentData = isServerSide ? data : data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const getStatusColor = (status: string | undefined) => {
         switch (status?.toLowerCase()) {
-            case "ongoing": return "bg-blue-100 text-primary";
+            case "ongoing": 
+            case "assigned": return "bg-blue-100 text-primary";
             case "pending": return "bg-amber-100 text-amber-600";
             case "delivered": return "bg-emerald-100 text-emerald-600";
             case "return": return "bg-red-100 text-red-600";
@@ -70,7 +99,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                             <th className="px-8 py-5 text-sm font-bold text-primary uppercase tracking-wider">Tracking Number</th>
                             <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Receiver</th>
                             <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Delivery Address</th>
-                            <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Distance</th>
+                            {/* <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Distance</th> */}
                             <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Parcel Weight</th>
                             <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Assigned Driver</th>
                             <th className="px-6 py-5 text-sm font-bold text-primary uppercase tracking-wider">Status</th>
@@ -95,7 +124,7 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-sm font-semibold text-secondary">{parcel.delivery_location}</td>
-                                    <td className="px-6 py-5 text-sm font-bold text-secondary">18.2 Km</td>
+                                    {/* <td className="px-6 py-5 text-sm font-bold text-secondary">18.2 Km</td> */}
                                     <td className="px-6 py-5 text-sm font-bold text-secondary">{parcel.parcel_weight} Kg</td>
                                     <td className="px-6 py-5 text-sm font-bold text-secondary">
                                         {parcel.riderInfo?.rider_name || <span className="text-gray-400 italic font-medium">Unassigned</span>}
@@ -205,17 +234,14 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                 </div>
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={setCurrentPage}
+                    onPageChange={handlePageChange}
                     totalItems={data.length}
                     itemsPerPage={itemsPerPage}
                     currentItemsCount={currentData.length}
                 />
-            )}
 
             <SellerTrackParcelModal
                 isOpen={!!selectedParcelForTrack}
@@ -227,6 +253,17 @@ export default function SellerParcelsTable({ data, itemsPerPage = 10, isLoading 
                 isOpen={!!selectedParcelForView}
                 onClose={() => setSelectedParcelForView(null)}
                 parcel={selectedParcelForView}
+                onEdit={() => {
+                    setEditingParcel(selectedParcelForView);
+                    setSelectedParcelForView(null);
+                }}
+            />
+
+            {/* Reuse AddParcelModal for Editing */}
+            <AddParcelModal
+                isOpen={!!editingParcel}
+                onClose={() => setEditingParcel(null)}
+                initialData={editingParcel}
             />
         </div>
     );
