@@ -1,68 +1,67 @@
 "use client";
 
-import { useSellerData } from "@/hooks/useSellerData";
-import { useMemo } from "react";
-import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { Package, Truck, CheckCircle, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
-export default function RecentActivity() {
-    const { parcels } = useSellerData();
+import { SellerRecentActivity } from "@/redux/services/dashboardApi";
 
-    const activities = useMemo(() => {
-        // Flatten tracking history to get events
-        const allEvents = parcels.flatMap((parcel) =>
-            (parcel.trackingHistory || []).map((history) => ({
-                ...history,
-                tracking_no: parcel.tracking_no,
-            }))
-        );
+interface RecentActivityProps {
+    activities?: SellerRecentActivity[];
+}
 
-        // Sort by timestamp
-        return allEvents
-            .sort((a, b) => {
-                const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-                const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
-                return dateB - dateA;
-            })
-            .slice(0, 4);
-    }, [parcels]);
+export default function RecentActivity({ activities = [] }: RecentActivityProps) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    // Filter logic: show ASSIGNED (as ongoing), PENDING. Delivered is usually separate list or handled elsewhere if desired, 
+    // but user request implies matching the JSON which has ASSIGNED and PENDING.
+    const filteredActivities = activities; 
+
+    const totalPages = Math.ceil(filteredActivities.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentActivities = filteredActivities.slice(startIndex, startIndex + itemsPerPage);
 
     const getIcon = (status: string | undefined) => {
-        switch (status?.toLowerCase()) {
-            case "pending": return Clock;
-            case "ongoing": return Truck;
-            case "delivered": return CheckCircle;
+        switch (status?.toUpperCase()) {
+            case "PENDING": return Clock;
+            case "ASSIGNED": return Truck; // Map ASSIGNED to Truck
+            case "ONGOING": return Truck;
+            case "DELIVERED": return CheckCircle;
             default: return Package;
         }
     };
 
     const getIconColor = (status: string | undefined) => {
-        switch (status?.toLowerCase()) {
-            case "pending": return "text-amber-500 bg-amber-50";
-            case "ongoing": return "text-blue-500 bg-blue-50";
-            case "delivered": return "text-emerald-500 bg-emerald-50";
+        switch (status?.toUpperCase()) {
+            case "PENDING": return "text-amber-500 bg-amber-50";
+            case "ASSIGNED": return "text-blue-500 bg-blue-50";
+            case "ONGOING": return "text-blue-500 bg-blue-50";
+            case "DELIVERED": return "text-emerald-500 bg-emerald-50";
             default: return "text-gray-500 bg-gray-50";
         }
     };
 
     const getBadgeColor = (status: string | undefined) => {
-        switch (status?.toLowerCase()) {
-            case "pending": return "bg-amber-100 text-amber-600";
-            case "ongoing": return "bg-blue-100 text-blue-600";
-            case "delivered": return "bg-emerald-100 text-emerald-600";
+        switch (status?.toUpperCase()) {
+            case "PENDING": return "bg-amber-100 text-amber-600";
+            case "ASSIGNED": return "bg-blue-100 text-blue-600";
+            case "ONGOING": return "bg-blue-100 text-blue-600";
+            case "DELIVERED": return "bg-emerald-100 text-emerald-600";
             default: return "bg-gray-100 text-secondary";
         }
     };
 
-    const formatRelativeTime = (timestamp: string | undefined) => {
-        if (!timestamp) return "Unknown";
-        const diff = Date.now() - new Date(timestamp).getTime();
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const days = Math.floor(hours / 24);
+    const formatDaysAgo = (days: number) => {
+        if (days === 0) return "Today";
+        if (days === 1) return "Yesterday";
+        return `${days} days ago`;
+    };
 
-        if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-        if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-        return "Just now";
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
 
     return (
@@ -70,7 +69,7 @@ export default function RecentActivity() {
             <h2 className="text-xl font-bold text-foreground mb-6">Recent Activity</h2>
 
             <div className="space-y-6 flex-1">
-                {activities.map((activity, index) => {
+                {currentActivities.map((activity, index) => {
                     const Icon = getIcon(activity.status);
                     return (
                         <div key={index} className="flex items-center justify-between">
@@ -80,9 +79,9 @@ export default function RecentActivity() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold text-foreground">
-                                        Parcel {activity.tracking_no} {activity.status}
+                                        Parcel {activity.tracking_id} {activity.status}
                                     </p>
-                                    <p className="text-xs text-gray-500">{formatRelativeTime(activity.timestamp)}</p>
+                                    <p className="text-xs text-gray-500">{formatDaysAgo(activity.days_ago)}</p>
                                 </div>
                             </div>
                             <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider", getBadgeColor(activity.status))}>
@@ -96,21 +95,41 @@ export default function RecentActivity() {
                 )}
             </div>
 
-            <div className="mt-8 flex items-center justify-center gap-2">
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors">
-                    <span className="sr-only">Previous</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-                </button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 text-xs font-bold">1</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 text-xs font-bold hover:bg-gray-50">2</button>
-                <span className="text-gray-400 text-xs">...</span>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 text-xs font-bold hover:bg-gray-50">9</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 text-xs font-bold hover:bg-gray-50">10</button>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors">
-                    <span className="sr-only">Next</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-                </button>
-            </div>
+            {totalPages > 1 && (
+                <div className="mt-8 flex items-center justify-center gap-2">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                         // Simple pagination logic: show all pages if <= 5, otherwise simplistic view
+                         // For a small widget, typically we only show a few dots or just prev/next if many pages.
+                         // Here we'll just show numbers if total pages are small, or just current page.
+                         <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={cn(
+                                "w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors",
+                                currentPage === page ? "bg-blue-50 text-primary" : "text-gray-400 hover:bg-gray-50"
+                            )}
+                         >
+                            {page}
+                         </button>
+                    ))}
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

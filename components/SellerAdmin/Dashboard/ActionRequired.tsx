@@ -1,56 +1,49 @@
 "use client";
 
-import { useSellerData } from "@/hooks/useSellerData";
+import { SellerActionRequired } from "@/redux/services/dashboardApi";
 import { useMemo } from "react";
 import { Clock, Truck, CheckCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export default function ActionRequired() {
-    const { parcels } = useSellerData();
+interface ActionRequiredProps {
+    actions?: SellerActionRequired;
+}
 
-    const actions = useMemo(() => {
-        const pendingAssignment = parcels.filter((p) => p.parcel_status?.toLowerCase() === "pending").length;
-        const inTransit = parcels.filter((p) => p.parcel_status?.toLowerCase() === "ongoing").length;
-        const deliveredThisWeek = parcels.filter((p) => {
-            if (p.parcel_status?.toLowerCase() !== "delivered") return false;
-            const deliveryDate = p.updatedAt ? new Date(p.updatedAt) : new Date(0);
-            const weekAgo = new Date();
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            return deliveryDate > weekAgo;
-        }).length;
+export default function ActionRequired({ actions }: ActionRequiredProps) {
 
+    const displayActions = useMemo(() => {
         return [
             {
                 label: "Parcels awaiting for drivers to be assigned",
-                count: pendingAssignment,
+                count: actions?.["awaiting_assignment to be driver"] || 0,
                 icon: Clock,
                 iconColor: "text-amber-500",
                 iconBgColor: "bg-amber-50",
             },
             {
                 label: "Parcels in transit",
-                count: inTransit,
+                count: actions?.in_transit || 0,
                 icon: Truck,
                 iconColor: "text-blue-500",
                 iconBgColor: "bg-blue-50",
             },
             {
                 label: "Delivered this week",
-                count: deliveredThisWeek,
+                count: actions?.delivered_this_week || 0,
                 icon: CheckCircle,
                 iconColor: "text-emerald-500",
                 iconBgColor: "bg-emerald-50",
             },
         ];
-    }, [parcels]);
+    }, [actions]);
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full flex flex-col">
             <h2 className="text-xl font-bold text-foreground mb-6">Action Required</h2>
 
             <div className="space-y-4 flex-1">
-                {actions.map((action, index) => (
+                {displayActions.map((action, index) => (
                     <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                         <div className="flex items-center gap-4">
                             <div className={cn("p-2 rounded-lg", action.iconBgColor)}>

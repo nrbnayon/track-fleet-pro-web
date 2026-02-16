@@ -1,5 +1,6 @@
 "use client";
 
+import { SellerParcelTrend } from "@/redux/services/dashboardApi";
 import {
     LineChart,
     Line,
@@ -12,22 +13,11 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 
-const data = [
-    { name: "Jan", delivered: 65, ongoing: 78, pending: 70 },
-    { name: "Feb", delivered: 85, ongoing: 92, pending: 78 },
-    { name: "Mar", delivered: 78, ongoing: 82, pending: 62 },
-    { name: "Apr", delivered: 98, ongoing: 105, pending: 85 },
-    { name: "May", delivered: 108, ongoing: 115, pending: 92 },
-    { name: "Jun", delivered: 102, ongoing: 108, pending: 88 },
-    { name: "Jul", delivered: 118, ongoing: 125, pending: 105 },
-    { name: "Aug", delivered: 122, ongoing: 130, pending: 112 },
-    { name: "Sep", delivered: 112, ongoing: 118, pending: 98 },
-    { name: "Oct", delivered: 135, ongoing: 142, pending: 118 },
-    { name: "Nov", delivered: 118, ongoing: 125, pending: 105 },
-    { name: "Dec", delivered: 105, ongoing: 112, pending: 92 },
-];
+interface ParcelTrendChartProps {
+    data?: SellerParcelTrend[];
+}
 
-export default function ParcelTrendChart() {
+export default function ParcelTrendChart({ data = [] }: ParcelTrendChartProps) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -46,7 +36,7 @@ export default function ParcelTrendChart() {
                     <LineChart data={data} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="#E2E8F0" />
                         <XAxis
-                            dataKey="name"
+                            dataKey="month"
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: "#64748B", fontSize: 12 }}
