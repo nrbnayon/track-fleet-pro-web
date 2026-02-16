@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useUser } from "@/hooks/useUser";
-import { allNotificationsData } from "@/data/allNotificationsData";
-import { Notification, NotificationType } from "@/types/notification";
+import { useGetNotificationsQuery } from "@/redux/services/notificationApi";
+import { Notification, NotificationStatus } from "@/types/notification";
 import {
     Bell,
     Package,
@@ -21,7 +21,8 @@ import {
     MapPin,
     User,
     Hash,
-    Info
+    Info,
+    RefreshCcw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/Shared/Pagination";
@@ -49,43 +50,26 @@ const PRIORITY_COLORS: Record<string, string> = {
 
 export default function NotificationsClient() {
     const { role, isLoading: userLoading } = useUser();
+    const { data: notificationsRes, isLoading: notificationsLoading, isError, refetch } = useGetNotificationsQuery();
+    
     const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
-    const [notifications, setNotifications] = useState(allNotificationsData);
+    
+    const notifications = notificationsRes?.data || [];
     const itemsPerPage = 8;
 
     const filteredNotifications = useMemo(() => {
         if (!role) return [];
 
-        // Filter based on role
-        let roleNotifications = notifications;
+        let roleNotifications = [...notifications];
 
-        if (role === "SELLER") {
-            const sellerTypes: NotificationType[] = [
-                "parcel_delivered",
-                "driver_assigned",
-                "parcel_picked_up",
-                "payment_received",
-                "new_order"
-            ];
-            roleNotifications = notifications.filter(n => sellerTypes.includes(n.type));
-        } else if (role === "SUPER_ADMIN") {
-            const superAdminTypes: NotificationType[] = [
-                "driver_location_off",
-                "delivery_request_rejected",
-                "emergency_alert",
-                "seller_verified",
-                "seller_suspended",
-                "delivery_request_accepted",
-                "parcel_delivered"
-            ];
-            roleNotifications = notifications.filter(n => superAdminTypes.includes(n.type));
-        }
+        // Sort by created_at descending (latest first)
+        roleNotifications.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
         // Filter based on tab
         if (activeTab === "unread") {
-            roleNotifications = roleNotifications.filter(n => n.status === "unread");
+            roleNotifications = roleNotifications.filter(n => n.status === "UNREAD" || n.status === "unread");
         }
 
         return roleNotifications;
@@ -96,11 +80,22 @@ export default function NotificationsClient() {
     const currentData = filteredNotifications.slice(startIndex, startIndex + itemsPerPage);
 
     const getIcon = (type: string) => {
-        const Icon = NOTIFICATION_ICONS[type] || NOTIFICATION_ICONS.default;
+        const typeLower = type.toLowerCase();
+        let iconKey = "default";
+        
+        if (typeLower.includes("emergency")) iconKey = "emergency_alert";
+        else if (typeLower.includes("accepted")) iconKey = "delivery_request_accepted";
+        else if (typeLower.includes("rejected")) iconKey = "delivery_request_rejected";
+        else if (typeLower.includes("delivered")) iconKey = "parcel_delivered";
+        else if (typeLower.includes("assigned")) iconKey = "driver_assigned";
+        else if (typeLower.includes("picked")) iconKey = "parcel_picked_up";
+
+        const Icon = NOTIFICATION_ICONS[iconKey] || NOTIFICATION_ICONS.default;
         return <Icon className="w-5 h-5" />;
     };
 
-    const formatTimestamp = (timestamp: string) => {
+    const formatTimestamp = (timestamp?: string) => {
+        if (!timestamp) return "N/A";
         const date = new Date(timestamp);
         return date.toLocaleDateString("en-US", {
             weekday: 'long',
@@ -110,7 +105,8 @@ export default function NotificationsClient() {
         });
     };
 
-    const formatFullTimestamp = (timestamp: string) => {
+    const formatFullTimestamp = (timestamp?: string) => {
+        if (!timestamp) return "N/A";
         const date = new Date(timestamp);
         return date.toLocaleString("en-US", {
             weekday: 'long',
@@ -125,17 +121,8 @@ export default function NotificationsClient() {
 
     const handleNotificationClick = (notification: Notification) => {
         setSelectedNotification(notification);
-
-        // Mark as read if unread
-        if (notification.status === "unread") {
-            setNotifications(prev =>
-                prev.map(n =>
-                    n.id === notification.id
-                        ? { ...n, status: "read" as const }
-                        : n
-                )
-            );
-        }
+        // Note: Mark as read endpoint not implemented in this step as not provided by user, 
+        // but normally we'd call an api mutation here.
     };
 
     const closeModal = () => {
@@ -149,13 +136,31 @@ export default function NotificationsClient() {
         closeModal();
     };
 
-    if (userLoading) {
+    if (userLoading || notificationsLoading) {
         return (
-            <div className="p-8 flex justify-center">
-                <Clock className="w-8 h-8 animate-spin text-primary" />
+            <div className="p-20 flex flex-col items-center justify-center gap-4 bg-white rounded-3xl border border-gray-50 shadow-sm">
+                <Clock className="w-10 h-10 animate-spin text-primary" />
+                <p className="text-secondary font-bold">Loading your notifications...</p>
             </div>
         );
     }
+
+    if (isError) {
+        return (
+            <div className="p-20 text-center bg-white rounded-3xl border border-gray-50 shadow-sm">
+                <AlertOctagon className="w-12 h-12 mx-auto mb-4 text-red-500" />
+                <p className="font-bold text-gray-800 mb-4">Internal Server error. Notification loading failed!</p>
+                <button 
+                    onClick={() => refetch()}
+                    className="px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center gap-2 mx-auto"
+                >
+                    <RefreshCcw className="w-4 h-4" />
+                    Try Again
+                </button>
+            </div>
+        );
+    }
+
 
     return (
         <div className="min-h-screen">
@@ -174,7 +179,7 @@ export default function NotificationsClient() {
                         All
                         {activeTab === "all" && <div className="absolute -bottom-px left-0 w-full h-[3px] bg-primary rounded-full" />}
                     </button>
-                    <button
+                    {/* <button
                         onClick={() => { setActiveTab("unread"); setCurrentPage(1); }}
                         className={cn(
                             "pb-4 text-sm font-bold transition-all relative min-w-fit cursor-pointer",
@@ -183,7 +188,7 @@ export default function NotificationsClient() {
                     >
                         Unread
                         {activeTab === "unread" && <div className="absolute -bottom-px left-0 w-full h-[3px] bg-primary rounded-full" />}
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* List */}
@@ -195,14 +200,14 @@ export default function NotificationsClient() {
                                 onClick={() => handleNotificationClick(notification)}
                                 className={cn(
                                     "p-5 rounded-2xl border transition-all flex items-start gap-4 hover:shadow-md group cursor-pointer",
-                                    notification.status === "unread"
+                                    notification.status === "unread" || notification.status === "UNREAD"
                                         ? "bg-blue-50/30 border-blue-100/50"
                                         : "bg-white border-gray-50"
                                 )}
                             >
                                 <div className={cn(
                                     "w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-110",
-                                    notification.status === "unread" ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
+                                    notification.status === "unread" || notification.status === "UNREAD" ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
                                 )}>
                                     {getIcon(notification.type)}
                                 </div>
@@ -215,7 +220,7 @@ export default function NotificationsClient() {
                                             )}
                                         </h3>
                                         <span className="text-[10px] md:text-xs font-bold text-secondary uppercase tracking-wider">
-                                            {formatTimestamp(notification.timestamp)}
+                                            {formatTimestamp(notification.created_at || notification.timestamp)}
                                         </span>
                                     </div>
                                     <p className="text-xs md:text-sm font-medium text-gray-500 line-clamp-2 md:line-clamp-none">
@@ -293,7 +298,7 @@ export default function NotificationsClient() {
                             {/* Timestamp */}
                             <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
                                 <Calendar className="w-4 h-4" />
-                                <span>{formatFullTimestamp(selectedNotification.timestamp)}</span>
+                                <span>{formatFullTimestamp(selectedNotification.created_at || selectedNotification.timestamp)}</span>
                             </div>
 
                             {/* Message */}

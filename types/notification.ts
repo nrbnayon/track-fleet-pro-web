@@ -1,40 +1,32 @@
 // types/notification.ts
-export type NotificationType = 
-  | "driver_assigned" 
-  | "parcel_delivered" 
-  | "parcel_picked_up"
-  | "parcel_in_transit"
-  | "parcel_out_for_delivery"
-  | "parcel_cancelled"
-  | "parcel_returned"
-  | "payment_received"
-  | "new_order"
-  | "delivery_delayed"
-  | "driver_location_off"
-  | "delivery_request_rejected"
-  | "delivery_request_accepted"
-  | "emergency_alert"
-  | "driver_status_changed"
-  | "seller_verified"
-  | "seller_suspended";
+export type NotificationType = string; // Making it flexible as API returns emojis/strings
 
-export type NotificationStatus = "read" | "unread";
+export type NotificationStatus = "READ" | "UNREAD" | "read" | "unread";
 export type NotificationPriority = "low" | "medium" | "high" | "urgent";
 
 export interface Notification {
   id: string;
-  type: NotificationType;
+  type: string;
   title: string;
   message: string;
+  status: NotificationStatus;
+  created_at: string;
+  // Optional/Legacy fields from previous mock data
   tracking_no?: string;
   parcel_id?: string;
   driver_id?: string;
   driver_name?: string;
   seller_id?: string;
   seller_name?: string;
-  timestamp: string;
-  status: NotificationStatus;
+  timestamp?: string; // API uses created_at, keeping timestamp for compat if needed
   priority?: NotificationPriority;
   action_url?: string;
   metadata?: Record<string, any>;
+}
+
+export interface NotificationsResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: Notification[];
 }
