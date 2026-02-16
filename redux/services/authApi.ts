@@ -18,6 +18,7 @@ import type {
   RefreshTokenRequest,
   RefreshTokenResponse,
   ProfileResponse,
+  ChangePasswordRequest,
 } from '@/types/users';
 
 // Inject endpoints into the API slice
@@ -104,7 +105,27 @@ export const authApi = apiSlice.injectEndpoints({
       providesTags: ['Profile'],
     }),
 
-    // 10. Logout endpoint (optional - can be handled client-side)
+    // 10. Update Profile endpoint
+    updateProfile: builder.mutation<ApiResponse<ProfileResponse>, FormData>({
+      query: (formData) => ({
+        url: '/api/auth/getme/',
+        method: 'PUT',
+        body: formData,
+        // FormData handles content-type automatically
+      }),
+      invalidatesTags: ['Profile'],
+    }),
+
+    // 11. Change Password endpoint
+    changePassword: builder.mutation<ApiResponse<any>, ChangePasswordRequest>({
+      query: (data) => ({
+        url: '/api/auth/change-password/',
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+
+    // 12. Logout endpoint (optional - can be handled client-side)
     logout: builder.mutation<void, void>({
       queryFn: () => ({ data: undefined }),
       invalidatesTags: ['Auth', 'Profile'],
@@ -124,5 +145,7 @@ export const {
   useRefreshTokenMutation,
   useGetProfileQuery,
   useLazyGetProfileQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation,
 } = authApi;

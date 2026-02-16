@@ -1,5 +1,5 @@
 // types/users.ts
-export type UserRole = "SUPER_ADMIN" | "SELLER" | "CUSTOMER";
+export type UserRole = "SUPER_ADMIN" | "SELLER" | "CUSTOMER" | "DRIVER";
 
 export interface User {
   user_id: string;
@@ -8,21 +8,30 @@ export interface User {
   role: UserRole;
   business_name?: string;
   account_type?: "business" | "personal";
-  profile_image?: string;
+  profile_image?: string | null;
+  address?: string;
   is_verified?: boolean;
+  
   seller_profile?: {
-    first_name: string | null;
-    last_name: string | null;
-    vehicle_number: string | null;
+    full_name_seller?: string;
+    address: string;
     phone_number: string;
-    profile_image?: string;
+    profile_image: string | null;
+  };
+
+  driver_profile?: {
+    first_name: string;
+    last_name: string;
+    vehicle_number: string;
+    address: string;
+    phone_number: string;
+    profile_image: string | null;
   };
 
   customer_profile?: {
-    first_name: string | null;
-    last_name: string | null;
+    default_delivery_address: string;
     phone_number: string;
-    profile_image?: string;
+    profile_image: string | null;
   };
 }
 
@@ -107,6 +116,12 @@ export interface ResetPasswordRequest {
   confirm_password: string;
 }
 
+export interface ChangePasswordRequest {
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
 export interface ResendOtpRequest {
   email_address: string;
 }
@@ -125,20 +140,30 @@ export interface RefreshTokenResponse {
 }
 
 export interface ProfileResponse {
+  id: number;
   full_name: string;
   email_address: string;
-  profile_image?: string;
+  profile_image?: string | null;
+  address?: string;
+  role: UserRole;
+  is_verified: boolean;
   seller_profile?: {
-    first_name: string | null;
-    last_name: string | null;
-    vehicle_number: string | null;
+    address: string;
     phone_number: string;
-    profile_image?: string;
+    profile_image: string | null;
+  };
+  driver_profile?: {
+    first_name: string;
+    last_name: string;
+    vehicle_number: string;
+    address: string;
+    phone_number: string;
+    profile_image: string | null;
   };
   customer_profile?: {
-    first_name: string | null;
-    last_name: string | null;
+    default_delivery_address: string;
     phone_number: string;
-    profile_image?: string;
+    profile_image: string | null;
   };
 }
+

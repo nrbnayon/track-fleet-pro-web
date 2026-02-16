@@ -48,13 +48,20 @@ export default function ParcelsTable({
     const currentPage = isServerSide ? propCurrentPage : localCurrentPage;
     
     // For server-side, totalPages is from props. For client-side, calculate from data length.
-    const totalPages = isServerSide ? propTotalPages : Math.ceil(data.length / itemsPerPage);
+    // Fallback: if server says 1 page but gives more items than itemsPerPage, use the calculated value.
+    const totalPages = isServerSide 
+        ? Math.max(propTotalPages || 1, Math.ceil(data.length / itemsPerPage)) 
+        : Math.ceil(data.length / itemsPerPage);
 
     const currentData = useMemo(() => {
-        if (isServerSide) return data; // Data is already paginated server-side
+        // Even if isServerSide, if we got more data than itemsPerPage, 
+        // it means the backend might not be paginating correctly.
+        // We should handle it by slicing on the client.
+        if (data.length <= itemsPerPage) return data;
+        
         const start = (currentPage - 1) * itemsPerPage;
         return data.slice(start, start + itemsPerPage);
-    }, [data, currentPage, itemsPerPage, isServerSide]);
+    }, [data, currentPage, itemsPerPage]);
 
     // Handle page change
     const handlePageChange = (page: number) => {
@@ -171,7 +178,11 @@ export default function ParcelsTable({
         </>
     );
 
-    const showPagination = !isLoading && (isServerSide ? (totalPages || 0) > 1 : data.length > itemsPerPage);
+    const showPagination = !isLoading && (
+        isServerSide 
+            ? (totalPages > 1 || (totalItems !== undefined && totalItems > itemsPerPage) || data.length > itemsPerPage)
+            : data.length > itemsPerPage
+    );
 
     // console.log("All parcel:: ", data)
 

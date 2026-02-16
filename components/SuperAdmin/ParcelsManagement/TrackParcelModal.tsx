@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
 import { Button } from "@/components/ui/button";
-import { MapPin, Truck, Phone } from "lucide-react";
+import { Truck, Phone } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import dynamic from "next/dynamic";

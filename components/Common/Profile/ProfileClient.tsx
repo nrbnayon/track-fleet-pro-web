@@ -11,32 +11,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/context/LanguageContext";
 import NotificationsClient from "@/components/Notifications/NotificationsClient";
 
-interface UserProfile {
-  name: string;
-  fullName: string;
-  email: string;
-  role: string;
-  phone: string;
-  address: string;
-  avatar?: string;
-}
-
-const MOCK_USER: UserProfile = {
-  name: "Nayon",
-  fullName: "Nrb Nayon",
-  email: "nrbnayon@gmail.com",
-  role: "Super Admin",
-  phone: "000-0000-000",
-  address: "123 Admin Street, Dhaka",
-};
+import { useUser } from "@/hooks/useUser";
+import { 
+  useUpdateProfileMutation, 
+  useChangePasswordMutation 
+} from "@/redux/services/authApi";
 
 export default function ProfileClient() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { profile, role, isLoading: profileLoading, email: userEmail } = useUser();
+  const [updateProfile] = useUpdateProfileMutation();
+  const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
+  
   const [isSaving, setIsSaving] = useState(false);
   const { language, setLanguage } = useLanguage();
   const [activeSection, setActiveSection] = useState<
     "account" | "notifications" | "language"
   >("account");
+  
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -44,159 +35,152 @@ export default function ProfileClient() {
   const [showEmail, setShowEmail] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [user, setUser] = useState<UserProfile>(MOCK_USER);
-  const [editNameValue, setEditNameValue] = useState(user.fullName);
-  const [editPhoneValue, setEditPhoneValue] = useState(user.phone);
-  const [editAddressValue, setEditAddressValue] = useState(user.address);
+  // Form states
+  const [editNameValue, setEditNameValue] = useState("");
+  const [editPhoneValue, setEditPhoneValue] = useState("");
+  const [editAddressValue, setEditAddressValue] = useState("");
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+  const [editVehicle, setEditVehicle] = useState("");
+  
   const [passwordData, setPasswordData] = useState({
     current: "",
     new: "",
     confirm: "",
   });
+  
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  
   const [hasChanges, setHasChanges] = useState(false);
-  const [popUpNotification, setPopUpNotification] = useState(true);
-  const [chatNotification, setChatNotification] = useState(true);
-  const [newUpdateNotification, setNewUpdateNotification] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(language === "om" ? "Oromo" : "English");
 
-  // Sync with global language if it changes externally and we don't have local changes
+  // Sync with profile data
   useEffect(() => {
-    if (!hasChanges) {
-      setSelectedLanguage(language === "om" ? "Oromo" : "English");
+    if (profile) {
+      setEditNameValue(profile.full_name || "");
+      
+      if (role === "SUPER_ADMIN") {
+        setEditAddressValue(profile.address || "");
+      } else if (role === "SELLER") {
+        setEditPhoneValue(profile.seller_profile?.phone_number || "");
+        setEditAddressValue(profile.seller_profile?.address || "");
+      } else if (role === "DRIVER") {
+        setEditFirstName(profile.driver_profile?.first_name || "");
+        setEditLastName(profile.driver_profile?.last_name || "");
+        setEditPhoneValue(profile.driver_profile?.phone_number || "");
+        setEditAddressValue(profile.driver_profile?.address || "");
+        setEditVehicle(profile.driver_profile?.vehicle_number || "");
+      } else if (role === "CUSTOMER") {
+        setEditPhoneValue(profile.customer_profile?.phone_number || "");
+        setEditAddressValue(profile.customer_profile?.default_delivery_address || "");
+      }
+      
+      setImagePreview(profile.profile_image || null);
     }
-  }, [language, hasChanges]);
+  }, [profile, role]);
 
-  useEffect(() => {
-    // Simulate loading user data
-    const timer = setTimeout(() => {
-      setUser(MOCK_USER);
-      setEditNameValue(MOCK_USER.fullName);
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setHasChanges(true);
+    }
+  };
 
   const handleSaveName = () => {
     if (!editNameValue.trim()) {
-      toast.error("Name is required", {
-        description: "Please enter a valid name.",
-      });
+      toast.error("Name is required");
       return;
     }
-
-    if (editNameValue.length > 32) {
-      toast.error("Name too long", {
-        description: "Name must be 32 characters or less.",
-      });
-      return;
-    }
-
-    setUser({
-      ...user,
-      name: editNameValue.split(" ")[0] || editNameValue,
-      fullName: editNameValue,
-    });
     setIsEditingName(false);
     setHasChanges(true);
-    toast.success("Name updated", {
-      description: "Your name has been updated successfully.",
-    });
-  };
-
-  const handleCancelName = () => {
-    setEditNameValue(user.fullName);
-    setIsEditingName(false);
   };
 
   const handleSavePhone = () => {
-    if (!editPhoneValue.trim()) {
-      toast.error("Phone number is required");
-      return;
-    }
-    setUser({ ...user, phone: editPhoneValue });
     setIsEditingPhone(false);
     setHasChanges(true);
-    toast.success("Phone number updated");
-  };
-
-  const handleCancelPhone = () => {
-    setEditPhoneValue(user.phone);
-    setIsEditingPhone(false);
   };
 
   const handleSaveAddress = () => {
-    if (!editAddressValue.trim()) {
-      toast.error("Address is required");
-      return;
-    }
-    setUser({ ...user, address: editAddressValue });
     setIsEditingAddress(false);
     setHasChanges(true);
-    toast.success("Address updated");
   };
 
-  const handleCancelAddress = () => {
-    setEditAddressValue(user.address);
-    setIsEditingAddress(false);
-  };
-
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!passwordData.current || !passwordData.new || !passwordData.confirm) {
-      toast.error("All fields required", {
-        description: "Please fill in all password fields.",
-      });
+      toast.error("All fields required");
       return;
     }
 
     if (passwordData.new !== passwordData.confirm) {
-      toast.error("Passwords don't match", {
-        description: "New password and confirmation must match.",
-      });
+      toast.error("Passwords don't match");
       return;
     }
 
-    if (passwordData.new.length < 8) {
-      toast.error("Password too short", {
-        description: "Password must be at least 8 characters.",
-      });
-      return;
+    try {
+      const response = await changePassword({
+        old_password: passwordData.current,
+        new_password: passwordData.new,
+        confirm_password: passwordData.confirm
+      }).unwrap();
+
+      if (response.success) {
+        toast.success("Password updated successfully");
+        setIsEditingPassword(false);
+        setPasswordData({ current: "", new: "", confirm: "" });
+      } else {
+        toast.error(response.message || "Failed to update password");
+      }
+    } catch (error: any) {
+      toast.error(error.data?.message || "Something went wrong");
     }
-
-    setIsEditingPassword(false);
-    setPasswordData({ current: "", new: "", confirm: "" });
-    setHasChanges(true);
-    toast.success("Password changed", {
-      description: "Your password has been updated successfully.",
-    });
-  };
-
-  const handleCancelPassword = () => {
-    setPasswordData({ current: "", new: "", confirm: "" });
-    setIsEditingPassword(false);
   };
 
   const handleGlobalSave = async () => {
     setIsSaving(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Update global language
-      if (selectedLanguage === "English") {
-        setLanguage("en");
-      } else if (selectedLanguage === "Oromo") {
-        setLanguage("om");
+      const formData = new FormData();
+      formData.append("full_name", editNameValue);
+      
+      if (profileImage) {
+        formData.append("profile_image", profileImage);
       }
 
-      toast.success("Profile saved", {
-        description: "All changes have been saved successfully.",
-      });
-      setHasChanges(false);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to save", {
-        description: "Please try again.",
-      });
+      if (role === "SUPER_ADMIN") {
+        formData.append("address", editAddressValue);
+      } else if (role === "SELLER") {
+        formData.append("seller_profile[address]", editAddressValue);
+        formData.append("seller_profile[phone_number]", editPhoneValue);
+      } else if (role === "DRIVER") {
+        formData.append("driver_profile[first_name]", editFirstName);
+        formData.append("driver_profile[last_name]", editLastName);
+        formData.append("driver_profile[phone_number]", editPhoneValue);
+        formData.append("driver_profile[address]", editAddressValue);
+        formData.append("driver_profile[vehicle_number]", editVehicle);
+      } else if (role === "CUSTOMER") {
+        formData.append("customer_profile[default_delivery_address]", editAddressValue);
+        formData.append("customer_profile[phone_number]", editPhoneValue);
+      }
+
+      const response = await updateProfile(formData).unwrap();
+
+      if (response.success) {
+        toast.success("Profile saved successfully");
+        setHasChanges(false);
+        // Update language
+        if (selectedLanguage === "English") setLanguage("en");
+        else if (selectedLanguage === "Oromo") setLanguage("om");
+      } else {
+        toast.error(response.message || "Failed to save profile");
+      }
+    } catch (error: any) {
+      toast.error(error.data?.message || "Failed to save profile");
     } finally {
       setIsSaving(false);
     }
@@ -204,33 +188,40 @@ export default function ProfileClient() {
 
   const handleGlobalCancel = () => {
     if (hasChanges) {
-      const confirm = window.confirm(
-        "You have unsaved changes. Are you sure you want to cancel?"
-      );
+      const confirm = window.confirm("Discard unsaved changes?");
       if (!confirm) return;
     }
-
-    // Reset all editing states
-    setIsEditingName(false);
-    setIsEditingPhone(false);
-    setIsEditingAddress(false);
-    setIsEditingPassword(false);
-    setEditNameValue(user.fullName);
-    setEditPhoneValue(user.phone);
-    setEditAddressValue(user.address);
-    setPasswordData({ current: "", new: "", confirm: "" });
-    setPopUpNotification(true);
-    setChatNotification(true);
-    setNewUpdateNotification(false);
-    setSelectedLanguage(language === "om" ? "Oromo" : "English");
-    setHasChanges(false);
-
-    toast.info("Changes discarded", {
-      description: "All unsaved changes have been discarded.",
-    });
+    window.location.reload();
   };
 
-  if (isLoading) {
+  const handleCancelName = () => {
+    setEditNameValue(profile?.full_name || "");
+    setEditFirstName(profile?.driver_profile?.first_name || "");
+    setEditLastName(profile?.driver_profile?.last_name || "");
+    setIsEditingName(false);
+  };
+
+  const handleCancelPhone = () => {
+    if (role === "SELLER") setEditPhoneValue(profile?.seller_profile?.phone_number || "");
+    else if (role === "DRIVER") setEditPhoneValue(profile?.driver_profile?.phone_number || "");
+    else if (role === "CUSTOMER") setEditPhoneValue(profile?.customer_profile?.phone_number || "");
+    setIsEditingPhone(false);
+  };
+
+  const handleCancelAddress = () => {
+    if (role === "SUPER_ADMIN") setEditAddressValue(profile?.address || "");
+    else if (role === "SELLER") setEditAddressValue(profile?.seller_profile?.address || "");
+    else if (role === "DRIVER") setEditAddressValue(profile?.driver_profile?.address || "");
+    else if (role === "CUSTOMER") setEditAddressValue(profile?.customer_profile?.default_delivery_address || "");
+    setIsEditingAddress(false);
+  };
+
+  const handleCancelPassword = () => {
+    setPasswordData({ current: "", new: "", confirm: "" });
+    setIsEditingPassword(false);
+  };
+
+  if (profileLoading) {
     return (
       <div className="w-full flex-1 flex flex-col">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -243,10 +234,11 @@ export default function ProfileClient() {
             <Skeleton className="h-10 w-20" />
           </div>
         </div>
-        <Skeleton className="h-96 w-full rounded-xl" />
+        <Skeleton className="h-[500px] w-full rounded-xl" />
       </div>
     );
   }
+
 
   return (
     <div className="w-full flex-1 flex flex-col">
@@ -254,10 +246,10 @@ export default function ProfileClient() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
-            Welcome {user.name}!
+            Welcome {profile?.full_name}!
           </h1>
           <p className="text-sm text-secondary mt-1">
-            Manage your profile information here.
+            Manage your profile information here as a <span className="font-bold text-primary">{role}</span>.
           </p>
         </div>
 
@@ -265,7 +257,7 @@ export default function ProfileClient() {
           <Button
             variant="outline"
             onClick={handleGlobalCancel}
-            disabled={isSaving}
+            disabled={isSaving || !hasChanges}
             className="text-foreground border-gray-300 bg-transparent hover:bg-primary/30 hover:text-foreground"
           >
             Cancel
@@ -275,34 +267,39 @@ export default function ProfileClient() {
             disabled={isSaving || !hasChanges}
             className="bg-foreground text-white hover:bg-foreground"
           >
-            {isSaving ? "Saving..." : "Save"}
+            {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
 
       {/* Profile Card */}
-      <div className="bg-white rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+      <div className="bg-white rounded-xl p-8 border border-gray-200">
         {/* User Info Header */}
         <div className="flex items-center gap-5 mb-10">
-          <div className="relative w-18 h-18 rounded-full overflow-hidden shrink-0 bg-gray-200">
+          <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 bg-gray-100 group">
             <Image
-              src={user.avatar || "/images/avatar.png"}
+              src={imagePreview || "/images/avatar.png"}
               alt="Profile"
-              width={72}
-              height={72}
-              className="object-cover"
+              width={1000}
+              height={1000}
+              unoptimized
+              className="object-cover w-full h-full"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  user.name
-                )}&background=random&size=72`;
+                  profile?.full_name || "User"
+                )}&background=random&size=80`;
               }}
             />
+            <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <Pencil className="w-5 h-5 text-white" />
+              <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+            </label>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
+            <h2 className="text-2xl font-bold text-foreground">{profile?.full_name}</h2>
             <p className="text-sm text-secondary">
-              Update your username and manage your account
+              Update your personal details and account settings
             </p>
           </div>
         </div>
@@ -340,62 +337,48 @@ export default function ProfileClient() {
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
                       <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Your name
+                        {role === "DRIVER" ? "Personal Name" : "Display Name"}
                       </label>
 
                       {isEditingName ? (
-                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
-                          <p className="text-sm text-secondary mb-3">
-                            Make sure this match the name on your any Govt. ID.
-                          </p>
-
-                          <div className="space-y-2">
-                            <label className="text-xs font-medium text-secondary">
-                              Full name
-                            </label>
-                            <Input
-                              value={editNameValue}
-                              onChange={(e) => setEditNameValue(e.target.value)}
-                              className="w-full bg-white border-gray-300 text-foreground dark:text-gray-100"
-                              placeholder="Enter your full name"
-                              maxLength={32}
-                            />
-                            <div className="text-right text-xs text-gray-400">
-                              text limit
-                              {editNameValue.length}/32
+                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg space-y-4">
+                          {role === "DRIVER" ? (
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <label className="text-xs font-medium text-secondary">First Name</label>
+                                <Input value={editFirstName} onChange={(e) => {setEditFirstName(e.target.value); setHasChanges(true);}} className="bg-white border-gray-300" />
+                              </div>
+                              <div className="space-y-2">
+                                <label className="text-xs font-medium text-secondary">Last Name</label>
+                                <Input value={editLastName} onChange={(e) => {setEditLastName(e.target.value); setHasChanges(true);}} className="bg-white border-gray-300" />
+                              </div>
                             </div>
-                          </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <label className="text-xs font-medium text-secondary">Full name</label>
+                              <Input
+                                value={editNameValue}
+                                onChange={(e) => {setEditNameValue(e.target.value); setHasChanges(true);}}
+                                className="w-full bg-white border-gray-300"
+                                placeholder="Enter your full name"
+                              />
+                            </div>
+                          )}
 
-                          <div className="flex items-center gap-3 mt-4">
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={handleCancelName}
-                              className="bg-gray-100 text-foreground hover:bg-gray-200"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={handleSaveName}
-                              className="text-white hover:bg-foreground"
-                            >
-                              Save
-                            </Button>
+                          <div className="flex items-center gap-3">
+                            <Button type="button" variant="secondary" onClick={handleCancelName} className="bg-gray-100">Cancel</Button>
+                            <Button type="button" onClick={handleSaveName} className="text-white">Done</Button>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-foreground mt-1">
-                          {user.fullName}
+                        <div className="text-foreground mt-1 text-lg font-medium">
+                          {role === "DRIVER" ? `${profile?.driver_profile?.first_name} ${profile?.driver_profile?.last_name}` : profile?.full_name}
                         </div>
                       )}
                     </div>
 
                     {!isEditingName && (
-                      <button
-                        onClick={() => setIsEditingName(true)}
-                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
-                      >
+                      <button onClick={() => setIsEditingName(true)} className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1">
                         <Pencil className="w-4 h-4" /> Edit
                       </button>
                     )}
@@ -403,135 +386,84 @@ export default function ProfileClient() {
                 </div>
 
                 {/* Phone Number Field */}
-                <div className="py-6 border-b border-gray-100">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Phone Number
-                      </label>
-
-                      {isEditingPhone ? (
-                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
-                          <div className="space-y-2">
-                            <Input
-                              value={editPhoneValue}
-                              onChange={(e) => setEditPhoneValue(e.target.value)}
-                              className="w-full bg-white border-gray-300 text-foreground"
-                              placeholder="000-0000-000"
-                            />
+                {role !== "SUPER_ADMIN" && (
+                  <div className="py-6">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="w-full">
+                        <label className="block text-sm font-medium text-foreground mb-1.5">Phone Number</label>
+                        {isEditingPhone ? (
+                          <div className="mt-3 bg-blue-50 p-6 rounded-lg space-y-4">
+                            <Input value={editPhoneValue} onChange={(e) => {setEditPhoneValue(e.target.value); setHasChanges(true);}} className="bg-white border-gray-300" />
+                            <div className="flex items-center gap-3">
+                              <Button variant="secondary" onClick={handleCancelPhone}>Cancel</Button>
+                              <Button onClick={handleSavePhone}>Done</Button>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-3 mt-4">
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={handleCancelPhone}
-                              className="bg-gray-100 text-foreground hover:bg-gray-200"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={handleSavePhone}
-                              className="text-white hover:bg-foreground"
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-foreground mt-1">
-                          {user.phone}
-                        </div>
+                        ) : (
+                          <div className="text-foreground mt-1 text-lg">{editPhoneValue || "N/A"}</div>
+                        )}
+                      </div>
+                      {!isEditingPhone && (
+                        <button onClick={() => setIsEditingPhone(true)} className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1">
+                          <Pencil className="w-4 h-4" /> Edit
+                        </button>
                       )}
                     </div>
-
-                    {!isEditingPhone && (
-                      <button
-                        onClick={() => setIsEditingPhone(true)}
-                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
-                      >
-                        <Pencil className="w-4 h-4" /> Edit
-                      </button>
-                    )}
                   </div>
-                </div>
+                )}
 
                 {/* Address Field */}
-                <div className="py-6 border-b border-gray-100">
+                <div className="py-6">
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
-                      <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Address
-                      </label>
-
+                      <label className="block text-sm font-medium text-foreground mb-1.5">Address</label>
                       {isEditingAddress ? (
-                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg">
-                          <div className="space-y-2">
-                            <Input
-                              value={editAddressValue}
-                              onChange={(e) => setEditAddressValue(e.target.value)}
-                              className="w-full bg-white border-gray-300 text-foreground"
-                              placeholder="123 Admin Street, Dhaka"
-                            />
-                          </div>
-                          <div className="flex items-center gap-3 mt-4">
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={handleCancelAddress}
-                              className="bg-gray-100 text-foreground hover:bg-gray-200"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={handleSaveAddress}
-                              className="text-white hover:bg-foreground"
-                            >
-                              Save
-                            </Button>
+                        <div className="mt-3 bg-blue-50 p-6 rounded-lg space-y-4">
+                          <Input value={editAddressValue} onChange={(e) => {setEditAddressValue(e.target.value); setHasChanges(true);}} className="bg-white border-gray-300" />
+                          <div className="flex items-center gap-3">
+                            <Button variant="secondary" onClick={handleCancelAddress}>Cancel</Button>
+                            <Button onClick={handleSaveAddress}>Done</Button>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-foreground mt-1">
-                          {user.address}
-                        </div>
+                        <div className="text-foreground mt-1 text-lg">{editAddressValue || "N/A"}</div>
                       )}
                     </div>
-
                     {!isEditingAddress && (
-                      <button
-                        onClick={() => setIsEditingAddress(true)}
-                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
-                      >
+                      <button onClick={() => setIsEditingAddress(true)} className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1">
                         <Pencil className="w-4 h-4" /> Edit
                       </button>
                     )}
                   </div>
                 </div>
 
-                {/* Email Field */}
-                <div className="py-6">
-                  <div className="flex justify-between items-center gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Email
-                      </label>
-                      <div className="text-foreground">
-                        {showEmail
-                          ? user.email
-                          : user.email.replace(/(.{3})(.*)(@.*)/, "$1***$3")}
+                {/* Vehicle Field (Driver Only) */}
+                {role === "DRIVER" && (
+                  <div className="py-6 border-b border-gray-100">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="w-full">
+                        <label className="block text-sm font-medium text-foreground mb-1.5">Vehicle Number</label>
+                        <Input 
+                          value={editVehicle} 
+                          onChange={(e) => {setEditVehicle(e.target.value); setHasChanges(true);}} 
+                          className="bg-white border-gray-300 font-bold" 
+                        />
                       </div>
                     </div>
-                    <button
-                      onClick={() => setShowEmail(!showEmail)}
-                      className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors"
-                    >
-                      {showEmail ? (
-                        <EyeOff className="w-4 h-4" />
-                      ) : (
-                        <Eye className="w-4 h-4" />
-                      )}
+                  </div>
+                )}
+
+                {/* Email Field */}
+                <div className="py-6 border-b border-gray-100">
+                  <div className="flex justify-between items-center gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1.5">Email (Security Locked)</label>
+                      <div className="text-foreground text-lg">
+                        {showEmail ? profile?.email_address : profile?.email_address?.replace(/(.{3})(.*)(@.*)/, "$1***$3")}
+                      </div>
+                    </div>
+                    <button onClick={() => setShowEmail(!showEmail)} className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors">
+                      {showEmail ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       {showEmail ? "Hide" : "View"}
                     </button>
                   </div>
@@ -541,114 +473,36 @@ export default function ProfileClient() {
                 <div className="py-6">
                   <div className="flex justify-between items-start gap-4">
                     <div className="w-full">
-                      <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Password
-                      </label>
-
+                      <label className="block text-sm font-medium text-foreground mb-1.5">Security Password</label>
                       {isEditingPassword ? (
-                        <div className="mt-3 max-w-full bg-blue-50 text-foreground p-6 rounded-lg space-y-4">
+                        <div className="mt-3 bg-blue-50 p-6 rounded-lg space-y-4">
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-secondary">
-                              Current password
-                            </label>
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              value={passwordData.current}
-                              onChange={(e) =>
-                                setPasswordData({
-                                  ...passwordData,
-                                  current: e.target.value,
-                                })
-                              }
-                              className="w-full bg-white border-gray-300"
-                              placeholder="Enter current password"
-                            />
+                            <label className="text-xs font-medium text-secondary">Current password</label>
+                            <Input type={showPassword ? "text" : "password"} value={passwordData.current} onChange={(e) => setPasswordData({...passwordData, current: e.target.value})} className="bg-white border-gray-300" />
                           </div>
-
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-secondary">
-                              New password
-                            </label>
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              value={passwordData.new}
-                              onChange={(e) =>
-                                setPasswordData({
-                                  ...passwordData,
-                                  new: e.target.value,
-                                })
-                              }
-                              className="w-full bg-white border-gray-300"
-                              placeholder="Enter new password"
-                            />
+                            <label className="text-xs font-medium text-secondary">New password</label>
+                            <Input type={showPassword ? "text" : "password"} value={passwordData.new} onChange={(e) => setPasswordData({...passwordData, new: e.target.value})} className="bg-white border-gray-300" />
                           </div>
-
                           <div className="space-y-2">
-                            <label className="text-xs font-medium text-secondary">
-                              Confirm new password
-                            </label>
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              value={passwordData.confirm}
-                              onChange={(e) =>
-                                setPasswordData({
-                                  ...passwordData,
-                                  confirm: e.target.value,
-                                })
-                              }
-                              className="w-full bg-white border-gray-300"
-                              placeholder="Confirm new password"
-                            />
+                            <label className="text-xs font-medium text-secondary">Confirm new password</label>
+                            <Input type={showPassword ? "text" : "password"} value={passwordData.confirm} onChange={(e) => setPasswordData({...passwordData, confirm: e.target.value})} className="bg-white border-gray-300" />
                           </div>
-
                           <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id="showPassword"
-                              checked={showPassword}
-                              onChange={(e) =>
-                                setShowPassword(e.target.checked)
-                              }
-                              className="rounded"
-                            />
-                            <label
-                              htmlFor="showPassword"
-                              className="text-xs text-secondary"
-                            >
-                              Show passwords
-                            </label>
+                            <input type="checkbox" id="showPassword" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} className="rounded" />
+                            <label htmlFor="showPassword" className="text-xs text-secondary">Show passwords</label>
                           </div>
-
                           <div className="flex items-center gap-3">
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={handleCancelPassword}
-                              className="bg-gray-100 text-foreground hover:bg-gray-200"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={handleChangePassword}
-                              className="bg-foreground text-white hover:bg-foreground"
-                            >
-                              Save
-                            </Button>
+                            <Button variant="secondary" onClick={handleCancelPassword}>Cancel</Button>
+                            <Button onClick={handleChangePassword} disabled={isChangingPassword}>{isChangingPassword ? "Updating..." : "Update Password"}</Button>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-foreground text-xl leading-none tracking-widest mt-1">
-                          ••••••••••••••••
-                        </div>
+                        <div className="text-foreground text-xl tracking-widest mt-1">••••••••••••••••</div>
                       )}
                     </div>
-
                     {!isEditingPassword && (
-                      <button
-                        onClick={() => setIsEditingPassword(true)}
-                        className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1"
-                      >
+                      <button onClick={() => setIsEditingPassword(true)} className="flex items-center gap-2 text-secondary hover:text-foreground font-semibold text-sm transition-colors mt-1">
                         <Pencil className="w-4 h-4" /> Change
                       </button>
                     )}
@@ -658,14 +512,11 @@ export default function ProfileClient() {
             )}
 
             {/* Notifications Section */}
-            {activeSection === "notifications" && (
-              <div>
-                <NotificationsClient />
-              </div>
-            )}
+            {activeSection === "notifications" && <div className="py-6"><NotificationsClient /></div>}
           </div>
         </div>
       </div>
     </div>
   );
 }
+

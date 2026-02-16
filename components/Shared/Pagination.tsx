@@ -18,6 +18,7 @@ export function Pagination({
   className,
   totalItems,
   itemsPerPage,
+  currentItemsCount,
 }: PaginationProps) {
   const getPageNumbers = () => {
     const pages = [];

@@ -141,6 +141,12 @@ const nextConfig: NextConfig = {
         port: "8002",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8002",
+        pathname: "/**",
+      },
     ],
   },
   // Add empty turbopack config to silence the warning
