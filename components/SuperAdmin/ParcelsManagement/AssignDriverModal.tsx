@@ -1,13 +1,13 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
 import { useGetAvailableDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Package, X } from "lucide-react";
+import { Search, MapPin, Package, Truck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -132,7 +132,13 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                                             <span className="flex items-center gap-1">
                                                 <Package className="h-3 w-3" />
                                                 {driver.stats?.active_deliveries || 0} deliveries
-                                            </span>
+                                                </span>
+                                                {driver?.distance && (
+                                                    <span className="flex items-center gap-1">
+                                                        <Truck className="h-3 w-3" />
+                                                        {driver?.distance} km
+                                                    </span>
+                                                )}
                                         </div>
                                     </div>
                                 </div>

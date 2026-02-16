@@ -18,6 +18,7 @@ export interface DriverStats {
   completed_today?: number;
   rating?: number;
   total_earnings?: number;
+  distance?: number;
 }
 
 export interface Driver {
@@ -38,6 +39,7 @@ export interface Driver {
   current_location?: DriverLocation;
   assigned_parcels?: string[]; // Array of parcel IDs
   stats?: DriverStats;
+  distance?: string; // Distance from parcel location in km
   joined_date?: string;
   last_active?: string;
   createdAt?: string;
@@ -58,9 +60,10 @@ export interface ApiAvailableDriver {
   profile_image: string;
   lat: number | null;
   lng: number | null;
+  distance?: string; // Distance from parcel  location in km
 }
 
-export interface ApiAvailableDriversResponse {
+  export interface ApiAvailableDriversResponse {
   success: boolean;
   status: number;
   message: string;

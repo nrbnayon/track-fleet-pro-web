@@ -3,10 +3,9 @@
 
 import { StatsCard } from "@/components/Shared/StatsCard";
 import WeeklyDeliveriesBarChart from "./WeeklyDeliveriesBarChart";
-import RevenueTrendLineChart from "./RevenueTrendLineChart";
 import DeliveryStatusDonutChart from "./DeliveryStatusDonutChart";
 import DriverPerformanceList from "./DriverPerformanceList";
-import { DollarSign, Package, Truck } from "lucide-react";
+import { Package, Truck } from "lucide-react";
 import { useGetAnalyticsQuery } from "@/redux/services/analyticsApi";
 import { Skeleton } from "@/components/ui/skeleton";
 

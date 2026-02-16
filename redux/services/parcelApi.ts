@@ -41,7 +41,7 @@ export const parcelApi = apiSlice.injectEndpoints({
           riderInfo: {
             rider_name: apiParcel.Driver_name,
             rider_phone: apiParcel.Driver_phone,
-            rider_vehicle: "N/A" // Not provided in API
+            rider_vehicle: "Truck" // Not provided in API
           },
           special_instructions: apiParcel.special_instructions,
           appoximate_distance: apiParcel.appoximate_distance,
