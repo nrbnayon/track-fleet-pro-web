@@ -41,7 +41,7 @@ export default function TrackingResults({
         assignedTo: {
             name: "Rider Name",
             phone: "09234345345",
-            avatar: "/images/avatar.png",
+            avatar: "/images/user.webp",
         },
         updates: [
             {

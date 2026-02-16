@@ -182,6 +182,17 @@ export default function ProfileClient() {
       
       if (profileImage) {
         formData.append("profile_image", profileImage);
+        // Add nested for specific roles
+        if (role === "SELLER") {
+          formData.append("seller_profile.profile_image", profileImage);
+          formData.append("seller_profile[profile_image]", profileImage);
+        } else if (role === "DRIVER") {
+          formData.append("driver_profile.profile_image", profileImage);
+          formData.append("driver_profile[profile_image]", profileImage);
+        } else if (role === "CUSTOMER") {
+          formData.append("customer_profile.profile_image", profileImage);
+          formData.append("customer_profile[profile_image]", profileImage);
+        }
       }
 
       if (role === "SUPER_ADMIN") {
@@ -330,7 +341,7 @@ export default function ProfileClient() {
         <div className="flex items-center gap-5 mb-10">
           <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 bg-gray-100 group">
             <Image
-              src={imagePreview || "/images/avatar.png"}
+              src={imagePreview || "/images/user.webp"}
               alt="Profile"
               width={1000}
               height={1000}
