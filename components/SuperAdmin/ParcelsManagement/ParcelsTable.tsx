@@ -173,6 +173,8 @@ export default function ParcelsTable({
 
     const showPagination = !isLoading && (isServerSide ? (totalPages || 0) > 1 : data.length > itemsPerPage);
 
+    // console.log("All parcel:: ", data)
+
     return (
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)]">
             {/* Header */}
@@ -245,14 +247,16 @@ export default function ParcelsTable({
                                                         >
                                                             <MapPin className="w-4 h-4" />
                                                         </button>
-                                                        <Button
-                                                            size="sm"
-                                                            className="bg-primary hover:bg-primary/90 text-white gap-2 px-3 h-8"
-                                                            onClick={() => setSelectedParcelForAssign(parcel)}
-                                                        >
-                                                            <Car className="w-4 h-4" />
-                                                            Assign
-                                                        </Button>
+                                                        {["PENDING", "pending"].includes(parcel.parcel_status) && (
+                                                            <Button
+                                                                size="sm"
+                                                                className="bg-primary hover:bg-primary/90 text-white gap-2 px-3 h-8"
+                                                                onClick={() => setSelectedParcelForAssign(parcel)}
+                                                            >
+                                                                <Car className="w-4 h-4" />
+                                                                Assign
+                                                            </Button>
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -315,25 +319,27 @@ export default function ParcelsTable({
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex-1 gap-2"
-                                            onClick={() => setSelectedParcelForTrack(parcel)}
-                                        >
-                                            <MapPin className="w-4 h-4" />
-                                            Track
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            className="flex-1 bg-primary text-white gap-2"
-                                            onClick={() => setSelectedParcelForAssign(parcel)}
-                                        >
-                                            <Car className="w-4 h-4" />
-                                            Assign Rider
-                                        </Button>
-                                    </div>
+                                        <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="flex-1 gap-2"
+                                                onClick={() => setSelectedParcelForTrack(parcel)}
+                                            >
+                                                <MapPin className="w-4 h-4" />
+                                                Track
+                                            </Button>
+                                            {["PENDING", "pending"].includes(parcel.parcel_status) && (
+                                                <Button
+                                                    size="sm"
+                                                    className="flex-1 bg-primary text-white gap-2"
+                                                    onClick={() => setSelectedParcelForAssign(parcel)}
+                                                >
+                                                    <Car className="w-4 h-4" />
+                                                    Assign Rider
+                                                </Button>
+                                            )}
+                                        </div>
                                 </div>
                             ))
                         ) : (

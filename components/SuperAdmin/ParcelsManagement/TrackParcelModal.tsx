@@ -27,44 +27,29 @@ interface TrackParcelModalProps {
 
 export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalProps) {
     // Get coordinates for pickup and delivery locations
+    // Get coordinates for pickup and delivery locations
     const { pickupCoords, deliveryCoords, currentLocation } = useMemo(() => {
-        // Mock coordinates based on location names
-        const getCoordinates = (location: string) => {
-            const locationMap: { [key: string]: { lat: number; lng: number } } = {
-                "Gulshan 1, Dhaka": { lat: 23.7808, lng: 90.4217 },
-                "Gulshan 2, Dhaka": { lat: 23.7925, lng: 90.4078 },
-                "Shyamoli, Dhaka": { lat: 23.7679, lng: 90.3698 },
-                "Dhanmondi, Dhaka": { lat: 23.7461, lng: 90.3742 },
-                "Uttara, Dhaka": { lat: 23.8759, lng: 90.3795 },
-                "Mirpur 10, Dhaka": { lat: 23.8067, lng: 90.3685 },
-                "Banani, Dhaka": { lat: 23.7937, lng: 90.4066 },
-                "Bashundhara, Dhaka": { lat: 23.8223, lng: 90.4241 },
-                "Mohammadpur, Dhaka": { lat: 23.7617, lng: 90.3570 },
-                "Lalmatia, Dhaka": { lat: 23.7515, lng: 90.3715 },
-                "Motijheel, Dhaka": { lat: 23.7330, lng: 90.4172 },
-                "Karwan Bazar, Dhaka": { lat: 23.7505, lng: 90.3929 },
-                "Nilkhet, Dhaka": { lat: 23.7359, lng: 90.3897 },
-                "Azimpur, Dhaka": { lat: 23.7281, lng: 90.3854 },
-                "Baridhara, Dhaka": { lat: 23.8103, lng: 90.4255 },
-                "Mirpur 2, Dhaka": { lat: 23.8050, lng: 90.3548 },
-            };
-
-            return locationMap[location] || { lat: 23.8103, lng: 90.4125 };
-        };
-
-        const pickup = getCoordinates(parcel.pickup_location || "");
-        const delivery = getCoordinates(parcel.delivery_location || "");
+        // Use coordinates from parcel data
+        const pickup = parcel.pickup_coordinates || { lat: 23.8103, lng: 90.4125 };
+        const delivery = parcel.delivery_coordinates || { lat: 23.8103, lng: 90.4125 };
 
         // Calculate current position based on parcel status
         let current = pickup;
-        if (parcel.parcel_status === "ongoing" && parcel.riderInfo) {
-            // Simulate driver position between pickup and delivery
-            current = {
-                lat: pickup.lat + (delivery.lat - pickup.lat) * 0.6,
-                lng: pickup.lng + (delivery.lng - pickup.lng) * 0.6,
-            };
-        } else if (parcel.parcel_status === "delivered") {
+        
+        if (parcel.parcel_status === "DELIVERED" || parcel.parcel_status === "delivered") {
             current = delivery;
+        } else if (parcel.riderInfo?.lat && parcel.riderInfo?.lng) {
+            // Use driver's real-time location if available
+            current = {
+                lat: parcel.riderInfo.lat,
+                lng: parcel.riderInfo.lng
+            };
+        } else if (parcel.parcel_status === "ONGOING" || parcel.parcel_status === "ongoing") {
+             // If ongoing but no driver location, simulate mid-point
+            current = {
+                lat: pickup.lat + (delivery.lat - pickup.lat) * 0.5,
+                lng: pickup.lng + (delivery.lng - pickup.lng) * 0.5,
+            };
         }
 
         return {
@@ -73,6 +58,9 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
             currentLocation: current,
         };
     }, [parcel]);
+
+    console.log("All parcel:: ", parcel)
+
 
     const formatDate = (dateString: string | undefined) => {
         if (!dateString) return "N/A";
@@ -163,7 +151,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-sm truncate">{parcel.riderInfo.rider_name}</p>
                                                 <p className="text-xs text-secondary truncate">
-                                                    {parcel.riderInfo.rider_vehicle || "None"}
+                                                    {parcel.riderInfo?.rider_vehicle || parcel.riderInfo?.rider_phone || parcel.riderInfo?.rider_email || "None"}
                                                 </p>
                                             </div>
                                         </div>

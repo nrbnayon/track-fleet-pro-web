@@ -134,8 +134,12 @@ export default function ParcelMap({
                         deliveryInfo.close();
                     });
 
-                    // Create driver marker with car icon if assigned and ongoing
-                    if (driverAssigned && (parcelStatus === "ongoing" || parcelStatus === "pending")) {
+                    // Create driver marker with car icon if assigned and ongoing/assigned/pending
+                    const normalizeStatus = (s: string) => s.toLowerCase();
+                    const status = normalizeStatus(parcelStatus);
+                    const showDriver = driverAssigned && ["ongoing", "pending", "assigned"].includes(status);
+
+                    if (showDriver) {
                         const marker = new google.maps.Marker({
                             position: currentLocation,
                             map: mapInstance,
@@ -155,7 +159,7 @@ export default function ParcelMap({
                         });
 
                         const driverInfo = new google.maps.InfoWindow({
-                            content: '<div style="padding: 8px;"><strong>Driver Location</strong><br/><span style="font-size: 12px;">On the way to delivery</span></div>',
+                            content: '<div style="padding: 8px;"><strong>Driver Location</strong><br/><span style="font-size: 12px; color: #666;">' + (status === "ongoing" ? "On the way to delivery" : "Driver assigned") + '</span></div>',
                         });
 
                         marker.addListener('mouseover', () => {
@@ -176,8 +180,8 @@ export default function ParcelMap({
                         suppressMarkers: true,
                         polylineOptions: {
                             strokeColor: "#3B82F6",
-                            strokeWeight: 5,
-                            strokeOpacity: 0.8,
+                            strokeWeight: 8,
+                            strokeOpacity: 1,
                         },
                     });
 
@@ -233,7 +237,7 @@ export default function ParcelMap({
             driverMarker.setPosition(currentLocation);
 
             // Optionally recenter map on driver
-            if (parcelStatus === "ongoing") {
+            if (parcelStatus.toLowerCase() === "ongoing") {
                 map.panTo(currentLocation);
             }
         }
@@ -280,7 +284,7 @@ export default function ParcelMap({
                         }`}></div>
                     <span className="text-gray-700">Delivery</span>
                 </div>
-                {driverAssigned && (parcelStatus === "ongoing" || parcelStatus === "pending") && (
+                {driverAssigned && ["ongoing", "pending", "assigned"].includes(parcelStatus.toLowerCase()) && (
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-red-500 border-2 border-white"></div>
                         <span className="text-gray-700">Driver</span>
@@ -289,11 +293,11 @@ export default function ParcelMap({
             </div>
 
             {/* Status Info */}
-            {parcelStatus === "ongoing" && driverAssigned && (
+            {["ongoing", "assigned"].includes(parcelStatus.toLowerCase()) && driverAssigned && (
                 <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-gray-200">
                     <p className="text-sm font-medium text-blue-600 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                        Driver is on the way
+                        {parcelStatus.toLowerCase() === "ongoing" ? "Driver is on the way" : "Driver Assigned"}
                     </p>
                 </div>
             )}

@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
-import { useGetAvailableDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
+import { useGetNearestDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import { Search, MapPin, Package, Truck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Driver } from "@/types/driver";
 
 interface AssignDriverModalProps {
     isOpen: boolean;
@@ -22,10 +23,10 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
     const [searchDriver, setSearchDriver] = useState("");
     const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
-    const { data: drivers = [], isLoading } = useGetAvailableDriversQuery();
+    const { data: drivers = [], isLoading } = useGetNearestDriversQuery(parcel.id);
     const [assignDriver, { isLoading: isAssigning }] = useAssignDriverMutation();
 
-    const filteredDrivers = drivers.filter(driver =>
+    const filteredDrivers = drivers.filter((driver: Driver) =>
         driver.driver_name.toLowerCase().includes(searchDriver.toLowerCase()) ||
         driver.current_location?.address?.toLowerCase().includes(searchDriver.toLowerCase())
     );
@@ -94,7 +95,7 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                             ) : filteredDrivers.length === 0 ? (
                                 <div className="text-center py-8 text-gray-400">No active drivers found matching your search.</div>
                             ) : (
-                                filteredDrivers.map(driver => (
+                                filteredDrivers.map((driver: Driver) => (
                                 <div
                                     key={driver.id}
                                     onClick={() => setSelectedDriverId(driver.id)}

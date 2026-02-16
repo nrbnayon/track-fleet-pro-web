@@ -25,7 +25,7 @@ export const parcelApi = apiSlice.injectEndpoints({
           parcel_name: apiParcel.title,
           parcel_status: apiParcel.status,
           parcel_type: apiParcel.parcel_type,
-          parcel_weight: apiParcel.weight,
+          parcel_weight: apiParcel.parcel_weight,
           senderInfo: {
             // Assume seller is sender based on user input example structure
             name: apiParcel.seller?.Full_name || "N/A",
@@ -37,12 +37,17 @@ export const parcelApi = apiSlice.injectEndpoints({
           },
           delivery_location: apiParcel.delivery_location,
           pickup_location: apiParcel.pickup_location,
+          pickup_coordinates: apiParcel.pickup_coordinates,
+          delivery_coordinates: apiParcel.delivery_coordinates,
           estimated_delivery: apiParcel.estimated_delivary_date,
-          riderInfo: {
-            rider_name: apiParcel.Driver_name,
-            rider_phone: apiParcel.Driver_phone,
-            rider_vehicle: "Truck" // Not provided in API
-          },
+          riderInfo: apiParcel.driver ? {
+            rider_name: apiParcel.driver.full_name,
+            rider_phone: apiParcel.driver.phone_number,
+            rider_vehicle: apiParcel.driver.vehicle_number,
+            rider_image: apiParcel.driver.profile_image || undefined,
+            lat: apiParcel.driver.lat,
+            lng: apiParcel.driver.lng,
+          } : undefined,
           special_instructions: apiParcel.special_instructions,
           appoximate_distance: apiParcel.appoximate_distance,
           trackingHistory: [], // Not provided in list API
@@ -108,9 +113,9 @@ export const parcelApi = apiSlice.injectEndpoints({
       invalidatesTags: ['Parcel'],
     }),
 
-    // Get available drivers
-    getAvailableDrivers: builder.query<Driver[], void>({
-      query: () => '/api/admin/available-drivers/',
+    // Get nearest available drivers for a parcel
+    getNearestDrivers: builder.query<Driver[], number | string>({
+      query: (parcelId) => `/api/admin/available-nearest-drivers/?parcel_id=${parcelId}`,
       transformResponse: (response: ApiAvailableDriversResponse) => {
         return response.data.map((apiDriver) => ({
           id: apiDriver.id,
@@ -130,12 +135,13 @@ export const parcelApi = apiSlice.injectEndpoints({
              total_deliveries: apiDriver.total_delivery,
              active_deliveries: 0 
           },
+          distance: apiDriver.distance,
           isActive: apiDriver.is_online,
           isAvailable: apiDriver.is_available,
           vehicle_type: "bike",
         }));
       },
-      providesTags: ['Dashboard'], // Using Dashboard for now as it seems generic enough or could add Driver tag
+      providesTags: ['Dashboard'],
     }),
 
     // Assign driver to parcel
@@ -165,6 +171,6 @@ export const {
   useCreateParcelMutation,
   useUpdateParcelMutation,
   useDeleteParcelMutation,
-  useGetAvailableDriversQuery,
+  useGetNearestDriversQuery,
   useAssignDriverMutation,
 } = parcelApi;

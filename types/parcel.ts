@@ -64,6 +64,8 @@ export interface Parcel {
     rider_image?: string;
     rider_vehicle_type?: string;
     rider_vehicle_number?: string;
+    lat?: number;
+    lng?: number;
   };
   trackingHistory: ParcelTracking[];
   payment_status?: "paid" | "pending" | "cod";
@@ -80,23 +82,42 @@ export interface ApiSeller {
   phone_number: string;
 }
 
+export interface ApiDriver {
+    id: string;
+    full_name: string;
+    phone_number: string;
+    vehicle_number: string;
+    profile_image: string | null;
+    lat: number;
+    lng: number;
+    current_location: string;
+}
+
 export interface ApiParcel {
     id: number;
     tracking_id: string;
     title: string;
     parcel_type: string;
-    customer_name: string;
-    customer_phone: string;
     pickup_location: string;
     delivery_location: string;
     estimated_delivary_date?: string;
-    weight: number;
+  parcel_weight: number;
+  customer_name: string;
+    customer_phone: string;
     special_instructions: string;
     appoximate_distance: string;
     status: string;
-    Driver_name: string;
-    Driver_phone: string;
-    seller: ApiSeller;
+    vehicle_number: string;
+    pickup_coordinates: {
+        lat: number;
+        lng: number;
+    };
+    delivery_coordinates: {
+        lat: number;
+        lng: number;
+    };
+  driver: ApiDriver | null;
+  seller: ApiSeller;
 }
 
 export interface ApiParcelResponse {

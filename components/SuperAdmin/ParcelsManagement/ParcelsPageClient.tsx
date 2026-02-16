@@ -82,7 +82,6 @@ export default function ParcelsPageClient() {
                                 <SelectItem value="ongoing">Ongoing</SelectItem>
                                 <SelectItem value="delivered">Delivered</SelectItem>
                                 <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="cancelled">Cancelled</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
