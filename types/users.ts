@@ -46,7 +46,7 @@ export interface ApiResponse<T = any> {
   status: number;
   message: string;
   data?: T;
-  errors?: Record<string, string>;
+  errors?: any;
   error_code?: string;
 }
 

@@ -142,7 +142,39 @@ export default function ProfileClient() {
     }
   };
 
+  // Helper to extract the first error message from a nested error object
+  const getFirstError = (err: any): string => {
+    if (typeof err === 'string') return err;
+    if (Array.isArray(err)) return getFirstError(err[0]);
+    if (typeof err === 'object' && err !== null) {
+      const firstKey = Object.keys(err)[0];
+      if (firstKey) return getFirstError(err[firstKey]);
+    }
+    return "Validation failed";
+  };
+
   const handleGlobalSave = async () => {
+    // Basic validation
+    if (!editNameValue.trim()) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+
+    if (role as any !== "SUPER_ADMIN") {
+      if (!editPhoneValue?.trim()) {
+        toast.error("Phone number is required");
+        return;
+      }
+      if (!editAddressValue?.trim()) {
+        toast.error("Address is required");
+        return;
+      }
+      if (role === "DRIVER" && !editVehicle?.trim()) {
+        toast.error("Vehicle number is required");
+        return;
+      }
+    }
+
     setIsSaving(true);
     try {
       const formData = new FormData();
@@ -154,18 +186,34 @@ export default function ProfileClient() {
 
       if (role === "SUPER_ADMIN") {
         formData.append("address", editAddressValue);
+        formData.append("phone_number", editPhoneValue);
       } else if (role === "SELLER") {
+        // Flat fields as primary
+        formData.append("address", editAddressValue);
+        formData.append("phone_number", editPhoneValue);
+        // Nested structure using common multipart formats
         formData.append("seller_profile[address]", editAddressValue);
         formData.append("seller_profile[phone_number]", editPhoneValue);
+        formData.append("seller_profile.address", editAddressValue);
+        formData.append("seller_profile.phone_number", editPhoneValue);
       } else if (role === "DRIVER") {
+        formData.append("first_name", editFirstName);
+        formData.append("last_name", editLastName);
+        formData.append("phone_number", editPhoneValue);
+        formData.append("address", editAddressValue);
+        formData.append("vehicle_number", editVehicle);
+        // Nested fallbacks
         formData.append("driver_profile[first_name]", editFirstName);
         formData.append("driver_profile[last_name]", editLastName);
         formData.append("driver_profile[phone_number]", editPhoneValue);
         formData.append("driver_profile[address]", editAddressValue);
         formData.append("driver_profile[vehicle_number]", editVehicle);
       } else if (role === "CUSTOMER") {
-        formData.append("customer_profile[default_delivery_address]", editAddressValue);
+        formData.append("phone_number", editPhoneValue);
+        formData.append("address", editAddressValue);
+        // Nested fallbacks
         formData.append("customer_profile[phone_number]", editPhoneValue);
+        formData.append("customer_profile[default_delivery_address]", editAddressValue);
       }
 
       const response = await updateProfile(formData).unwrap();
@@ -173,14 +221,18 @@ export default function ProfileClient() {
       if (response.success) {
         toast.success("Profile saved successfully");
         setHasChanges(false);
-        // Update language
+        // Update language if changed
         if (selectedLanguage === "English") setLanguage("en");
         else if (selectedLanguage === "Oromo") setLanguage("om");
       } else {
-        toast.error(response.message || "Failed to save profile");
+        const errorMsg = response.errors ? getFirstError(response.errors) : (response.message || "Failed to save profile");
+        toast.error(errorMsg);
       }
     } catch (error: any) {
-      toast.error(error.data?.message || "Failed to save profile");
+      console.error("Update error:", error);
+      const errorData = error.data;
+      const errorMessage = errorData?.errors ? getFirstError(errorData.errors) : (errorData?.message || "Something went wrong");
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }

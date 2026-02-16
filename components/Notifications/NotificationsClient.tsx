@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useUser } from "@/hooks/useUser";
-import { useGetNotificationsQuery } from "@/redux/services/notificationApi";
-import { Notification, NotificationStatus } from "@/types/notification";
+import { useGetNotificationsQuery, useGetSellerNotificationsQuery } from "@/redux/services/notificationApi";
+import { Notification } from "@/types/notification";
 import {
     Bell,
     Package,
@@ -16,9 +16,7 @@ import {
     AlertOctagon,
     Clock,
     X,
-    ExternalLink,
     Calendar,
-    MapPin,
     User,
     Hash,
     Info,
@@ -50,7 +48,18 @@ const PRIORITY_COLORS: Record<string, string> = {
 
 export default function NotificationsClient() {
     const { role, isLoading: userLoading } = useUser();
-    const { data: notificationsRes, isLoading: notificationsLoading, isError, refetch } = useGetNotificationsQuery();
+    
+    // Choose the appropriate query based on role
+    const adminQuery = useGetNotificationsQuery(undefined, {
+        skip: role !== "SUPER_ADMIN" || userLoading,
+    });
+    
+    const sellerQuery = useGetSellerNotificationsQuery(undefined, {
+        skip: role !== "SELLER" || userLoading,
+    });
+
+    const activeQuery = role === "SELLER" ? sellerQuery : adminQuery;
+    const { data: notificationsRes, isLoading: notificationsLoading, isError, refetch } = activeQuery;
     
     const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
     const [currentPage, setCurrentPage] = useState(1);
@@ -86,8 +95,8 @@ export default function NotificationsClient() {
         if (typeLower.includes("emergency")) iconKey = "emergency_alert";
         else if (typeLower.includes("accepted")) iconKey = "delivery_request_accepted";
         else if (typeLower.includes("rejected")) iconKey = "delivery_request_rejected";
-        else if (typeLower.includes("delivered")) iconKey = "parcel_delivered";
-        else if (typeLower.includes("assigned")) iconKey = "driver_assigned";
+        else if (typeLower.includes("delivered") || typeLower.includes("parcel delivered")) iconKey = "parcel_delivered";
+        else if (typeLower.includes("assigned") || typeLower.includes("driver assign")) iconKey = "driver_assigned";
         else if (typeLower.includes("picked")) iconKey = "parcel_picked_up";
 
         const Icon = NOTIFICATION_ICONS[iconKey] || NOTIFICATION_ICONS.default;
@@ -265,9 +274,9 @@ export default function NotificationsClient() {
                         <div className="relative p-6 border-b border-gray-100">
                             <button
                                 onClick={closeModal}
-                                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer hover:text-red-500"
                             >
-                                <X className="w-5 h-5 text-secondary" />
+                                <X className="w-5 h-5" />
                             </button>
 
                             <div className="flex items-start gap-4">
@@ -367,7 +376,7 @@ export default function NotificationsClient() {
                         <div className="p-6 border-t border-gray-100 flex gap-3">
                             <button
                                 onClick={closeModal}
-                                className="flex-1 px-6 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                                className="flex-1 px-6 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 Close
                             </button>
