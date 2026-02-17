@@ -29,6 +29,7 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
     const [deliveryLocation, setDeliveryLocation] = useState<{ address: string; lat?: number; lng?: number } | undefined>(undefined);
     const [recipientName, setRecipientName] = useState("");
     const [recipientNumber, setRecipientNumber] = useState("");
+    const [recipientEmail, setRecipientEmail] = useState("");
     const [parcelType, setParcelType] = useState("");
     const [parcelWeight, setParcelWeight] = useState("");
     const [notes, setNotes] = useState("");
@@ -44,6 +45,7 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
                 // Edit Mode: Pre-fill data
                 setRecipientName(initialData.receiverInfo?.name || "");
                 setRecipientNumber(initialData.receiverInfo?.phone || "");
+                setRecipientEmail(initialData.receiverInfo?.email_address || "");
                 setParcelType(initialData.parcel_type || "");
                 setParcelWeight(initialData.parcel_weight?.toString() || "");
                 setNotes(initialData.special_instructions || "");
@@ -86,6 +88,7 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
         setDeliveryLocation(undefined);
         setRecipientName("");
         setRecipientNumber("");
+        setRecipientEmail("");
         setParcelType("");
         setParcelWeight("");
         setNotes("");
@@ -147,6 +150,11 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
         if (!recipientNumber.trim()) {
             newErrors.recipientNumber = "Recipient number is required.";
         }
+        if (!recipientEmail.trim()) {
+            newErrors.recipientEmail = "Recipient email is required.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
+            newErrors.recipientEmail = "Please enter a valid email address.";
+        }
         if (!parcelType.trim()) {
             newErrors.parcelType = "Parcel type is required.";
         }
@@ -170,7 +178,8 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
             receiverInfo: {
                 name: recipientName,
                 phone: recipientNumber,
-                address: deliveryLocation?.address
+                address: deliveryLocation?.address,
+                email_address: recipientEmail
             },
             pickup_location: pickupLocation?.address,
             pickup_coordinates: {
@@ -253,6 +262,25 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
                             />
                              {errors.recipientNumber && <p className="text-xs text-red-500">{errors.recipientNumber}</p>}
                         </div>
+                    </div>
+
+                    {/* Recipient Email */}
+                    <div className="space-y-2">
+                        <Label htmlFor="recipientEmail" className="text-sm font-semibold text-gray-700">
+                            Recipient Email <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="recipientEmail"
+                            type="email"
+                            placeholder="example@email.com"
+                            value={recipientEmail}
+                            onChange={(e) => {
+                                setRecipientEmail(e.target.value);
+                                if (e.target.value) setErrors({ ...errors, recipientEmail: "" });
+                            }}
+                            className={`bg-gray-50 border-gray-100 rounded-lg h-11 ${errors.recipientEmail ? "border-red-500" : ""}`}
+                        />
+                        {errors.recipientEmail && <p className="text-xs text-red-500">{errors.recipientEmail}</p>}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

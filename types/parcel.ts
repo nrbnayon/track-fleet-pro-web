@@ -20,6 +20,7 @@ export interface ContactInfo {
   id?: string;
   name?: string;
   email?: string;
+  email_address?: string; // New field for receiver email
   phone?: string;
   address?: string;
 }

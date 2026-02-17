@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { User, MapPin, Package, Phone, Clock, ShieldCheck, Info, Car } from "lucide-react";
+import { User, MapPin, Package, Phone, Clock, ShieldCheck, Info, Car, Mail } from "lucide-react";
 
 interface SellerParcelDetailsModalProps {
     isOpen: boolean;
@@ -76,6 +76,7 @@ export function SellerParcelDetailsModal({ isOpen, onClose, parcel, onEdit }: Se
                                 <div className="space-y-4">
                                     <DetailItem icon={User} label="Name" value={parcel.receiverInfo?.name} />
                                     <DetailItem icon={Phone} label="Phone Number" value={parcel.receiverInfo?.phone} />
+                                    <DetailItem icon={Mail} label="Email Address" value={parcel.receiverInfo?.email_address} />
                                     <DetailItem icon={MapPin} label="Delivery Address" value={parcel.delivery_location} />
                                 </div>
 
