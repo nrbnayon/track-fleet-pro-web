@@ -78,7 +78,38 @@ export interface Parcel {
   [key: string]: any;
 }
 
-// API Types
+// API Types for Detailed Tracking
+export interface TrackingUpdate {
+    date: string;
+    time: string;
+    status: string;
+    icon: string;
+}
+
+export interface TrackParcelResponse {
+    date: string;
+    parcelId: string;
+    trackingCode: string;
+    weight: string;
+    status: string;
+    customer: {
+        name: string;
+        address: string;
+        phone: string;
+    };
+    sender: {
+        name: string;
+        address: string;
+        phone: string;
+    };
+    assignedTo: {
+        name: string;
+        phone: string;
+        avatar: string;
+    };
+    updates: TrackingUpdate[];
+}
+
 export interface ApiSeller {
   Full_name: string;
   phone_number: string;

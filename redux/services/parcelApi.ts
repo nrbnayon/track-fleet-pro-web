@@ -1,6 +1,6 @@
 // redux/services/parcelApi.ts
 import { apiSlice } from './apiSlice';
-import { Parcel, ApiParcelResponse } from '@/types/parcel';
+import { Parcel, ApiParcelResponse, TrackParcelResponse } from '@/types/parcel';
 import { ApiAvailableDriversResponse, ApiAssignDriverResponse, Driver } from '@/types/driver';
 
 // Inject parcel endpoints into the API slice
@@ -69,8 +69,8 @@ export const parcelApi = apiSlice.injectEndpoints({
     }),
 
     // Track parcel by tracking code
-    trackParcel: builder.query<Parcel, string>({
-      query: (trackingCode) => `/api/parcel/track/${trackingCode}`,
+    trackParcel: builder.query<TrackParcelResponse, string>({
+      query: (trackingCode) => `/api/parcel/track-a-parcel/?tracking_id=${trackingCode}`,
       providesTags: (result, error, trackingCode) => [
         { type: 'Tracking', id: trackingCode },
       ],

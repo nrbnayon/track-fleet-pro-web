@@ -9,79 +9,17 @@ import ReportModal from "./ReportModal";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+import { TrackParcelResponse } from "@/types/parcel";
+
 interface TrackingResultsProps {
-    trackingNumber: string;
+    trackingData: TrackParcelResponse;
 }
 
 export default function TrackingResults({
-    trackingNumber,
+    trackingData,
 }: TrackingResultsProps) {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
     const [isReportOpen, setIsReportOpen] = useState(false);
-
-    // Mock data - replace with actual API call
-    const trackingData = {
-        date: "Dec 30, 2025 12:20 pm",
-        parcelId: "12143253",
-        invoice: "-",
-        trackingCode: trackingNumber,
-        weight: "1.5",
-        cod: "$490",
-        status: "Delivered",
-        customer: {
-            name: "Jahid Khan",
-            address: "Shyamoli, Dhaka",
-            phone: "000-0000-000",
-        },
-        sender: {
-            name: "Asif",
-            address: "Savar, Dhaka",
-            phone: "000-0000-000",
-        },
-        assignedTo: {
-            name: "Rider Name",
-            phone: "09234345345",
-            avatar: "/images/user.webp",
-        },
-        updates: [
-            {
-                date: "Dec 30, 2025",
-                time: "05:30 pm",
-                status: "Consignment has been marked as delivered by rider.",
-                icon: "delivered",
-            },
-            {
-                date: "Dec 30, 2025",
-                time: "03:30 pm",
-                status: "Assigned to rider",
-                icon: "rider",
-            },
-            {
-                date: "Dec 30, 2025",
-                time: "02:30 pm",
-                status: "Consignment has been received at DHANMONDI",
-                icon: "warehouse",
-            },
-            {
-                date: "Dec 29, 2025",
-                time: "05:30 pm",
-                status: "Consignment sent to DHANMONDI Dispatch ID : 382526",
-                icon: "transit",
-            },
-            {
-                date: "Dec 28, 2025",
-                time: "05:30 pm",
-                status: "Consignment sent to SAVAR WAREHOUSE Dispatch ID : 242526",
-                icon: "transit",
-            },
-            {
-                date: "Dec 27, 2025",
-                time: "03:30 pm",
-                status: "Consignment status has been updated as pending",
-                icon: "pending",
-            },
-        ],
-    };
 
     const getStatusIcon = (iconType: string, isActive: boolean) => {
         const iconClass = `${isActive ? 'text-white' : 'text-primary'}`;
@@ -213,17 +151,39 @@ export default function TrackingResults({
                         </h3></div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-gray-300 flex items-center justify-center">
-                                <Image src={trackingData.assignedTo.avatar} alt="driver" width={500} height={500} className="rounded-full" />
+                            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                                {trackingData.assignedTo?.avatar && trackingData.assignedTo.avatar.startsWith('/') || trackingData.assignedTo?.avatar?.startsWith('http') ? (
+                                    <Image 
+                                        src={trackingData.assignedTo.avatar} 
+                                        alt="driver" 
+                                        width={200} 
+                                        height={200} 
+                                        quality={100}
+                                        unoptimized
+                                        className="rounded-full w-full h-full object-cover" 
+                                    />
+                                ) : (
+                                    <Image 
+                                        src="/drivers/driver.jpg" 
+                                        alt="driver" 
+                                        width={200} 
+                                        height={200} 
+                                        quality={100}
+                                        unoptimized
+                                        className="rounded-full w-full h-full object-cover" 
+                                    />
+                                )}
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="font-medium">{trackingData.assignedTo.name}</p>
-                                <div className="flex items-center gap-1">
-                                    <div className="flex items-center bg-primary/20 rounded-lg p-2"><Phone className="h-4 w-4 text-secondary fill-white" /></div>
-                                    <p className="text-sm text-secondary flex items-center gap-1">
-                                        {trackingData.assignedTo.phone}
-                                    </p>
-                                </div>
+                                <p className="font-medium">{trackingData.assignedTo?.name || "Not assigned yet"}</p>
+                                {trackingData.assignedTo?.phone && (
+                                    <div className="flex items-center gap-1">
+                                        <div className="flex items-center bg-primary/20 rounded-lg p-2"><Phone className="h-4 w-4 text-secondary fill-white" /></div>
+                                        <p className="text-sm text-secondary flex items-center gap-1">
+                                            {trackingData.assignedTo.phone}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="flex gap-2">
@@ -368,7 +328,7 @@ export default function TrackingResults({
             <ReportModal
                 isOpen={isReportOpen}
                 onClose={() => setIsReportOpen(false)}
-                riderName={trackingData.assignedTo.name}
+                riderName={trackingData.assignedTo?.name || "Rider"}
             />
         </motion.div>
     );

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TrackingResults from "./TrackingResults";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTrackParcelQuery } from "@/redux/services/parcelApi";
+import { Loader2, AlertCircle } from "lucide-react";
 
 interface TrackParcelFormProps {
     initialTrackingId?: string;
@@ -15,29 +17,24 @@ interface TrackParcelFormProps {
 export default function TrackParcelForm({ initialTrackingId }: TrackParcelFormProps) {
     const [trackingNumber, setTrackingNumber] = useState("");
     const [searchedNumber, setSearchedNumber] = useState("");
-    const [isSearching, setIsSearching] = useState(false);
 
-    const performSearch = useCallback(async (id: string) => {
-        if (!id.trim()) return;
-        
-        setIsSearching(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setSearchedNumber(id);
-        setIsSearching(false);
-    }, []);
+    const { data: trackingData, isLoading, isFetching, error } = useTrackParcelQuery(searchedNumber, {
+        skip: !searchedNumber,
+    });
 
-    const handleSearch = async (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        await performSearch(trackingNumber);
+        if (trackingNumber.trim()) {
+            setSearchedNumber(trackingNumber.trim());
+        }
     };
 
     useEffect(() => {
         if (initialTrackingId) {
             setTrackingNumber(initialTrackingId);
-            performSearch(initialTrackingId);
+            setSearchedNumber(initialTrackingId);
         }
-    }, [initialTrackingId, performSearch]);
+    }, [initialTrackingId]);
 
     return (
         <div className="w-full mx-auto">
@@ -57,7 +54,7 @@ export default function TrackParcelForm({ initialTrackingId }: TrackParcelFormPr
                             value={trackingNumber}
                             onChange={(e) => setTrackingNumber(e.target.value)}
                             className="pl-12 pr-4 h-14 text-lg rounded-r-none focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-1 transition-all"
-                            disabled={isSearching}
+                            disabled={isLoading || isFetching}
                         />
                         <motion.div
                             whileHover={{ scale: 1.02 }}
@@ -66,19 +63,36 @@ export default function TrackParcelForm({ initialTrackingId }: TrackParcelFormPr
                             <Button
                                 type="submit"
                                 size="lg"
-                                className="h-14 bg-primary hover:bg-primary/80 rounded-l-none rounded-r-md text-white px-6 -ml-px transition-colors"
-                                disabled={isSearching || !trackingNumber.trim()}
+                                className="h-14 bg-primary hover:bg-primary/80 rounded-l-none rounded-r-md text-white px-6 -ml-px transition-colors min-w-[120px]"
+                                disabled={isLoading || isFetching || !trackingNumber.trim()}
                             >
-                                {isSearching ? "Searching..." : "Search"}
+                                {isLoading || isFetching ? (
+                                    <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                                ) : "Search"}
                             </Button>
                         </motion.div>
                     </div>
                 </form>
             </motion.div>
 
+            {/* Error Message */}
+            <AnimatePresence>
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="max-w-4xl mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700"
+                    >
+                        <AlertCircle className="h-5 w-5 shrink-0" />
+                        <p>Could not find any parcel with tracking number <span className="font-bold">{searchedNumber}</span>. Please check the number and try again.</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Tracking Results */}
             <AnimatePresence mode="wait">
-                {searchedNumber && (
+                {trackingData && !error && (
                     <motion.div
                         key={searchedNumber}
                         initial={{ opacity: 0, y: 20 }}
@@ -86,7 +100,7 @@ export default function TrackParcelForm({ initialTrackingId }: TrackParcelFormPr
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <TrackingResults trackingNumber={searchedNumber} />
+                        <TrackingResults trackingData={trackingData} />
                     </motion.div>
                 )}
             </AnimatePresence>
