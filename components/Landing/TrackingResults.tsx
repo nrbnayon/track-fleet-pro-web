@@ -126,7 +126,7 @@ export default function TrackingResults({
                     >
                         <p>{trackingData.date}</p>
                         <p>Parcel Id : {trackingData.parcelId}</p>
-                        <p>Invoice : {trackingData.invoice}</p>
+                        {/* <p>Invoice : {trackingData.invoice}</p> */}
                         <p>Tracking Code : {trackingData.trackingCode}</p>
                     </motion.div>
                     <motion.div 
@@ -137,9 +137,9 @@ export default function TrackingResults({
                     >
                         <p></p>
                         <p className="text-secondary">Weight (KG) : {trackingData.weight}</p>
-                        <p className="text-xl font-bold text-foreground mt-1">
+                        {/* <p className="text-xl font-bold text-foreground mt-1">
                             COD : {trackingData.cod}
-                        </p>
+                        </p> */}
                         <Badge className="mt-2 bg-green-100 text-green-800 hover:bg-green-100">
                             {trackingData.status}
                         </Badge>

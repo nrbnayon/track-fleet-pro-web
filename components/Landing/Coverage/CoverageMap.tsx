@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Navigation, MapPin } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -53,6 +54,7 @@ export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMa
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
     const [mapCenter, setMapCenter] = useState<[number, number]>([29.7604, -95.3698]);
     const [mapZoom, setMapZoom] = useState(11);
+    const [searchedLocation, setSearchedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
 
     // Location data with real coordinates for Houston area
     const locations: Location[] = [
@@ -98,26 +100,72 @@ export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMa
         }
     ];
 
-    // Handle search query changes
+    // Handle search query changes with geocoding
     useEffect(() => {
-        if (searchQuery && searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            const foundLocation = locations.find(
-                (loc) =>
-                    loc.name.toLowerCase().includes(query) ||
-                    loc.address.toLowerCase().includes(query) ||
-                    loc.phone.includes(query)
-            );
+        const geocodeLocation = async () => {
+            if (searchQuery && searchQuery.trim()) {
+                const query = searchQuery.toLowerCase();
+                
+                // First, try to find in existing locations
+                const foundLocation = locations.find(
+                    (loc) =>
+                        loc.name.toLowerCase().includes(query) ||
+                        loc.address.toLowerCase().includes(query) ||
+                        loc.phone.includes(query)
+                );
 
-            if (foundLocation) {
-                setMapCenter([foundLocation.lat, foundLocation.lng]);
-                setMapZoom(13);
-                setSelectedLocation(foundLocation);
-                onLocationFound?.(true);
-            } else {
-                onLocationFound?.(false);
+                if (foundLocation) {
+                    setMapCenter([foundLocation.lat, foundLocation.lng]);
+                    setMapZoom(13);
+                    setSelectedLocation(foundLocation);
+                    setSearchedLocation(null);
+                    onLocationFound?.(true);
+                    toast.success("Location found!", {
+                        description: `Showing ${foundLocation.name}`,
+                    });
+                } else {
+                    // If not found in predefined locations, use geocoding
+                    try {
+                        const response = await fetch(
+                            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
+                        );
+                        const data = await response.json();
+
+                        if (data && data.length > 0) {
+                            const result = data[0];
+                            const lat = parseFloat(result.lat);
+                            const lng = parseFloat(result.lon);
+                            
+                            setMapCenter([lat, lng]);
+                            setMapZoom(13);
+                            setSearchedLocation({
+                                lat,
+                                lng,
+                                name: result.display_name
+                            });
+                            setSelectedLocation(null);
+                            onLocationFound?.(true);
+                            toast.success("Location found!", {
+                                description: result.display_name.split(',').slice(0, 3).join(','),
+                            });
+                        } else {
+                            onLocationFound?.(false);
+                            toast.error("Location not found", {
+                                description: `Could not find "${searchQuery}". Please try a different search.`,
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Geocoding error:', error);
+                        onLocationFound?.(false);
+                        toast.error("Search failed", {
+                            description: "Unable to search for location. Please try again.",
+                        });
+                    }
+                }
             }
-        }
+        };
+
+        geocodeLocation();
     }, [searchQuery]);
 
     const handleDirectionClick = (location: Location) => {
@@ -210,6 +258,35 @@ export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMa
                             </Popup>
                         </Marker>
                     ))}
+                    
+                    {/* Searched Location Marker */}
+                    {searchedLocation && (
+                        <Marker
+                            position={[searchedLocation.lat, searchedLocation.lng]}
+                            eventHandlers={{
+                                click: () => {},
+                            }}
+                        >
+                            <Popup>
+                                <div className="p-2 min-w-[200px]">
+                                    <h4 className="font-semibold text-foreground mb-1">
+                                        Searched Location
+                                    </h4>
+                                    <p className="text-sm text-secondary mb-2">{searchedLocation.name}</p>
+                                    <button
+                                        onClick={() => {
+                                            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${searchedLocation.lat},${searchedLocation.lng}`;
+                                            window.open(googleMapsUrl, '_blank');
+                                        }}
+                                        className="text-primary text-sm hover:underline flex items-center gap-1"
+                                    >
+                                        <Navigation className="h-3 w-3" />
+                                        Get Directions
+                                    </button>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    )}
                 </MapContainer>
             </div>
         </div>
