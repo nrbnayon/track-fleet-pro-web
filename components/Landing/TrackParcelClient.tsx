@@ -5,7 +5,11 @@ import TrackParcelForm from "@/components/Landing/TrackParcelForm";
 import TrackingFeatures from "@/components/Landing/TrackingFeatures";
 import { motion } from "framer-motion";
 
-export default function TrackParcelClient() {
+interface TrackParcelClientProps {
+    initialTrackingId?: string;
+}
+
+export default function TrackParcelClient({ initialTrackingId }: TrackParcelClientProps) {
     return (
         <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
             {/* Hero Section */}
@@ -41,7 +45,7 @@ export default function TrackParcelClient() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
                     >
-                        <TrackParcelForm />
+                        <TrackParcelForm initialTrackingId={initialTrackingId} />
                     </motion.div>
                 </div>
             </section>

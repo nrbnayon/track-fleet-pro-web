@@ -1,33 +1,43 @@
 // components/landing/TrackParcelForm.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TrackingResults from "./TrackingResults";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function TrackParcelForm() {
+interface TrackParcelFormProps {
+    initialTrackingId?: string;
+}
+
+export default function TrackParcelForm({ initialTrackingId }: TrackParcelFormProps) {
     const [trackingNumber, setTrackingNumber] = useState("");
     const [searchedNumber, setSearchedNumber] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!trackingNumber.trim()) {
-            return;
-        }
-
+    const performSearch = useCallback(async (id: string) => {
+        if (!id.trim()) return;
+        
         setIsSearching(true);
-
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        setSearchedNumber(trackingNumber);
+        setSearchedNumber(id);
         setIsSearching(false);
+    }, []);
+
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await performSearch(trackingNumber);
     };
+
+    useEffect(() => {
+        if (initialTrackingId) {
+            setTrackingNumber(initialTrackingId);
+            performSearch(initialTrackingId);
+        }
+    }, [initialTrackingId, performSearch]);
 
     return (
         <div className="w-full mx-auto">
@@ -43,7 +53,7 @@ export default function TrackParcelForm() {
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                         <Input
                             type="text"
-                            placeholder="S4768324HJFNHFIR5654"
+                            placeholder="Enter Tracking Number (e.g. TRK000000000)"
                             value={trackingNumber}
                             onChange={(e) => setTrackingNumber(e.target.value)}
                             className="pl-12 pr-4 h-14 text-lg rounded-r-none focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:ring-1 transition-all"

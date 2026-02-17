@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     },
 };
 
-export default function TrackParcelPage() {
-    return <TrackParcelClient />;
+export default async function TrackParcelPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const params = await searchParams;
+    const trackingId = typeof params.tracking_id === "string" ? params.tracking_id : undefined;
+
+    return <TrackParcelClient initialTrackingId={trackingId} />;
 }
