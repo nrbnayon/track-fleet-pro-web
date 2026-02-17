@@ -192,7 +192,7 @@ export function AddParcelModal({ isOpen, onClose, initialData }: AddParcelModalP
         try {
             if (initialData) {
                  // Update existing parcel
-                 await updateParcel({ id: initialData._id, data: fullParcelData }).unwrap();
+                 await updateParcel({ id: initialData.id, data: fullParcelData }).unwrap();
                  toast.success("Parcel updated successfully");
             } else {
                 // Create new parcel

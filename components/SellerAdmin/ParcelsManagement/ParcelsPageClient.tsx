@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import DashboardHeader from "@/components/Shared/DashboardHeader";
 import { Search, PackagePlus, RefreshCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -11,28 +11,28 @@ import { useGetParcelsQuery } from "@/redux/services/parcelApi";
 
 export default function ParcelsPageClient() {
     const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
     const [page, setPage] = useState(1);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     
-    // Fetch data from API
-    // User requested frontend search, so we don't pass search param to API
+    // Debounce search to avoid too many API calls
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1); // Reset to page 1 when search changes
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    // Fetch data from API with server-side pagination and search
     const { data: parcelsData, isLoading, isError, refetch } = useGetParcelsQuery({ 
         page, 
         limit: 10,
+        search: debouncedSearch || undefined,
     });
 
     const parcels = parcelsData?.data || [];
     const meta = parcelsData?.meta;
-
-    // Filter parcels client-side based on search term
-    const filteredParcels = useMemo(() => {
-        if (!search.trim()) return parcels;
-        const lowerSearch = search.toLowerCase();
-        return parcels.filter(parcel => 
-            parcel.tracking_no?.toLowerCase().includes(lowerSearch) ||
-            parcel.receiverInfo?.name?.toLowerCase().includes(lowerSearch)
-        );
-    }, [parcels, search]);
 
     return (
         <div className="min-h-screen mb-12">
@@ -79,15 +79,16 @@ export default function ParcelsPageClient() {
                 {/* Table Section */}
                 {isError ? (
                     <div className="text-center py-10 text-red-500">
-                        Failed to load parcels. Please try again.
+                        Failed to load parcels maybe server is down. Please try again.
                     </div>
                 ) : (
                     <SellerParcelsTable
-                        data={filteredParcels}
+                        data={parcels}
                         isLoading={isLoading}
                         itemsPerPage={10}
                         currentPage={meta?.current_page || page}
                         totalPages={meta?.total_pages || 1}
+                        totalItems={meta?.count || 0}
                         onPageChange={setPage}
                     />
                 )}

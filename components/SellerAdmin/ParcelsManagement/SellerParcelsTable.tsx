@@ -17,6 +17,7 @@ interface SellerParcelsTableProps {
     isLoading?: boolean;
     currentPage?: number;
     totalPages?: number;
+    totalItems?: number;
     onPageChange?: (page: number) => void;
 }
 
@@ -26,6 +27,7 @@ export default function SellerParcelsTable({
     isLoading = false,
     currentPage: externalPage,
     totalPages: externalTotalPages,
+    totalItems,
     onPageChange: externalOnPageChange
 }: SellerParcelsTableProps) {
     const [internalPage, setInternalPage] = useState(1);
@@ -52,6 +54,9 @@ export default function SellerParcelsTable({
 
     // If server-side, data is already sliced. If client-side, slice it.
     const currentData = isServerSide ? data : data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
+    // Calculate total items for pagination display
+    const displayTotalItems = isServerSide && totalItems !== undefined ? totalItems : data.length;
 
     const getStatusColor = (status: string | undefined) => {
         switch (status?.toLowerCase()) {
@@ -238,7 +243,7 @@ export default function SellerParcelsTable({
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
-                    totalItems={data.length}
+                    totalItems={displayTotalItems}
                     itemsPerPage={itemsPerPage}
                     currentItemsCount={currentData.length}
                 />

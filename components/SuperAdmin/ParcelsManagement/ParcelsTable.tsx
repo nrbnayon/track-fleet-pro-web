@@ -47,21 +47,19 @@ export default function ParcelsTable({
     const isServerSide = propCurrentPage !== undefined && propTotalPages !== undefined;
     const currentPage = isServerSide ? propCurrentPage : localCurrentPage;
     
-    // For server-side, totalPages is from props. For client-side, calculate from data length.
-    // Fallback: if server says 1 page but gives more items than itemsPerPage, use the calculated value.
+    // For server-side, use the totalPages from props. For client-side, calculate from data length.
     const totalPages = isServerSide 
-        ? Math.max(propTotalPages || 1, Math.ceil(data.length / itemsPerPage)) 
+        ? (propTotalPages || 1)
         : Math.ceil(data.length / itemsPerPage);
 
     const currentData = useMemo(() => {
-        // Even if isServerSide, if we got more data than itemsPerPage, 
-        // it means the backend might not be paginating correctly.
-        // We should handle it by slicing on the client.
-        if (data.length <= itemsPerPage) return data;
+        // If server-side pagination, the data is already paginated by the server
+        if (isServerSide) return data;
         
+        // For client-side pagination, slice the data
         const start = (currentPage - 1) * itemsPerPage;
         return data.slice(start, start + itemsPerPage);
-    }, [data, currentPage, itemsPerPage]);
+    }, [data, currentPage, itemsPerPage, isServerSide]);
 
     // Handle page change
     const handlePageChange = (page: number) => {
