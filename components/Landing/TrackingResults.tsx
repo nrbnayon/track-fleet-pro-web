@@ -324,6 +324,8 @@ export default function TrackingResults({
             <FeedbackModal
                 isOpen={isFeedbackOpen}
                 onClose={() => setIsFeedbackOpen(false)}
+                driverId={trackingData.assignedTo?.id}
+                driverName={trackingData.assignedTo?.name}
             />
             <ReportModal
                 isOpen={isReportOpen}

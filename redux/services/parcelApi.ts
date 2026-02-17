@@ -161,6 +161,15 @@ export const parcelApi = apiSlice.injectEndpoints({
         'Dashboard' // Update available drivers list
       ],
     }),
+
+    // Create review for driver
+    createReview: builder.mutation<{ success: boolean; message: string; status: number }, { driverId: string; rating: number; comment: string }>({
+      query: ({ driverId, rating, comment }) => ({
+        url: `/api/parcel/create-review/${driverId}/`,
+        method: 'POST',
+        body: { rating, comment },
+      }),
+    }),
   }),
 });
 
@@ -174,4 +183,5 @@ export const {
   useDeleteParcelMutation,
   useGetNearestDriversQuery,
   useAssignDriverMutation,
+  useCreateReviewMutation,
 } = parcelApi;

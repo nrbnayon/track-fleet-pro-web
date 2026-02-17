@@ -103,6 +103,7 @@ export interface TrackParcelResponse {
         phone: string;
     };
     assignedTo: {
+        id: string;
         name: string;
         phone: string;
         avatar: string;

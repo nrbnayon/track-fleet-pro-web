@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -13,45 +13,73 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 
+import { useCreateReviewMutation } from "@/redux/services/parcelApi";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+
 interface FeedbackModalProps {
     isOpen: boolean;
     onClose: () => void;
+    driverId?: string;
+    driverName?: string;
 }
 
 export default function FeedbackModal({
     isOpen,
     onClose,
+    driverId,
+    driverName,
 }: FeedbackModalProps) {
     const [rating, setRating] = useState(0);
     const [hoveredRating, setHoveredRating] = useState(0);
     const [feedback, setFeedback] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
+    
+    const [createReview, { isLoading: isSubmitting }] = useCreateReviewMutation();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!driverId) {
+            toast.error("Driver information missing");
+            return;
+        }
 
         if (rating === 0) {
             toast.error("Please select a rating");
             return;
         }
 
-        setIsSubmitting(true);
+        try {
+            const result = await createReview({
+                driverId,
+                rating,
+                comment: feedback,
+            }).unwrap();
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        console.log("Feedback submitted:", { rating, feedback });
-
-        toast.success("Thank you for your feedback!", {
-            description: "Your feedback helps us improve our service.",
-        });
-
-        // Reset form
-        setRating(0);
-        setHoveredRating(0);
-        setFeedback("");
-        setIsSubmitting(false);
-        onClose();
+            if (result.success) {
+                toast.success("Thank you for your feedback!", {
+                    description: result.message || `Review submitted for ${driverName}`,
+                });
+                
+                // Reset form
+                setRating(0);
+                setHoveredRating(0);
+                setFeedback("");
+                onClose();
+            }
+        } catch (error: any) {
+            console.error("Feedback submission error:", error);
+            
+            if (error?.status === 401) {
+                toast.error("Authentication required", {
+                    description: "Please login to provide a rating and review.",
+                });
+                router.push("/login");
+            } else {
+                toast.error(error?.data?.message || "Could not submit your feedback. Please try again later.");
+            }
+        }
     };
 
     return (
@@ -108,7 +136,12 @@ export default function FeedbackModal({
                             className="w-full h-12 rounded-full"
                             disabled={isSubmitting || rating === 0}
                         >
-                            {isSubmitting ? "Submitting..." : "Submit My Feedback"}
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Submitting...
+                                </>
+                            ) : "Submit My Feedback"}
                         </Button>
                     </form>
                 </div>
