@@ -1,20 +1,12 @@
 "use client";
 
-import { Parcel } from "@/types/parcel";
+import { StatusBreakdownItem } from "@/types/analytics";
 
 interface StatusBreakdownTableProps {
-    parcels: Parcel[];
+    data: StatusBreakdownItem[];
 }
 
-export default function StatusBreakdownTable({ parcels }: StatusBreakdownTableProps) {
-    // Generate dummy data based on proportions in image
-    const breakdown = [
-        { status: "Pending", count: 3, percentage: "12%" },
-        { status: "Submitted", count: 0, percentage: "0%" },
-        { status: "Approved", count: 1, percentage: "4%" },
-        { status: "Ongoing", count: 1, percentage: "4%" },
-        { status: "Delivered", count: 20, percentage: "80%" },
-    ];
+export default function StatusBreakdownTable({ data: breakdown }: StatusBreakdownTableProps) {
 
     return (
         <div className="bg-white p-6 rounded-2xl border-none shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] h-full">
@@ -35,7 +27,7 @@ export default function StatusBreakdownTable({ parcels }: StatusBreakdownTablePr
                             <tr key={index} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-4 py-4 text-xs font-semibold text-secondary">{row.status}</td>
                                 <td className="px-4 py-4 text-xs font-bold text-foreground">{row.count}</td>
-                                <td className="px-4 py-4 text-xs font-semibold text-secondary">{row.percentage}</td>
+                                <td className="px-4 py-4 text-xs font-semibold text-secondary">{row.percentage}%</td>
                             </tr>
                         ))}
                     </tbody>

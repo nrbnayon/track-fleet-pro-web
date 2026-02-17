@@ -1,14 +1,15 @@
 "use client";
 
-import { useSellerData } from "@/hooks/useSellerData";
+import { useGetSellerAnalyticsQuery } from "@/redux/services/analyticsApi";
 import { StatsCard } from "@/components/Shared/StatsCard";
-import { Package, Truck, Loader2 } from "lucide-react";
+import { Package, Truck, Loader2, DollarSign } from "lucide-react";
 import StatusBarChart from "./StatusBarChart";
 import ParcelsByZoneChart from "./ParcelsByZoneChart";
 import StatusBreakdownTable from "./StatusBreakdownTable";
 
 export default function SellerAnalysisClient() {
-    const { seller, parcels, stats, isLoading } = useSellerData();
+    const { data: analyticsResponse, isLoading, isError } = useGetSellerAnalyticsQuery();
+    const stats = analyticsResponse?.data;
 
     if (isLoading) {
         return (
@@ -18,10 +19,26 @@ export default function SellerAnalysisClient() {
         );
     }
 
+    if (isError || !stats) {
+        return (
+            <div className="text-center py-10 text-red-500">
+                Failed to load analytics data. Please try again later.
+            </div>
+        );
+    }
+
     const dashboardStats = [
         {
+            title: "Total Revenue",
+            value: `$${stats.total_revenue || 0}`,
+            isUp: true,
+            icon: DollarSign,
+            iconColor: "#615FFF",
+            iconBg: "#615FFF33",
+        },
+        {
             title: "Total Deliveries",
-            value: (stats?.total_parcels || 331).toString(),
+            value: (stats.total_deliveries || 0).toString(),
             isUp: true,
             icon: Package,
             iconColor: "#2BA24C",
@@ -29,17 +46,17 @@ export default function SellerAnalysisClient() {
         },
         {
             title: "Active Drivers",
-            value: "12",
+            value: (stats.active_drivers || 0).toString(),
             isUp: true,
             icon: Truck,
-            iconColor: "#615FFF",
-            iconBg: "#615FFF33",
+            iconColor: "#F59E0B",
+            iconBg: "#F59E0B33",
         },
     ];
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {dashboardStats.map((stat, index) => (
                     <StatsCard
                         key={index}
@@ -54,15 +71,15 @@ export default function SellerAnalysisClient() {
             </div>
 
             <div className="w-full mx-auto">
-                <StatusBarChart parcels={parcels} />
+                <StatusBarChart data={stats.weekly_stats} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                    <ParcelsByZoneChart parcels={parcels} />
+                    <ParcelsByZoneChart data={stats.zone_distribution} />
                 </div>
                 <div className="lg:col-span-1">
-                    <StatusBreakdownTable parcels={parcels} />
+                    <StatusBreakdownTable data={stats.status_breakdown} />
                 </div>
             </div>
         </div>

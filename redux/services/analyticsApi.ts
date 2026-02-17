@@ -1,5 +1,5 @@
 import { apiSlice } from './apiSlice';
-import type { AnalyticsApiResponse } from '@/types/analytics';
+import type { AnalyticsApiResponse, SellerAnalyticsApiResponse } from '@/types/analytics';
 
 export const analyticsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -7,7 +7,11 @@ export const analyticsApi = apiSlice.injectEndpoints({
       query: () => '/api/admin/analytics/',
       providesTags: ['Analytics'],
     }),
+    getSellerAnalytics: builder.query<SellerAnalyticsApiResponse, void>({
+      query: () => '/api/admin/seller-analytics/',
+      providesTags: ['Analytics'],
+    }),
   }),
 });
 
-export const { useGetAnalyticsQuery } = analyticsApi;
+export const { useGetAnalyticsQuery, useGetSellerAnalyticsQuery } = analyticsApi;

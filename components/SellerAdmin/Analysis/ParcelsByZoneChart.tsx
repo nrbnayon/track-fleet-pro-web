@@ -1,27 +1,30 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { useState, useEffect } from "react";
-import { Parcel } from "@/types/parcel";
+import { useState, useEffect, useMemo } from "react";
+import { SellerZoneDistribution } from "@/types/analytics";
 
 interface ParcelsByZoneChartProps {
-    parcels: Parcel[];
+    data: SellerZoneDistribution[];
 }
 
-const data = [
-    { name: "Manhattan", value: 32, color: "#3B82F6" },
-    { name: "Brooklyn", value: 24, color: "#8B5CF6" },
-    { name: "Queens", value: 20, color: "#10B981" },
-    { name: "Bronx", value: 16, color: "#F59E0B" },
-    { name: "Staten Island", value: 8, color: "#EF4444" },
-];
+const COLORS = ["#3B82F6", "#8B5CF6", "#10B981", "#F59E0B", "#EF4444", "#06B6D4", "#6366F1"];
 
-export default function ParcelsByZoneChart({ parcels }: ParcelsByZoneChartProps) {
+export default function ParcelsByZoneChart({ data: zoneDistribution }: ParcelsByZoneChartProps) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    const chartData = useMemo(() => {
+        return zoneDistribution.map((item, index) => ({
+            name: item.delivery_location,
+            value: item.count,
+            percentage: item.percentage,
+            color: COLORS[index % COLORS.length]
+        }));
+    }, [zoneDistribution]);
 
     if (!isMounted) return <div className="h-[400px] w-full bg-gray-50 rounded-2xl animate-pulse" />;
 
@@ -35,7 +38,7 @@ export default function ParcelsByZoneChart({ parcels }: ParcelsByZoneChartProps)
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
-                                data={data}
+                                data={chartData}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={60}
@@ -47,7 +50,7 @@ export default function ParcelsByZoneChart({ parcels }: ParcelsByZoneChartProps)
                                 startAngle={90}
                                 endAngle={-270}
                             >
-                                {data.map((entry, index) => (
+                                {chartData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
@@ -62,10 +65,12 @@ export default function ParcelsByZoneChart({ parcels }: ParcelsByZoneChartProps)
                     </ResponsiveContainer>
                 </div>
                 <div className="w-full md:w-1/2 grid grid-cols-1 gap-4">
-                    {data.map((item, index) => (
+                    {chartData.map((item, index) => (
                         <div key={index} className="flex items-center gap-3">
                             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                            <span className="text-sm font-semibold text-gray-700">{item.name}: {item.value}%</span>
+                            <span className="text-sm font-semibold text-gray-700 truncate" title={`${item.name}: ${item.percentage}%`}>
+                                {item.name}: {item.percentage}%
+                            </span>
                         </div>
                     ))}
                 </div>

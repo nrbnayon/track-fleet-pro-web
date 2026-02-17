@@ -52,3 +52,32 @@ export interface AnalyticsApiResponse {
   message: string;
   data: AnalyticsData;
 }
+
+export interface SellerWeeklyStat {
+  day: string;
+  pending_count: number;
+  ongoing_count: number;
+  delivered_count: number;
+}
+
+export interface SellerZoneDistribution {
+  delivery_location: string;
+  count: number;
+  percentage: number;
+}
+
+export interface SellerAnalyticsData {
+  total_revenue: number;
+  total_deliveries: number;
+  active_drivers: number;
+  status_breakdown: StatusBreakdownItem[];
+  zone_distribution: SellerZoneDistribution[];
+  weekly_stats: SellerWeeklyStat[];
+}
+
+export interface SellerAnalyticsApiResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: SellerAnalyticsData;
+}

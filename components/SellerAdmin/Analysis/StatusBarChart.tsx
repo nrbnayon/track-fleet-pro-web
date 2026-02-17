@@ -8,15 +8,16 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    Legend,
 } from "recharts";
 import { useState, useEffect, useMemo } from "react";
-import { Parcel } from "@/types/parcel";
+import { SellerWeeklyStat } from "@/types/analytics";
 
 interface StatusBarChartProps {
-    parcels: Parcel[];
+    data: SellerWeeklyStat[];
 }
 
-export default function StatusBarChart({ parcels }: StatusBarChartProps) {
+export default function StatusBarChart({ data }: StatusBarChartProps) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -24,31 +25,13 @@ export default function StatusBarChart({ parcels }: StatusBarChartProps) {
     }, []);
 
     const chartData = useMemo(() => {
-        const counts = {
-            pending: 0,
-            submitted: 0,
-            approved: 0,
-            ongoing: 0,
-            delivered: 0,
-        };
-
-        parcels.forEach(p => {
-            const status = p.parcel_status.toLowerCase();
-            if (status === 'pending') counts.pending++;
-            else if (status === 'ongoing') counts.ongoing++;
-            else if (status === 'delivered') counts.delivered++;
-            // Map other statuses to dummy values for demonstration as in the image
-        });
-
-        // Add some dummy values if data is small to match the vibrant image look
-        return [
-            { name: "Pending", value: counts.pending || 3 },
-            { name: "Submitted", value: counts.submitted || 1 },
-            { name: "Approved", value: counts.approved || 1 },
-            { name: "Ongoing", value: counts.ongoing || 1 },
-            { name: "Delivered", value: counts.delivered || 20 },
-        ];
-    }, [parcels]);
+        return data.map(stat => ({
+            name: new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit' }).format(new Date(stat.day)),
+            Pending: stat.pending_count,
+            Ongoing: stat.ongoing_count,
+            Delivered: stat.delivered_count,
+        }));
+    }, [data]);
 
     if (!isMounted) return <div className="h-[350px] w-full bg-gray-50 rounded-2xl animate-pulse" />;
 
@@ -81,11 +64,24 @@ export default function StatusBarChart({ parcels }: StatusBarChartProps) {
                                 boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
                             }}
                         />
+                        <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                         <Bar
-                            dataKey="value"
-                            fill="#1E3A8A"
-                            radius={[6, 6, 0, 0]}
-                            barSize={60}
+                            dataKey="Pending"
+                            fill="#F59E0B"
+                            radius={[4, 4, 0, 0]}
+                            barSize={30}
+                        />
+                        <Bar
+                            dataKey="Ongoing"
+                            fill="#3B82F6"
+                            radius={[4, 4, 0, 0]}
+                            barSize={30}
+                        />
+                        <Bar
+                            dataKey="Delivered"
+                            fill="#10B981"
+                            radius={[4, 4, 0, 0]}
+                            barSize={30}
                         />
                     </BarChart>
                 </ResponsiveContainer>
