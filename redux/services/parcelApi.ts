@@ -170,6 +170,15 @@ export const parcelApi = apiSlice.injectEndpoints({
         body: { rating, comment },
       }),
     }),
+
+    // Report an issue with a driver
+    reportIssue: builder.mutation<{ success: boolean; message: string; status: number; data?: any }, { driverId: string; report: string; comment: string }>({
+      query: ({ driverId, report, comment }) => ({
+        url: '/api/parcel/report-issue/',
+        method: 'POST',
+        body: { driver_id: driverId, report, comment },
+      }),
+    }),
   }),
 });
 
@@ -184,4 +193,5 @@ export const {
   useGetNearestDriversQuery,
   useAssignDriverMutation,
   useCreateReviewMutation,
+  useReportIssueMutation,
 } = parcelApi;

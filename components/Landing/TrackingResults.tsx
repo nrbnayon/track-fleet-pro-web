@@ -330,6 +330,7 @@ export default function TrackingResults({
             <ReportModal
                 isOpen={isReportOpen}
                 onClose={() => setIsReportOpen(false)}
+                driverId={trackingData.assignedTo?.id}
                 riderName={trackingData.assignedTo?.name || "Rider"}
             />
         </motion.div>

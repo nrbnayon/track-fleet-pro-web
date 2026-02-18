@@ -82,7 +82,7 @@ export default function RegisterForm() {
         localStorage.setItem("otpSentTime", Date.now().toString());
 
         // Log the success
-        console.log("Registration Success:", response);
+        // console.log("Registration Success:", response);
 
         toast.success("Registration initiated!", {
           description: response.message || "Please verify your email to complete registration.",

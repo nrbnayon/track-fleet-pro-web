@@ -12,29 +12,37 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 
+import { useReportIssueMutation } from "@/redux/services/parcelApi";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+
 interface ReportModalProps {
     isOpen: boolean;
     onClose: () => void;
+    driverId?: string;
     riderName?: string;
 }
 
 export default function ReportModal({
     isOpen,
     onClose,
+    driverId,
     riderName = "the rider",
 }: ReportModalProps) {
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
     const [additionalInfo, setAdditionalInfo] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
+
+    const [reportIssue, { isLoading: isSubmitting }] = useReportIssueMutation();
 
     const reportReasons = [
-        { id: "scam", label: "Scam" },
-        { id: "pretending", label: "Pretending to be someone" },
-        { id: "late", label: "Did not appeared on time" },
-        { id: "harassment", label: "Harassment" },
-        { id: "hate-speech", label: "Hate Speech" },
-        { id: "verbal-abuse", label: "Verbal Abuse" },
-        { id: "other", label: "Other" },
+        { id: "SCAM", label: "Scam" },
+        { id: "PRETENDING TO BE SOMEONE", label: "Pretending to be someone" },
+        { id: "LATE", label: "Did not appeared on time" },
+        { id: "HARASSMENT", label: "Harassment" },
+        { id: "HATE SPEECH", label: "Hate Speech" },
+        { id: "VERBAL ABUSE", label: "Verbal Abuse" },
+        { id: "OTHERS", label: "Other" },
     ];
 
     const toggleReason = (reasonId: string) => {
@@ -48,31 +56,43 @@ export default function ReportModal({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!driverId) {
+            toast.error("Driver information missing");
+            return;
+        }
+
         if (selectedReasons.length === 0) {
             toast.error("Please select at least one reason");
             return;
         }
 
-        setIsSubmitting(true);
+        try {
+            const result = await reportIssue({
+                driverId,
+                report: selectedReasons.join(", "),
+                comment: additionalInfo,
+            }).unwrap();
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+            toast.success("Report submitted successfully", {
+                description: result.message || "We will review your report and take appropriate action.",
+            });
 
-        console.log("Report submitted:", {
-            reasons: selectedReasons,
-            additionalInfo,
-            riderName,
-        });
-
-        toast.success("Report submitted successfully", {
-            description: "We will review your report and take appropriate action.",
-        });
-
-        // Reset form
-        setSelectedReasons([]);
-        setAdditionalInfo("");
-        setIsSubmitting(false);
-        onClose();
+            // Reset form
+            setSelectedReasons([]);
+            setAdditionalInfo("");
+            onClose();
+        } catch (error: any) {
+            console.error("Report submission error:", error);
+            
+            if (error?.status === 401) {
+                toast.error("Authentication required", {
+                    description: "Please login to report an issue.",
+                });
+                router.push("/login");
+            } else {
+                toast.error(error?.data?.message || "Could not submit your report. Please try again later.");
+            }
+        }
     };
 
     return (
@@ -137,7 +157,12 @@ export default function ReportModal({
                             className="w-full h-12 rounded-full"
                             disabled={isSubmitting || selectedReasons.length === 0}
                         >
-                            {isSubmitting ? "Submitting..." : "Submit My Report"}
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Submitting...
+                                </>
+                            ) : "Submit My Report"}
                         </Button>
                     </form>
                 </div>
