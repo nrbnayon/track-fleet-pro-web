@@ -142,7 +142,7 @@ export function SellerTrackParcelModal({ isOpen, onClose, parcel }: TrackParcelM
                                         <div className="flex items-center gap-3">
                                             <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden relative shrink-0">
                                                 <Image
-                                                    src={parcel.riderInfo.rider_image || "/drivers/driver.jpg"}
+                                                    src={parcel.riderInfo.rider_image?.startsWith('/') ? parcel.riderInfo.rider_image : `${parcel?.riderInfo?.rider_image}` || "/drivers/driver.jpg"}
                                                     alt="Driver"
                                                     fill
                                                     className="object-cover"

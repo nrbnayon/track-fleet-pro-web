@@ -341,7 +341,7 @@ export default function ProfileClient() {
         <div className="flex items-center gap-5 mb-10">
           <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 bg-gray-100 group">
             <Image
-              src={imagePreview || "/images/user.webp"}
+              src={imagePreview?.startsWith('/') ? imagePreview : "/images/user.webp"}
               alt="Profile"
               width={1000}
               height={1000}

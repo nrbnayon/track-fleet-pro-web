@@ -73,7 +73,7 @@ export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
                             <div className="relative h-10 w-10 mr-4 shrink-0">
                                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                    src={driver.profile_image || "/drivers/driver.jpg"}
+                                    src={driver.profile_image?.startsWith('/') ? driver.profile_image : `${driver?.profile_image}` || "/drivers/driver.jpg"}
                                     alt={driver.full_name}
                                     fill
                                     className="object-cover"

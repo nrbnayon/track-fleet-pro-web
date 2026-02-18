@@ -154,7 +154,7 @@ export default function TrackingResults({
                             <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
                                 {trackingData.assignedTo?.avatar && trackingData.assignedTo.avatar.startsWith('/') || trackingData.assignedTo?.avatar?.startsWith('http') ? (
                                     <Image 
-                                        src={trackingData.assignedTo.avatar} 
+                                        src={trackingData.assignedTo.avatar.startsWith('/') ? trackingData.assignedTo?.avatar : `${trackingData?.assignedTo?.avatar}` || "/drivers/driver.jpg"} 
                                         alt="driver" 
                                         width={200} 
                                         height={200} 
