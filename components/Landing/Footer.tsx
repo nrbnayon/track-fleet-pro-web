@@ -36,7 +36,7 @@ export default function LandingFooter() {
                             </span>
                         </div>
                         <p className="text-sm mb-4 max-w-md">
-                            House# 44, Rd No. 2/A, Dhanmondi, Dhaka 1209
+                           450 W 33rd St, New York, NY 10001
                         </p>
                         <p className="text-sm mb-2">E-mail: example@gmail.com</p>
                         <p className="text-sm">Hotline: 000-0000-000</p>

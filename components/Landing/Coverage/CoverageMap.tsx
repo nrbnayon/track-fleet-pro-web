@@ -52,51 +52,91 @@ interface CoverageMapProps {
 
 export default function CoverageMap({ searchQuery, onLocationFound }: CoverageMapProps) {
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-    const [mapCenter, setMapCenter] = useState<[number, number]>([29.7604, -95.3698]);
-    const [mapZoom, setMapZoom] = useState(11);
+    const [mapCenter, setMapCenter] = useState<[number, number]>([39.8283, -98.5795]);
+    const [mapZoom, setMapZoom] = useState(4);
     const [searchedLocation, setSearchedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
 
-    // Location data with real coordinates for Houston area
+    // Location data distributed across major USA hubs
     const locations: Location[] = [
         {
             id: 1,
-            name: "Track Fleet - Jacinto city",
-            address: "House 44, Road 2, Jacinto city, Houston",
-            phone: "000-0000-000",
-            lat: 29.7654,
-            lng: -95.2269
+            name: "Track Fleet - New York Hub",
+            address: "450 W 33rd St, New York, NY 10001",
+            phone: "+1 (212) 555-0123",
+            lat: 40.7527,
+            lng: -73.9997
         },
         {
             id: 2,
-            name: "Track Fleet - Jacinto city",
-            address: "House 44, Road 2, Jacinto city, Houston",
-            phone: "000-0000-000",
-            lat: 29.8154,
-            lng: -95.3769
+            name: "Track Fleet - Chicago Central",
+            address: "233 S Wacker Dr, Chicago, IL 60606",
+            phone: "+1 (312) 555-0145",
+            lat: 41.8789,
+            lng: -87.6359
         },
         {
             id: 3,
-            name: "Track Fleet - Jacinto city",
-            address: "House 44, Road 2, Jacinto city, Houston",
-            phone: "000-0000-000",
-            lat: 29.7204,
-            lng: -95.4269
+            name: "Track Fleet - Los Angeles Base",
+            address: "101 World Way, Los Angeles, CA 90045",
+            phone: "+1 (310) 555-0167",
+            lat: 34.0522,
+            lng: -118.2437
         },
         {
             id: 4,
-            name: "Track Fleet - Jacinto city",
-            address: "House 44, Road 2, Jacinto city, Houston",
-            phone: "000-0000-000",
-            lat: 29.6604,
-            lng: -95.2869
+            name: "Track Fleet - Houston HQ",
+            address: "1500 Louisiana St, Houston, TX 77002",
+            phone: "+1 (713) 555-0189",
+            lat: 29.7527,
+            lng: -95.3675
         },
         {
             id: 5,
-            name: "Track Fleet - Jacinto city",
-            address: "House 44, Road 2, Jacinto city, Houston",
-            phone: "000-0000-000",
-            lat: 29.8404,
-            lng: -95.2069
+            name: "Track Fleet - Miami Terminal",
+            address: "2100 NW 42nd Ave, Miami, FL 33142",
+            phone: "+1 (305) 555-0190",
+            lat: 25.7617,
+            lng: -80.1918
+        },
+        {
+            id: 6,
+            name: "Track Fleet - Seattle Northwest",
+            address: "17801 International Blvd, Seattle, WA 98158",
+            phone: "+1 (206) 555-0210",
+            lat: 47.6062,
+            lng: -122.3321
+        },
+        {
+            id: 7,
+            name: "Track Fleet - Denver Logistics",
+            address: "8500 Peña Blvd, Denver, CO 80249",
+            phone: "+1 (303) 555-0230",
+            lat: 39.7392,
+            lng: -104.9903
+        },
+        {
+            id: 8,
+            name: "Track Fleet - Atlanta Gateway",
+            address: "6000 N Terminal Pkwy, Atlanta, GA 30320",
+            phone: "+1 (404) 555-0250",
+            lat: 33.7490,
+            lng: -84.3880
+        },
+        {
+            id: 9,
+            name: "Track Fleet - San Francisco Bay",
+            address: "San Francisco, CA 94128",
+            phone: "+1 (415) 555-0270",
+            lat: 37.7749,
+            lng: -122.4194
+        },
+        {
+            id: 10,
+            name: "Track Fleet - Dallas Junction",
+            address: "2400 Aviation Dr, DFW Airport, TX 75261",
+            phone: "+1 (972) 555-0290",
+            lat: 32.7767,
+            lng: -96.7970
         }
     ];
 
