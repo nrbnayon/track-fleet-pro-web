@@ -62,10 +62,10 @@ export default function TrackingResults({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                        <p>{trackingData.date}</p>
-                        <p>Parcel Id : {trackingData.parcelId}</p>
+                        <p>Tracking Date : <span className="font-semibold capitalize">{trackingData.date}</span></p>
+                        {/* <p>Parcel Id : {trackingData.parcelId}</p> */}
                         {/* <p>Invoice : {trackingData.invoice}</p> */}
-                        <p>Tracking Code : {trackingData.trackingCode}</p>
+                        <p>Tracking Code : <span className="font-semibold">{trackingData.trackingCode}</span></p>
                     </motion.div>
                     <motion.div 
                         className="text-sm text-right space-y-4"
@@ -74,7 +74,7 @@ export default function TrackingResults({
                         transition={{ duration: 0.5, delay: 0.3 }}
                     >
                         <p></p>
-                        <p className="text-secondary">Weight (KG) : {trackingData.weight}</p>
+                        <p className="text-secondary">Weight : <span className="font-semibold">{trackingData.weight} KG</span></p>
                         {/* <p className="text-xl font-bold text-foreground mt-1">
                             COD : {trackingData.cod}
                         </p> */}
@@ -289,7 +289,7 @@ export default function TrackingResults({
                                             : 'bg-gray-50 border-gray-200 hover:border-blue-200 hover:shadow-sm'
                                             }`}>
                                             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-4 mb-2">
-                                                <p className={`font-semibold ${isFirst ? 'text-blue-600 text-base md:text-lg' : 'text-primary'}`}>
+                                                <p className={`font-semibold capitalize ${isFirst ? 'text-blue-600 text-base md:text-lg' : 'text-primary'}`}>
                                                     {update.date}
                                                 </p>
                                                 {isFirst && (

@@ -57,7 +57,7 @@ export default function FeedbackModal({
                 comment: feedback,
             }).unwrap();
 
-            if (result.success) {
+            if (result.status === "success" || (result as any).success) {
                 toast.success("Thank you for your feedback!", {
                     description: result.message || `Review submitted for ${driverName}`,
                 });
@@ -67,6 +67,8 @@ export default function FeedbackModal({
                 setHoveredRating(0);
                 setFeedback("");
                 onClose();
+            } else {
+                toast.error(result.message || "Failed to submit feedback");
             }
         } catch (error: any) {
             console.error("Feedback submission error:", error);

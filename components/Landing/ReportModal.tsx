@@ -27,7 +27,6 @@ export default function ReportModal({
     isOpen,
     onClose,
     driverId,
-    riderName = "the rider",
 }: ReportModalProps) {
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
     const [additionalInfo, setAdditionalInfo] = useState("");

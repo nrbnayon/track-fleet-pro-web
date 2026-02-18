@@ -163,7 +163,7 @@ export const parcelApi = apiSlice.injectEndpoints({
     }),
 
     // Create review for driver
-    createReview: builder.mutation<{ success: boolean; message: string; status: number }, { driverId: string; rating: number; comment: string }>({
+    createReview: builder.mutation<{ status: string; message: string; data?: any }, { driverId: string; rating: number; comment: string }>({
       query: ({ driverId, rating, comment }) => ({
         url: `/api/parcel/create-review/${driverId}/`,
         method: 'POST',
@@ -172,7 +172,7 @@ export const parcelApi = apiSlice.injectEndpoints({
     }),
 
     // Report an issue with a driver
-    reportIssue: builder.mutation<{ success: boolean; message: string; status: number; data?: any }, { driverId: string; report: string; comment: string }>({
+    reportIssue: builder.mutation<{ status: string; message: string; data?: any }, { driverId: string; report: string; comment: string }>({
       query: ({ driverId, report, comment }) => ({
         url: '/api/parcel/report-issue/',
         method: 'POST',
