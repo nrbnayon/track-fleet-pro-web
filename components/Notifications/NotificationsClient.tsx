@@ -378,17 +378,17 @@ export default function NotificationsClient() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className="relative p-8 border-b border-gray-50 bg-gradient-to-br from-white to-gray-50/50">
+                        <div className="relative p-4 md:p-8 border-b border-gray-50 bg-gradient-to-br from-white to-gray-50/50">
                             <button
                                 onClick={closeModal}
-                                className="absolute top-6 right-6 w-12 h-12 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center transition-all cursor-pointer hover:bg-red-50 hover:text-red-500 hover:scale-110 active:scale-95 group"
+                                className="absolute top-3 right-3 md:top-6 md:right-6 w-8 h-8 md:w-12 md:h-12 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center transition-all cursor-pointer hover:bg-red-50 hover:text-red-500 hover:scale-110 active:scale-95 group"
                             >
-                                <X className="w-6 h-6 transition-transform group-hover:rotate-90" />
+                                <X className="w-4 h-4 md:w-6 md:h-6 transition-transform group-hover:rotate-90" />
                             </button>
 
-                            <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-3 md:gap-6">
                                 <div className={cn(
-                                    "w-20 h-20 rounded-3xl flex items-center justify-center shrink-0 shadow-lg transition-transform hover:scale-105",
+                                    "w-14 h-14 md:w-20 md:h-20 rounded-3xl flex items-center justify-center shrink-0 shadow-lg transition-transform hover:scale-105",
                                     selectedNotification.type?.toLowerCase().includes("emergency") 
                                         ? "bg-red-500 text-white shadow-red-200" 
                                         : "bg-primary text-white shadow-primary/20"
@@ -396,7 +396,7 @@ export default function NotificationsClient() {
                                     {getIcon(selectedNotification.type, "unread")}
                                 </div>
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
+                                    <div className="flex items-center gap-2 mb-1">
                                         <span className={cn(
                                             "inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-xs",
                                             selectedNotification.type?.toLowerCase().includes("emergency")
@@ -414,7 +414,7 @@ export default function NotificationsClient() {
                                             </span>
                                         )}
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight leading-tight">
+                                    <h2 className="text-xl md:text-3xl font-black text-foreground tracking-tight leading-tight">
                                         {selectedNotification.title}
                                     </h2>
                                 </div>
@@ -422,9 +422,9 @@ export default function NotificationsClient() {
                         </div>
 
                         {/* Modal Body */}
-                        <div className="p-8 overflow-y-auto max-h-[calc(90vh-250px)] scrollbar-hide">
+                        <div className="p-3 md:p-8 overflow-y-auto max-h-[calc(90vh-250px)] scrollbar-hide">
                             {/* Meta Info */}
-                            <div className="flex flex-wrap items-center gap-4 mb-8">
+                            <div className="flex flex-wrap items-center gap-4 mb-4 md:mb-8">
                                 <div className="flex items-center gap-2.5 px-4 py-2.5 bg-gray-50 rounded-2xl border border-gray-100 text-sm font-bold text-gray-500 shadow-sm">
                                     <Calendar className="w-4 h-4 text-primary" />
                                     <span>{formatFullTimestamp(selectedNotification.created_at || selectedNotification.timestamp)}</span>
@@ -501,10 +501,10 @@ export default function NotificationsClient() {
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="p-8 border-t border-gray-50 bg-gray-50/30 flex gap-4">
+                        <div className="p-4 md:p-8 border-t border-gray-50 bg-gray-50/30 flex gap-4">
                             <button
                                 onClick={closeModal}
-                                className="flex-1 px-8 py-4 rounded-2xl bg-white border border-gray-200 text-sm font-black text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md active:scale-[0.98] cursor-pointer"
+                                className="flex-1 px-4 py-2 md:px-8 md:py-4 rounded-2xl bg-white border border-gray-200 text-sm font-black text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md active:scale-[0.98] cursor-pointer"
                             >
                                 CLOSE VIEW
                             </button>
