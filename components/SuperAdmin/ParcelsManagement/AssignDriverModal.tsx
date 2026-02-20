@@ -138,6 +138,12 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                                             fill
                                             className="object-cover rounded-md"
                                         />
+                                        <span className={cn(
+                                            "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white",
+                                            driver.driver_status === 'available' ? 'bg-green-500' :
+                                            driver.driver_status === 'busy' ? 'bg-purple-500' : 
+                                            driver.driver_status === 'offline' ? 'bg-gray-400' : 'bg-blue-500'
+                                        )}></span>
                                     </div>
 
                                     <div className="flex-1">
