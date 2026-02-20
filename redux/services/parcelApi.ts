@@ -41,6 +41,7 @@ export const parcelApi = apiSlice.injectEndpoints({
           delivery_coordinates: apiParcel.delivery_coordinates,
           estimated_delivery: apiParcel.estimated_delivary_date,
           riderInfo: apiParcel.driver ? {
+            rider_id: apiParcel.driver.id,
             rider_name: apiParcel.driver.full_name,
             rider_phone: apiParcel.driver.phone_number,
             rider_vehicle: apiParcel.driver.vehicle_number,

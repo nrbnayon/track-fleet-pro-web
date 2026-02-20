@@ -23,7 +23,7 @@ export function truncateText(text: string, maxLength: number = 100): string {
             return `${process.env.NEXT_PUBLIC_API_URL}/images${imagePath.replace("/profiles-images", "")}`;
         }
 
-        if (imagePath.startsWith("/") || imagePath.startsWith("http")) {
+        if (imagePath.startsWith("/") || imagePath.startsWith("http") || imagePath.startsWith("data:")) {
             return imagePath;
         }
 
