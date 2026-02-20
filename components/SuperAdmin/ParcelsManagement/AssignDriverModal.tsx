@@ -3,7 +3,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Parcel } from "@/types/parcel";
 import { useGetNearestDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
-import { useState } from "react";
+import { useGetDriversQuery } from "@/redux/services/driverApi";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { cn, getImageUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,35 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
     const [searchDriver, setSearchDriver] = useState("");
     const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
-    const { data: drivers = [], isLoading } = useGetNearestDriversQuery(parcel.id);
+    const { data: nearestDrivers = [], isLoading: isNearestLoading } = useGetNearestDriversQuery(parcel.id);
+    const { data: fallbackDriversData, isLoading: isFallbackLoading } = useGetDriversQuery(
+        { page: 1, limit: 10 },
+        { skip: nearestDrivers.length >= 3 }
+    );
+    
     const [assignDriver, { isLoading: isAssigning }] = useAssignDriverMutation();
 
-    const filteredDrivers = drivers.filter((driver: Driver) =>
-        driver.driver_name.toLowerCase().includes(searchDriver.toLowerCase()) ||
+    const displayDrivers = useMemo(() => {
+        if (nearestDrivers.length >= 3) return nearestDrivers;
+
+        const fallback = fallbackDriversData?.data || [];
+        const combined = [...nearestDrivers];
+        const existingIds = new Set(nearestDrivers.map(d => d.id));
+
+        fallback.forEach(d => {
+            if (!existingIds.has(d.id)) {
+                combined.push(d);
+                existingIds.add(d.id);
+            }
+        });
+
+        return combined;
+    }, [nearestDrivers, fallbackDriversData]);
+
+    const isLoading = isNearestLoading || (nearestDrivers.length < 3 && isFallbackLoading);
+
+    const filteredDrivers = displayDrivers.filter((driver: Driver) =>
+        driver.driver_name?.toLowerCase().includes(searchDriver.toLowerCase()) ||
         driver.current_location?.address?.toLowerCase().includes(searchDriver.toLowerCase())
     );
 
