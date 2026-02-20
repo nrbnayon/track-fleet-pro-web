@@ -16,7 +16,7 @@ export const useLogout = () => {
     document.cookie =
       "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-    console.log("User logged out successfully");
+    // console.log("User logged out successfully");
 
     // Redirect to login
     router.push("/login");

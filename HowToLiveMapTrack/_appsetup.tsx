@@ -24,7 +24,7 @@ export function DriverLocationSender({ driverId, isActive }: DriverLocationSende
         const ws = new WebSocket(`${wsUrl}/driver/${driverId}`);
 
         ws.onopen = () => {
-            console.log('Connected to tracking server');
+            // console.log('Connected to tracking server');
             setIsConnected(true);
         };
 
@@ -34,7 +34,7 @@ export function DriverLocationSender({ driverId, isActive }: DriverLocationSende
         };
 
         ws.onclose = () => {
-            console.log('Disconnected from tracking server');
+            // console.log('Disconnected from tracking server');
             setIsConnected(false);
         };
 

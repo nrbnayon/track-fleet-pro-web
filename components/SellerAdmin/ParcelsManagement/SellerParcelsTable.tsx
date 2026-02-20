@@ -35,7 +35,7 @@ export default function SellerParcelsTable({
     const [selectedParcelForView, setSelectedParcelForView] = useState<Parcel | null>(null);
     const [editingParcel, setEditingParcel] = useState<Parcel | null>(null);
 
-    console.log("all data:: ", data);
+    // console.log("all data:: ", data);
     
     // Determine if using server-side or client-side pagination
     const isServerSide = externalPage !== undefined && externalTotalPages !== undefined;

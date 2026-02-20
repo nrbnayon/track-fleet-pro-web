@@ -60,7 +60,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
         };
     }, [parcel]);
 
-    console.log("All parcel:: ", parcel)
+    // console.log("All parcel:: ", parcel)
 
 
     const formatDate = (dateString: string | undefined) => {
