@@ -5,7 +5,7 @@ import { Parcel } from "@/types/parcel";
 import { useGetNearestDriversQuery, useAssignDriverMutation } from "@/redux/services/parcelApi";
 import { useState } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Package, Truck } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -108,7 +108,7 @@ export function AssignDriverModal({ isOpen, onClose, parcel }: AssignDriverModal
                                 >
                                     <div className="relative h-12 w-12 mr-4 shrink-0">
                                         <Image
-                                            src={driver.driver_image?.startsWith('/') ? driver?.driver_image : `${driver?.driver_image}` || "/drivers/driver.jpg"}
+                                            src={getImageUrl(driver.driver_image)}
                                             alt={driver.driver_name}
                                             fill
                                             className="object-cover rounded-md"

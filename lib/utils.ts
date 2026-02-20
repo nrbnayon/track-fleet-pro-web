@@ -14,3 +14,18 @@ export function truncateText(text: string, maxLength: number = 100): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength).trim() + "...";
 }
+
+
+ export  const getImageUrl = (imagePath?: string | null, defaultUrl: string = "/drivers/driver.jpg") => {
+        if (!imagePath || imagePath === "null" || imagePath === "undefined") return defaultUrl;
+
+        if (imagePath.startsWith("/profiles-images/")) {
+            return `${process.env.NEXT_PUBLIC_API_URL}/images${imagePath.replace("/profiles-images", "")}`;
+        }
+
+        if (imagePath.startsWith("/") || imagePath.startsWith("http")) {
+            return imagePath;
+        }
+
+        return defaultUrl;
+    };

@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
@@ -523,7 +523,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                     <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold overflow-hidden shrink-0">
                       {profileImage ? (
                         <img
-                          src={profileImage}
+                          src={getImageUrl(profileImage, "/images/user.webp")}
                           alt={userName}
                           className="w-full h-full object-cover"
                         />

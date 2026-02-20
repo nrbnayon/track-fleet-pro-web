@@ -12,6 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import NotificationsClient from "@/components/Notifications/NotificationsClient";
 
 import { useUser } from "@/hooks/useUser";
+import { getImageUrl } from "@/lib/utils";
 import { 
   useUpdateProfileMutation, 
   useChangePasswordMutation 
@@ -341,7 +342,7 @@ export default function ProfileClient() {
         <div className="flex items-center gap-5 mb-10">
           <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 bg-gray-100 group">
             <Image
-              src={imagePreview?.startsWith('/') ? imagePreview : "/images/user.webp"}
+              src={getImageUrl(imagePreview, "/images/user.webp")}
               alt="Profile"
               width={1000}
               height={1000}

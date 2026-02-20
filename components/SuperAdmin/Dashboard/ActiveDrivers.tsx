@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import { useMemo } from "react";
 import { ActiveDriver } from "@/types/dashboard";
 
@@ -54,6 +54,8 @@ export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
         }
     };
 
+
+
     return (
         <div className="bg-white p-6 rounded-xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.08)] h-full flex flex-col">
             <div className="flex items-center justify-between mb-6">
@@ -73,7 +75,7 @@ export default function ActiveDrivers({ drivers = [] }: ActiveDriversProps) {
                             <div className="relative h-10 w-10 mr-4 shrink-0">
                                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                    src={driver.profile_image?.startsWith('/') ? driver.profile_image : `${driver?.profile_image}` || "/drivers/driver.jpg"}
+                                    src={getImageUrl(driver.profile_image)}
                                     alt={driver.full_name}
                                     fill
                                     className="object-cover"

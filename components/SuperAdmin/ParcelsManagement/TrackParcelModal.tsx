@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Truck, Phone } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { getImageUrl } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
@@ -103,6 +104,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                             currentLocation={currentLocation}
                             parcelStatus={parcel.parcel_status}
                             driverAssigned={!!parcel.riderInfo}
+                            driverId={parcel.riderInfo?.rider_id}
                         />
                     </div>
 
@@ -142,7 +144,7 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
                                         <div className="flex items-center gap-3">
                                             <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden relative shrink-0">
                                                 <Image
-                                                    src={parcel.riderInfo.rider_image?.startsWith('/') ? parcel.riderInfo.rider_image : `${parcel?.riderInfo?.rider_image}` || "/drivers/driver.jpg"}
+                                                    src={getImageUrl(parcel.riderInfo.rider_image)}
                                                     alt="Driver"
                                                     fill
                                                     className="object-cover"
