@@ -11,7 +11,7 @@ export const parcelApi = apiSlice.injectEndpoints({
       query: ({ page = 1, limit = 10, status, search }) => {
         let queryString = `/api/parcel/parcels/?page=${page}&page_size=${limit}`;
         if (status && status !== 'all') {
-             const apiStatus = status.toLowerCase() === 'ongoing' ? 'ASSIGNED' : status.toUpperCase();
+             const apiStatus = status.toUpperCase();
              queryString += `&status=${apiStatus}`;
         }
         if (search) queryString += `&search=${search}`;

@@ -25,7 +25,7 @@ export default function ParcelsPageClient() {
     // For now, I'll just pass search directly, but ideally it should be debounced.
     // Implementing a simple debounce effect or just passing it directly if user hits enter (but UI is instant search)
     // Let's implement a simple debounce state.
-    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState(search);
     
     // Use debounce effect for search
     useEffect(() => {
@@ -42,11 +42,13 @@ export default function ParcelsPageClient() {
         setPage(1); // Reset to page 1 on status change
     };
 
-    const { data: parcelsData, isLoading, isFetching } = useGetParcelsQuery({
+    const { data: parcelsData, isLoading, isFetching, error } = useGetParcelsQuery({
         page,
         limit: itemsPerPage,
         status: filterStatus === "all" ? undefined : filterStatus,
         search: debouncedSearch || undefined,
+    }, {
+        refetchOnMountOrArgChange: true,
     });
 
     return (
@@ -87,17 +89,26 @@ export default function ParcelsPageClient() {
                     </div>
                 </div>
 
-                {/* Results Summary */}
-                {!isLoading && parcelsData && <div className="mt-4 text-sm text-secondary">
-                    Showing {parcelsData.data.length} of {parcelsData.meta.count} parcels
-                </div>}
+                {/* Results Summary and Error Handling */}
+                <div className="mt-4 flex flex-col gap-2">
+                    {error && (
+                        <div className="text-sm text-red-500 bg-red-50 p-2 rounded border border-red-100 italic">
+                            Error loading parcels. Please try refreshing the page.
+                        </div>
+                    )}
+                    {!isLoading && parcelsData && (
+                        <div className="text-sm text-secondary">
+                            Showing {parcelsData.data.length} of {parcelsData.meta.count} parcels
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="px-4 md:px-8 pb-8">
                 <ParcelsTable
                     data={parcelsData?.data || []}
                     itemsPerPage={itemsPerPage}
-                    isLoading={isLoading || isFetching}
+                    isLoading={isLoading}
                     currentPage={page}
                     totalPages={parcelsData?.meta.total_pages || 1}
                     totalItems={parcelsData?.meta.count || 0}
