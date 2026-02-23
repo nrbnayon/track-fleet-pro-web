@@ -295,6 +295,11 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
     setShowLogoutModal(false);
   };
 
+  const handleConfirmLogout = () => {
+    setShowLogoutModal(false);
+    logout();
+  };
+
   const renderIcon = useCallback((icon: IconSvgElement, isActive: boolean) => {
     return (
       <HugeiconsIcon
@@ -596,7 +601,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
       <LogoutModal
         isOpen={showLogoutModal}
         onClose={handleCancelLogout}
-        onConfirm={logout}
+        onConfirm={handleConfirmLogout}
       />
 
       <Dashboard>{children}</Dashboard>

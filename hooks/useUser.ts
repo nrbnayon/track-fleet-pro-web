@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getCookie } from "@/redux/services/apiSlice";
+import { useAppSelector } from "@/redux/hooks";
 import { UserRole, ProfileResponse } from "@/types/users";
 import { useGetProfileQuery } from "@/redux/services/authApi";
 
@@ -19,61 +18,29 @@ export interface UserInfo {
 }
 
 export function useUser() {
-  const [localState, setLocalState] = useState<{
-    userId: string | null;
-    role: UserRole | null;
-    email: string | null;
-    fullName?: string | null;
-    profileImage?: string | null;
-    isVerified?: boolean | null;
-    accessToken: string | null;
-    isAuthenticated: boolean;
-  }>({
-    userId: null,
-    role: null,
-    email: null,
-    fullName: null,
-    profileImage: null,
-    isVerified: null,
-    accessToken: null,
-    isAuthenticated: false,
-  });
-
-  useEffect(() => {
-    const role = getCookie("userRole") as UserRole | null;
-    const rawEmail = getCookie("userEmail");
-    const email = rawEmail ? decodeURIComponent(rawEmail) : null;
-    const accessToken = getCookie("accessToken");
-    const userId = getCookie("userId");
-
-    setLocalState({
-      userId: userId || null,
-      role: role || null,
-      email: email || null,
-      accessToken: accessToken || null,
-      isAuthenticated: !!accessToken,
-    });
-  }, []);
+  const { 
+    user, 
+    token: accessToken, 
+    isAuthenticated 
+  } = useAppSelector((state) => state.auth);
 
   // Fetch profile if authenticated
   const { data: profileData, isLoading: isProfileLoading } = useGetProfileQuery(undefined, {
-    skip: !localState.isAuthenticated,
+    skip: !isAuthenticated,
   });
 
-  // console.log("Profile Data in hook: ", profileData);
-
-  const hasRole = (role: UserRole) => localState.role === role;
-  
   const userProfile = profileData?.data || null;
 
-  // console.log("Profile Data in hook userProfile: ", userProfile);
-
-
+  const hasRole = (role: UserRole) => user?.role === role;
+  
   return {
-    ...localState,
-    fullName: userProfile?.full_name || localState.fullName,
-    email: userProfile?.email_address || localState.email,
-    profileImage: userProfile?.profile_image || localState.profileImage,
+    userId: user?.user_id || null,
+    role: user?.role || null,
+    email: user?.email_address || null,
+    accessToken,
+    isAuthenticated,
+    fullName: userProfile?.full_name || user?.full_name || null,
+    profileImage: userProfile?.profile_image || user?.profile_image || null,
     profile: userProfile,
     isLoading: isProfileLoading, 
     hasRole,
