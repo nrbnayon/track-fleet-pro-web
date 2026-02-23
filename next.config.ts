@@ -147,6 +147,11 @@ const nextConfig: NextConfig = {
         port: "8002",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "trackfleet.pythonanywhere.com",
+        pathname: "/**",
+      },
     ],
   },
   // Add empty turbopack config to silence the warning

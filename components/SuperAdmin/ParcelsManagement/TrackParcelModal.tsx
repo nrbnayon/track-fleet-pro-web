@@ -60,7 +60,10 @@ export function TrackParcelModal({ isOpen, onClose, parcel }: TrackParcelModalPr
         };
     }, [parcel]);
 
-    // console.log("All parcel:: ", parcel)
+    console.log("Parcel details:: ", parcel)
+
+
+    console.log("Parcel parcel.riderInfo.rider_image:: ", parcel.riderInfo?.rider_image)
 
 
     const formatDate = (dateString: string | undefined) => {
